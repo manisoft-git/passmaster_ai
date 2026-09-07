@@ -1,0 +1,362 @@
+{
+  "Use of English": {
+    "weight_in_jamb": 60,
+    "topics": [
+      {
+        "name": "Concord & Grammar",
+        "weight_pct": 25,
+        "subtopics": [
+          "Rule of Proximity",
+          "Subject-Verb Agreement",
+          "Tenses & Conditionals",
+          "Subjunctive Mood"
+        ]
+      },
+      {
+        "name": "Lexis & Structure",
+        "weight_pct": 30,
+        "subtopics": [
+          "Redundancy & Phrasal Idioms",
+          "Collocations",
+          "Synonyms & Antonyms",
+          "Prepositions"
+        ]
+      },
+      {
+        "name": "Oral Forms & Phonology",
+        "weight_pct": 20,
+        "subtopics": [
+          "Vowel Contrasts / Silent Letters",
+          "Consonant Clusters",
+          "Word Stress Patterns",
+          "Rhyme Schemes"
+        ]
+      },
+      {
+        "name": "Comprehension & Prescribed Text",
+        "weight_pct": 25,
+        "subtopics": [
+          "The Life Changer Themes",
+          "Tone & Mood",
+          "Direct Deduction",
+          "Figure of Speech"
+        ]
+      }
+    ]
+  },
+  "Mathematics": {
+    "weight_in_jamb": 40,
+    "topics": [
+      {
+        "name": "Algebra",
+        "weight_pct": 25,
+        "subtopics": [
+          "Logarithms & Indices",
+          "Quadratic Equations",
+          "Matrices & Determinants",
+          "Polynomials"
+        ]
+      },
+      {
+        "name": "Calculus",
+        "weight_pct": 25,
+        "subtopics": [
+          "Differentiation (Chain Rule)",
+          "Integration by Substitution",
+          "Maxima and Minima",
+          "Rate of Change"
+        ]
+      },
+      {
+        "name": "Geometry & Trigonometry",
+        "weight_pct": 25,
+        "subtopics": [
+          "Circle Theorems",
+          "Trigonometric Identities",
+          "Coordinate Geometry",
+          "Bearings & Distances"
+        ]
+      },
+      {
+        "name": "Statistics & Probability",
+        "weight_pct": 25,
+        "subtopics": [
+          "Independent vs Dependent Events",
+          "Standard Deviation",
+          "Permutations & Combinations",
+          "Histograms"
+        ]
+      }
+    ]
+  },
+  "Physics": {
+    "weight_in_jamb": 40,
+    "topics": [
+      {
+        "name": "Mechanics",
+        "weight_pct": 30,
+        "subtopics": [
+          "Gravitational Fields & Inverse Square Law",
+          "Projectiles",
+          "Work, Energy & Power",
+          "Circular Motion"
+        ]
+      },
+      {
+        "name": "Thermal Physics",
+        "weight_pct": 25,
+        "subtopics": [
+          "Gas Laws & Absolute Temperature",
+          "Heat Capacity & Latent Heat",
+          "Thermodynamics",
+          "Thermal Expansion"
+        ]
+      },
+      {
+        "name": "Waves & Optics",
+        "weight_pct": 25,
+        "subtopics": [
+          "Refraction & Critical Angle",
+          "Sound Resonance",
+          "Interference & Diffraction",
+          "Lens Formulas"
+        ]
+      },
+      {
+        "name": "Electricity & Magnetism",
+        "weight_pct": 20,
+        "subtopics": [
+          "Ohms Law & Resistivity",
+          "Capacitance",
+          "Electromagnetic Induction",
+          "Alternating Current"
+        ]
+      }
+    ]
+  },
+  "Chemistry": {
+    "weight_in_jamb": 40,
+    "topics": [
+      {
+        "name": "Physical Chemistry",
+        "weight_pct": 30,
+        "subtopics": [
+          "Chemical Equilibrium & Le Chateliers Principle",
+          "Rates of Reactions",
+          "Thermochemistry",
+          "Electrochemistry"
+        ]
+      },
+      {
+        "name": "Inorganic Chemistry",
+        "weight_pct": 25,
+        "subtopics": [
+          "Faradays Laws of Electrolysis",
+          "Periodic Table Trends",
+          "Acids, Bases & Salts",
+          "Extraction of Metals"
+        ]
+      },
+      {
+        "name": "Organic Chemistry",
+        "weight_pct": 25,
+        "subtopics": [
+          "Hydrocarbons & IUPAC",
+          "Alcohols & Alkanoic Acids",
+          "Polymers & Carbohydrates",
+          "Isomerism"
+        ]
+      },
+      {
+        "name": "Environmental & Applied Chemistry",
+        "weight_pct": 20,
+        "subtopics": [
+          "Water Pollution & Hardness",
+          "Solubility Curves",
+          "Gas Preparations",
+          "Industrial Processes"
+        ]
+      }
+    ]
+  },
+  "Biology": {
+    "weight_in_jamb": 40,
+    "topics": [
+      {
+        "name": "Genetics & Heredity",
+        "weight_pct": 30,
+        "subtopics": [
+          "Sex-Linked Inheritance",
+          "Mendelian Ratios",
+          "DNA & Chromosomes",
+          "Variation & Mutation"
+        ]
+      },
+      {
+        "name": "Ecology",
+        "weight_pct": 25,
+        "subtopics": [
+          "Trophic Levels & Food Chains",
+          "Biomes of West Africa",
+          "Ecological Succession",
+          "Nutrient Cycles"
+        ]
+      },
+      {
+        "name": "Physiology & Systems",
+        "weight_pct": 25,
+        "subtopics": [
+          "Circulation & Blood Groups",
+          "Excretion & Kidneys",
+          "Nervous System & Hormones",
+          "Photosynthesis"
+        ]
+      },
+      {
+        "name": "Cell Biology & Organization",
+        "weight_pct": 20,
+        "subtopics": [
+          "Mitosis vs Meiosis",
+          "Cell Organelles",
+          "Osmosis & Plasmolysis",
+          "Classification of Living Things"
+        ]
+      }
+    ]
+  },
+  "Economics": {
+    "weight_in_jamb": 40,
+    "topics": [
+      {
+        "name": "Price Theory & Elasticity",
+        "weight_pct": 25,
+        "subtopics": [
+          "Price Elasticity of Demand",
+          "Cross & Income Elasticity",
+          "Price Ceiling & Floors",
+          "Market Equilibrium"
+        ]
+      },
+      {
+        "name": "National Income & Macroeconomics",
+        "weight_pct": 25,
+        "subtopics": [
+          "GDP, GNP & Net National Income",
+          "The Multiplier Concept",
+          "Inflation Causes & Control",
+          "Fiscal Policy Instruments"
+        ]
+      },
+      {
+        "name": "Money, Banking & Monetary Policy",
+        "weight_pct": 25,
+        "subtopics": [
+          "Central Bank Monetary Tools",
+          "Commercial Bank Credit Multiplier",
+          "Inflation vs Deflation",
+          "Foreign Exchange & Devaluation"
+        ]
+      },
+      {
+        "name": "Production & Market Structures",
+        "weight_pct": 25,
+        "subtopics": [
+          "Law of Diminishing Returns",
+          "Cost Concepts (MC, AC, TC)",
+          "Monopoly vs Perfect Competition",
+          "Economies of Scale"
+        ]
+      }
+    ]
+  },
+  "Government": {
+    "weight_in_jamb": 40,
+    "topics": [
+      {
+        "name": "Basic Concepts in Political Science",
+        "weight_pct": 25,
+        "subtopics": [
+          "Sovereignty & Rule of Law",
+          "Separation of Powers",
+          "Political Ideologies (Socialism, Capitalism)",
+          "Citizenship, Rights & Duties"
+        ]
+      },
+      {
+        "name": "Constitutional Development in Nigeria",
+        "weight_pct": 30,
+        "subtopics": [
+          "1999 Constitution Provisions",
+          "Richards, Macpherson & Lyttelton Constitutions",
+          "Federalism in Nigeria",
+          "Indirect Rule in Northern vs Southern Nigeria"
+        ]
+      },
+      {
+        "name": "Organs of Government & Electoral Process",
+        "weight_pct": 25,
+        "subtopics": [
+          "Legislative Process & Presidential Veto",
+          "Judicial Independence & Judicial Review",
+          "Electoral Systems (PR vs Simple Majority)",
+          "Civil Service Principles & Bureaucracy"
+        ]
+      },
+      {
+        "name": "International Relations & Organizations",
+        "weight_pct": 20,
+        "subtopics": [
+          "Nigeria Foreign Policy (Afrocentricism)",
+          "ECOWAS & African Union",
+          "United Nations Structure & Security Council",
+          "Commonwealth of Nations"
+        ]
+      }
+    ]
+  },
+  "Literature in English": {
+    "weight_in_jamb": 40,
+    "topics": [
+      {
+        "name": "Literary Appreciation & Devices",
+        "weight_pct": 30,
+        "subtopics": [
+          "Dramatic Irony & Catharsis",
+          "Figures of Speech (Metaphor, Paradox, Oxymoron)",
+          "Metre, Rhyme & Stanzaic Forms",
+          "Tone, Mood & Atmosphere"
+        ]
+      },
+      {
+        "name": "African Prose & Drama",
+        "weight_pct": 25,
+        "subtopics": [
+          "Themes of Cultural Conflict & Colonial Heritage",
+          "Characterization & Tragic Flaw",
+          "Folkloric & Oral Tradition Elements",
+          "Feminism & Gender Dynamics"
+        ]
+      },
+      {
+        "name": "Non-African Prose & Drama",
+        "weight_pct": 25,
+        "subtopics": [
+          "Shakespearean Dramatic Conventions",
+          "Soliloquy vs Monologue vs Aside",
+          "Satire & Allegory",
+          "Gothic & Romantic Movements"
+        ]
+      },
+      {
+        "name": "Poetry Analysis",
+        "weight_pct": 20,
+        "subtopics": [
+          "Sonnets (Shakespearean vs Italian)",
+          "Odes & Elegies",
+          "Diction, Enjambment & Imagery",
+          "Tone & Point of View"
+        ]
+      }
+    ]
+  }
+}

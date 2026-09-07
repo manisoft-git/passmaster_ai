@@ -1,0 +1,628 @@
+html = """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PassMaster AI — Socratic JAMB & WAEC Exam Coach</title>
+  <meta name="description" content="Stop memorizing past questions. Master concepts, identify leaky topics, and hit 280+ in JAMB with Socratic AI coaching.">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+  <!-- Live Exam Countdown Banner -->
+  <div class="countdown-banner">
+    <span>⏳ <strong>JAMB 2025/2026 Exam Countdown:</strong></span>
+    <span style="font-family: monospace; font-weight: 800; color: #38bdf8;" id="examCountdownDisplay">54d : 14h : 22m : 05s</span>
+    <span class="hide-mobile">| 🎯 Target: 280+ for Top Tier Universities</span>
+  </div>
+
+  <!-- Top App Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <a href="#" class="brand-badge" onclick="switchView('dashboard')">
+        <div class="brand-logo">🎯</div>
+        <div class="brand-info">
+          <h1>PassMaster AI</h1>
+          <span>Socratic Exam Coach</span>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <!-- User Profile / Auth Status -->
+        <div id="authHeaderContainer">
+          <button class="btn-pill" onclick="openAuthModal('login')">
+            <span>🔐</span>
+            <span>Login / Register</span>
+          </button>
+        </div>
+
+        <button class="btn-pill" onclick="openShareModal()">
+          <span>📤</span>
+          <span class="hide-mobile">Share Scorecard</span>
+        </button>
+
+        <button class="btn-pill btn-primary" onclick="openPaymentModal('monthly')">
+          <span>⚡</span>
+          <span>Activate Pass</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="nav-tabs" aria-label="Main Navigation">
+    <div class="tabs-container">
+      <button class="tab-btn active" id="tab-dashboard" onclick="switchView('dashboard')">
+        <span>📊</span> Dashboard
+      </button>
+      <button class="tab-btn" id="tab-cbt" onclick="switchView('cbt')">
+        <span>⚡</span> JAMB CBT Exam
+      </button>
+      <button class="tab-btn" id="tab-vault" onclick="switchView('vault')">
+        <span>📓</span> Mistake Vault
+      </button>
+      <button class="tab-btn" id="tab-leaks" onclick="switchView('leaks')">
+        <span>📉</span> Leaky Bucket
+      </button>
+      <button class="tab-btn" id="tab-leaderboard" onclick="switchView('leaderboard')">
+        <span>🏆</span> Leaderboard
+      </button>
+      <button class="tab-btn" id="tab-parent" onclick="switchView('parent')">
+        <span>👨‍👩‍👧</span> Parent Portal
+      </button>
+      <button class="tab-btn" id="tab-whatsapp" onclick="switchView('whatsapp')">
+        <span>💬</span> WhatsApp Bot
+      </button>
+      <button class="tab-btn" id="tab-pricing" onclick="switchView('pricing')">
+        <span>💳</span> Passes & Plans
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content View Area -->
+  <main class="main-content">
+
+    <!-- 1. DASHBOARD VIEW -->
+    <section id="view-dashboard" class="view-section active">
+      <div class="dashboard-grid">
+        
+        <!-- Score Predictor Hero Card -->
+        <div class="card">
+          <div class="card-title-row">
+            <h2 class="card-title"><span>🎯</span> Live Predicted JAMB Score</h2>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Based on 4 Subjects</span>
+          </div>
+
+          <div class="score-hero-container">
+            <div class="score-dial" id="scoreDial" style="--score-pct: 55;">
+              <div class="score-dial-inner">
+                <div class="score-number" id="predictedScoreDisplay">220</div>
+                <div class="score-denom">/ 400</div>
+              </div>
+            </div>
+            <div class="score-status-badge" id="readinessBadge">Competitive Borderline</div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.75rem; text-align: center;">
+              You are losing an estimated <strong>48 marks</strong> in 2 avoidable trap topics.
+            </p>
+            <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+              <button class="btn-pill btn-primary" onclick="switchView('cbt')">Start CBT Practice</button>
+              <button class="btn-pill" onclick="switchView('leaks')">View Mark Leaks</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leaky Bucket Critical Alerts -->
+        <div class="card">
+          <div class="card-title-row">
+            <h2 class="card-title"><span>🚨</span> Critical Mark Leaks</h2>
+            <span style="font-size: 0.75rem; color: var(--accent-rose); font-weight: 700;">Fix Before Exam</span>
+          </div>
+          <div id="dashboardLeaksContainer">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Syllabus Progress Card -->
+      <div class="card" style="margin-top: 1.25rem;">
+        <div class="card-title-row">
+          <h2 class="card-title"><span>📚</span> 2025/2026 JAMB Syllabus Mastery</h2>
+          <span style="font-size: 0.8rem; color: var(--accent-cyan); font-weight: 600;">Official Curriculum</span>
+        </div>
+        <div id="syllabusGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-top: 0.5rem;">
+          <!-- Dynamically populated syllabus progress -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. CBT EXAM VIEW -->
+    <section id="view-cbt" class="view-section">
+      
+      <!-- Subject Filter & Utility Bar -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem;">
+        <div class="subject-filter-bar" style="margin-bottom: 0;">
+          <button class="filter-pill active" onclick="filterBySubject('all', this)">🌟 All Subjects</button>
+          <button class="filter-pill" onclick="filterBySubject('Use of English', this)">📖 English</button>
+          <button class="filter-pill" onclick="filterBySubject('Mathematics', this)">📐 Math</button>
+          <button class="filter-pill" onclick="filterBySubject('Physics', this)">⚡ Physics</button>
+          <button class="filter-pill" onclick="filterBySubject('Chemistry', this)">🧪 Chemistry</button>
+          <button class="filter-pill" onclick="filterBySubject('Biology', this)">🧬 Biology</button>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn-pill" onclick="openModal('calcModal')" title="Official JAMB CBT Calculator">
+            <span>🧮</span> Calculator
+          </button>
+          <button class="btn-pill" onclick="openModal('formulaModal')" title="Physics & Chemistry Constants">
+            <span>📜</span> Constants
+          </button>
+          <button class="btn-pill" id="flagQuestionBtn" onclick="toggleFlagCurrentQuestion()" title="Flag for Review">
+            <span>🚩</span> Flag
+          </button>
+        </div>
+      </div>
+
+      <div class="cbt-container">
+        
+        <!-- Left: Question & Options Screen -->
+        <div class="cbt-screen">
+          <div class="cbt-header">
+            <div>
+              <span class="subject-badge" id="cbtSubjectBadge">Use of English</span>
+              <span style="font-size: 0.8rem; color: var(--text-muted); margin-left: 0.5rem;" id="cbtYearBadge">JAMB 2023</span>
+            </div>
+            <div class="cbt-timer">
+              <span>⏱️</span>
+              <span id="timerDisplay">00:40</span>
+            </div>
+          </div>
+
+          <div style="font-size: 0.8rem; color: var(--text-dim);" id="cbtTopicBadge">Topic: Concord & Grammar</div>
+
+          <div class="cbt-question-text" id="cbtQuestionText">
+            Loading question...
+          </div>
+
+          <div class="options-list" id="cbtOptionsList">
+            <!-- Options A, B, C, D generated here -->
+          </div>
+
+          <!-- Bottom Nav & Question Palette Toggle -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+            <button class="btn-pill" onclick="prevQuestion()">⬅️ Previous</button>
+            <span style="font-size: 0.85rem; color: var(--text-muted);" id="qCounterDisplay">Question 1 of 12</span>
+            <button class="btn-pill btn-primary" onclick="nextQuestion()">Next ➡️</button>
+          </div>
+
+          <!-- Official JAMB Numbered Question Palette (1 to N) -->
+          <div style="margin-top: 1.25rem; border-top: 1px solid var(--border-subtle); padding-top: 0.75rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Question Navigator Grid:</span>
+              <span style="font-size: 0.7rem; color: var(--text-dim);">🟢 Answered | 🚩 Flagged | 🔵 Current</span>
+            </div>
+            <div class="palette-grid" id="questionPaletteGrid">
+              <!-- Dynamically populated buttons -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Socratic Coach Panel -->
+        <div class="coach-panel">
+          <div class="coach-header">
+            <div class="coach-avatar">🧠</div>
+            <div style="flex: 1;">
+              <h3 style="font-size: 0.95rem; font-weight: 700;">Coach Kalu</h3>
+              <p style="font-size: 0.72rem; color: var(--accent-emerald);">● Socratic AI Active</p>
+            </div>
+            <button class="btn-speech" onclick="toggleAudioCoach()" id="audioToggleBtn" title="Listen to Coach Kalu aloud">
+              <span>🔊</span> Audio On
+            </button>
+          </div>
+
+          <div class="coach-chat-area" id="coachChatArea">
+            <div class="chat-bubble coach">
+              👋 Select an option on the left! If you pick the right answer, I'll reinforce why it works. If you hit a trap, I won't just spoil the answer—I will coach you through the logic so you never fail it in JAMB.
+            </div>
+          </div>
+
+          <form class="coach-input-row" onsubmit="handleCoachChatSubmit(event)">
+            <input type="text" class="coach-input" id="coachMessageInput" placeholder="Ask Coach Kalu or answer his hint..." autocomplete="off">
+            <button type="submit" class="btn-pill btn-primary" style="padding: 0.5rem 0.9rem;">Send</button>
+          </form>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. MISTAKE VAULT (ERROR NOTEBOOK) -->
+    <section id="view-vault" class="view-section">
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <div class="card-title-row">
+          <h2 class="card-title"><span>📓</span> Mistake Vault (Your Cognitive Error Notebook)</h2>
+          <span style="font-size: 0.8rem; color: var(--accent-amber); font-weight: 700;">Zero Weaknesses Allowed</span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+          Top JAMB scholars never make the same mistake twice. Below are the questions you stumbled on, with the exact cognitive trap highlighted so you can re-test yourself until you achieve 100% mastery.
+        </p>
+
+        <div id="mistakeVaultContainer">
+          <!-- Dynamically populated failed questions -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. LEAKY BUCKET VIEW -->
+    <section id="view-leaks" class="view-section">
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <div class="card-title-row">
+          <h2 class="card-title"><span>📉</span> Your Leaky Bucket Analysis</h2>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">Estimated Mark Bleed</span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+          Students don't fail entire subjects; they bleed marks in specific cognitive traps. Below are the subtopics draining your JAMB score:
+        </p>
+
+        <div id="allLeaksContainer">
+          <!-- Full list of leaks -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. NATIONAL LEADERBOARD VIEW -->
+    <section id="view-leaderboard" class="view-section">
+      <div style="text-align: center; max-width: 650px; margin: 0 auto 1.5rem;">
+        <h2 style="font-size: 1.5rem; font-weight: 800;">🏆 National JAMB Scholar Leaderboard</h2>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.3rem;">
+          Top candidates competing for federal merit list admissions across Nigeria. Practice daily to climb the board!
+        </p>
+      </div>
+
+      <div class="card" style="max-width: 800px; margin: 0 auto;">
+        <table class="leaderboard-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Candidate</th>
+              <th>Target</th>
+              <th>XP Points</th>
+              <th>Predicted JAMB</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardTbody">
+            <!-- Dynamically populated leaderboard rows -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 6. PARENT & SPONSOR PORTAL VIEW -->
+    <section id="view-parent" class="view-section">
+      <div style="text-align: center; max-width: 650px; margin: 0 auto 1.5rem;">
+        <h2 style="font-size: 1.5rem; font-weight: 800;">👨‍👩‍👧 Parent, Sponsor & Tutorial Center Monitor</h2>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.3rem;">
+          Enter your child's registered phone number to view their verified daily study streak, accuracy rate, and university readiness.
+        </p>
+      </div>
+
+      <div class="card" style="max-width: 520px; margin: 0 auto 1.5rem;">
+        <div class="form-group">
+          <label class="form-label">Candidate's Registered Phone Number</label>
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="tel" id="parentPhoneInput" class="form-input" placeholder="e.g. 08012345678" value="08012345678">
+            <button class="btn-pill btn-primary" onclick="lookupParentReport()">Search</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="parentReportResult" style="max-width: 650px; margin: 0 auto;">
+        <!-- Dynamically rendered parent report card -->
+      </div>
+    </section>
+
+    <!-- 7. WHATSAPP BOT SIMULATOR VIEW -->
+    <section id="view-whatsapp" class="view-section">
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <h2 style="font-size: 1.4rem; font-weight: 800;">Learn Directly on WhatsApp (Zero High-Speed Data Required)</h2>
+        <p style="font-size: 0.85rem; color: var(--text-muted); max-width: 600px; margin: 0.5rem auto;">
+          Nigerian students use cheap daily WhatsApp bundles. Try our live WhatsApp bot below or connect your phone to practice on the go!
+        </p>
+      </div>
+
+      <div class="whatsapp-simulator">
+        <div class="wa-top-bar">
+          <div class="wa-avatar">🤖</div>
+          <div class="wa-contact-info">
+            <h3>PassMaster AI Coach</h3>
+            <p>online (Socratic Bot)</p>
+          </div>
+        </div>
+
+        <div class="wa-chat-canvas" id="waChatCanvas">
+          <div class="wa-msg bot">
+            👋 *Welcome to PassMaster AI Coach!*
+The #1 Socratic Exam Tutor for JAMB & WAEC.
+
+Reply with a number:
+1️⃣ *Practice Questions* (English, Math, Physics, Chem, Bio)
+2️⃣ *Check My Predicted Score* (out of 400)
+3️⃣ *Leaky Bucket Diagnostic* (Find marks you are losing)
+4️⃣ *Activate Full AI Pass* (from ₦700/week)
+
+💡 *Or type a subject directly:* `ENG`, `MATH`, `PHY`, `CHM`, `BIO`
+          </div>
+        </div>
+
+        <form class="wa-input-row" onsubmit="handleWhatsAppSend(event)">
+          <input type="text" class="coach-input" id="waUserInput" placeholder="Type 1, 2, ENG, A, B, or chat..." style="border-radius: 20px; font-size: 0.85rem;" autocomplete="off">
+          <button type="submit" class="btn-pill btn-primary" style="padding: 0.4rem 0.8rem; border-radius: 50%;">➤</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 8. PRICING & PASSES VIEW -->
+    <section id="view-pricing" class="view-section">
+      <div style="text-align: center; max-width: 680px; margin: 0 auto 2rem;">
+        <h2 style="font-size: 1.7rem; font-weight: 900; margin-bottom: 0.5rem;">Invest in Your University Admission</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          Private lesson centers charge ₦25,000/month with zero personal diagnosis. PassMaster AI provides a 24/7 personal tutor for less than the price of lunch.
+        </p>
+      </div>
+
+      <div class="pricing-grid">
+        <!-- Weekly Pass -->
+        <div class="pricing-card">
+          <div>
+            <h3 style="font-size: 1.2rem; font-weight: 700;">Weekly Drill Pass</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">For quick pre-mock revision</p>
+            <div class="price-amount">₦700 <span>/ 7 days</span></div>
+            <ul class="pricing-features">
+              <li class="check">✓ 7 Days Unlimited Socratic AI Coaching</li>
+              <li class="check">✓ WhatsApp Bot & Web App Access</li>
+              <li class="check">✓ All 5 Core JAMB Subjects</li>
+              <li class="check">✓ Leaky Bucket Diagnostic</li>
+            </ul>
+          </div>
+          <button class="btn-pill btn-primary" style="width: 100%; justify-content: center;" onclick="openPaymentModal('weekly')">Get Weekly Pass</button>
+        </div>
+
+        <!-- Monthly Master Pass (Featured) -->
+        <div class="pricing-card featured">
+          <span class="pricing-tag">Most Popular</span>
+          <div>
+            <h3 style="font-size: 1.2rem; font-weight: 700;">Monthly Master Pass</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">Complete confidence builder</p>
+            <div class="price-amount">₦2,200 <span>/ 30 days</span></div>
+            <ul class="pricing-features">
+              <li class="check">✓ Everything in Weekly Pass</li>
+              <li class="check">✓ Unlimited Full-Length CBT Mocks</li>
+              <li class="check">✓ Live Predicted JAMB Score Tracker</li>
+              <li class="check">✓ Priority AI Coach Explanations</li>
+              <li class="check">✓ Weekly WhatsApp Progress Report to Parents</li>
+            </ul>
+          </div>
+          <button class="btn-pill btn-primary" style="width: 100%; justify-content: center;" onclick="openPaymentModal('monthly')">Get Monthly Pass</button>
+        </div>
+
+        <!-- Season Pass -->
+        <div class="pricing-card">
+          <div>
+            <h3 style="font-size: 1.2rem; font-weight: 700;">Full Season Guarantee</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">Until JAMB 2025/2026 Exam Day</p>
+            <div class="price-amount">₦5,000 <span>/ full season</span></div>
+            <ul class="pricing-features">
+              <li class="check">✓ Unlimited Access until Exam Day</li>
+              <li class="check">✓ Post-UTME Coaching Included</li>
+              <li class="check">✓ 250+ Score Guarantee (or Full Refund)</li>
+              <li class="check">✓ Exclusive Masterclass Webinars</li>
+            </ul>
+          </div>
+          <button class="btn-pill btn-primary" style="width: 100%; justify-content: center;" onclick="openPaymentModal('season')">Get Season Guarantee</button>
+        </div>
+      </div>
+
+      <!-- Voucher Scratch Card Section -->
+      <div class="card" style="margin-top: 2rem; max-width: 600px; margin-left: auto; margin-right: auto; text-align: center;">
+        <h3 style="font-size: 1.05rem; font-weight: 700;">Bought a Voucher from your Tutorial Center?</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.4rem 0 1rem;">
+          Enter your 12-digit scratch card PIN below to activate your pass instantly:
+        </p>
+        <div style="display: flex; gap: 0.5rem; justify-content: center;">
+          <input type="text" id="voucherInput" class="coach-input" placeholder="e.g. PASS-2025-DEMO-WEEK" style="max-width: 280px; text-transform: uppercase;">
+          <button class="btn-pill btn-primary" onclick="redeemVoucher()">Redeem PIN</button>
+        </div>
+        <p style="font-size: 0.75rem; color: var(--accent-cyan); margin-top: 0.5rem;">
+          Try demo PINs: <code>PASS-2025-DEMO-WEEK</code> | <code>UNILAG-MED-2025</code>
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: Authentication (Login / Register) -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div style="display: flex; gap: 1rem;">
+          <button id="authTabLogin" class="tab-btn active" style="padding: 0.4rem 0;" onclick="toggleAuthMode('login')">Login</button>
+          <button id="authTabRegister" class="tab-btn" style="padding: 0.4rem 0;" onclick="toggleAuthMode('register')">Sign Up</button>
+        </div>
+        <button class="modal-close" onclick="closeModal('authModal')">&times;</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Email Address or Phone Number</label>
+          <input type="text" id="loginIdentifier" class="form-input" placeholder="e.g. favour@student.ng or 08012345678" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required>
+        </div>
+        <p style="font-size: 0.75rem; color: var(--text-dim); margin-bottom: 1rem;">
+          Demo Login: <code>favour@student.ng</code> / <code>password123</code>
+        </p>
+        <button type="submit" class="btn-pill btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem;">
+          🔐 Sign In to PassMaster
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" style="display: none;" onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" id="regName" class="form-input" placeholder="e.g. Favour Adeyemi" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" id="regEmail" class="form-input" placeholder="name@email.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input type="tel" id="regPhone" class="form-input" placeholder="08012345678" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="regPassword" class="form-input" placeholder="••••••••" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Target University</label>
+            <input type="text" id="regUni" class="form-input" placeholder="e.g. UNILAG, UI, OAU" value="UNILAG">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Target Course</label>
+            <input type="text" id="regCourse" class="form-input" placeholder="e.g. Medicine, Law" value="Medicine & Surgery">
+          </div>
+        </div>
+        <button type="submit" class="btn-pill btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem;">
+          🚀 Create Account & Start Prep
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Official JAMB Scientific Calculator -->
+  <div class="modal-overlay" id="calcModal">
+    <div class="calculator-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+        <span style="font-size: 0.85rem; font-weight: 800; color: #9ca3af;">JAMB CBT CALCULATOR</span>
+        <button class="modal-close" onclick="closeModal('calcModal')">&times;</button>
+      </div>
+      <div class="calc-display" id="calcScreen">0</div>
+      <div class="calc-grid">
+        <button class="calc-btn clear" onclick="calcAction('C')">C</button>
+        <button class="calc-btn" onclick="calcAction('CE')">CE</button>
+        <button class="calc-btn" onclick="calcAction('sqrt')">√</button>
+        <button class="calc-btn operator" onclick="calcAction('/')">÷</button>
+
+        <button class="calc-btn" onclick="calcNum('7')">7</button>
+        <button class="calc-btn" onclick="calcNum('8')">8</button>
+        <button class="calc-btn" onclick="calcNum('9')">9</button>
+        <button class="calc-btn operator" onclick="calcAction('*')">×</button>
+
+        <button class="calc-btn" onclick="calcNum('4')">4</button>
+        <button class="calc-btn" onclick="calcNum('5')">5</button>
+        <button class="calc-btn" onclick="calcNum('6')">6</button>
+        <button class="calc-btn operator" onclick="calcAction('-')">−</button>
+
+        <button class="calc-btn" onclick="calcNum('1')">1</button>
+        <button class="calc-btn" onclick="calcNum('2')">2</button>
+        <button class="calc-btn" onclick="calcNum('3')">3</button>
+        <button class="calc-btn operator" onclick="calcAction('+')">+</button>
+
+        <button class="calc-btn" onclick="calcNum('0')">0</button>
+        <button class="calc-btn" onclick="calcNum('.')">.</button>
+        <button class="calc-btn" onclick="calcAction('pi')">π</button>
+        <button class="calc-btn operator" style="background: #10b981;" onclick="calcAction('=')">=</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Constants & Formulas Sheet -->
+  <div class="modal-overlay" id="formulaModal">
+    <div class="modal-box" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3 style="font-size: 1.15rem; font-weight: 800;">📜 Official Science Constants Sheet</h3>
+        <button class="modal-close" onclick="closeModal('formulaModal')">&times;</button>
+      </div>
+      <table style="width: 100%; font-size: 0.85rem; border-collapse: collapse;">
+        <tr style="border-bottom: 1px solid var(--border-subtle);"><td style="padding: 0.5rem; color: var(--text-dim);">Acceleration due to gravity (g)</td><td style="padding: 0.5rem; color: #38bdf8; font-family: monospace;">9.8 m/s² (or 10 m/s²)</td></tr>
+        <tr style="border-bottom: 1px solid var(--border-subtle);"><td style="padding: 0.5rem; color: var(--text-dim);">Speed of Light in vacuum (c)</td><td style="padding: 0.5rem; color: #38bdf8; font-family: monospace;">3.0 × 10⁸ m/s</td></tr>
+        <tr style="border-bottom: 1px solid var(--border-subtle);"><td style="padding: 0.5rem; color: var(--text-dim);">Planck's Constant (h)</td><td style="padding: 0.5rem; color: #38bdf8; font-family: monospace;">6.63 × 10⁻³⁴ J·s</td></tr>
+        <tr style="border-bottom: 1px solid var(--border-subtle);"><td style="padding: 0.5rem; color: var(--text-dim);">Charge of Electron (e)</td><td style="padding: 0.5rem; color: #38bdf8; font-family: monospace;">1.60 × 10⁻¹⁹ C</td></tr>
+        <tr style="border-bottom: 1px solid var(--border-subtle);"><td style="padding: 0.5rem; color: var(--text-dim);">Avogadro's Constant (Nₐ)</td><td style="padding: 0.5rem; color: #38bdf8; font-family: monospace;">6.02 × 10²³ mol⁻¹</td></tr>
+        <tr style="border-bottom: 1px solid var(--border-subtle);"><td style="padding: 0.5rem; color: var(--text-dim);">Faraday's Constant (F)</td><td style="padding: 0.5rem; color: #38bdf8; font-family: monospace;">96,500 C/mol</td></tr>
+        <tr><td style="padding: 0.5rem; color: var(--text-dim);">Molar Gas Volume at s.t.p.</td><td style="padding: 0.5rem; color: #38bdf8; font-family: monospace;">22.4 dm³ / mol</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- MODAL: Payment Checkout (Monnify / Paystack Virtual Account) -->
+  <div class="modal-overlay" id="paymentModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size: 1.15rem; font-weight: 800;" id="modalPlanTitle">Activate Monthly Master Pass</h3>
+        <button class="modal-close" onclick="closeModal('paymentModal')">&times;</button>
+      </div>
+
+      <div style="background: var(--bg-card); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1rem; border: 1px solid var(--border-subtle);">
+        <p style="font-size: 0.8rem; color: var(--text-muted);">Amount to Pay:</p>
+        <div style="font-size: 1.8rem; font-weight: 900; color: #ffffff;" id="modalAmountDisplay">₦2,200</div>
+      </div>
+
+      <div style="margin-bottom: 1.25rem;">
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Transfer to dedicated virtual account:</p>
+        <div style="background: #0f172a; padding: 0.85rem; border-radius: var(--radius-sm); border: 1px dashed var(--accent-cyan);">
+          <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.3rem;">
+            <span style="color: var(--text-dim);">Bank:</span>
+            <strong style="color: #ffffff;">Moniepoint / Wema Bank</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.3rem;">
+            <span style="color: var(--text-dim);">Account Number:</span>
+            <strong style="color: var(--accent-cyan); font-family: monospace; font-size: 1.05rem;" id="modalAccountNumber">8123984012</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+            <span style="color: var(--text-dim);">Account Name:</span>
+            <strong style="color: #ffffff;">PassMaster AI - Checkout</strong>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-pill btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem;" onclick="simulatePaymentSuccess()">
+        ⚡ I Have Transferred / Simulate Instant Activation
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: Shareable WhatsApp Status Scorecard -->
+  <div class="modal-overlay" id="shareModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size: 1.15rem; font-weight: 800;">📤 Share Your JAMB Readiness Card</h3>
+        <button class="modal-close" onclick="closeModal('shareModal')">&times;</button>
+      </div>
+
+      <div style="background: #0b141a; padding: 1rem; border-radius: var(--radius-md); font-family: monospace; font-size: 0.85rem; color: #e9edef; white-space: pre-wrap; margin-bottom: 1.25rem; border: 1px solid #202c33;" id="shareCardPreview">
+        Loading status card...
+      </div>
+
+      <button class="btn-pill btn-primary" style="width: 100%; justify-content: center;" onclick="copyShareCard()">
+        📋 Copy to Clipboard & Post on WhatsApp Status
+      </button>
+    </div>
+  </div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
+"""
+
+with open("templates/index.html", "w") as f:
+    f.write(html)
+
+print("Saved templates/index.html successfully!")

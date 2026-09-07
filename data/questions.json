@@ -1,0 +1,596 @@
+[
+  {
+    "id": "eng_001",
+    "subject": "Use of English",
+    "topic": "Concord & Grammar",
+    "subtopic": "Rule of Proximity",
+    "year": 2023,
+    "question": "Neither the principal nor the teachers _______ present at the emergency assembly yesterday morning.",
+    "options": {
+      "A": "was",
+      "B": "were",
+      "C": "is",
+      "D": "are"
+    },
+    "correct_option": "B",
+    "traps": {
+      "A": "You focused on the principal (singular) as the subject. When neither... nor connects two subjects, the verb must agree with the closer subject (the teachers is plural, so were is correct).",
+      "C": "You chose singular present tense. The sentence contains yesterday morning, which requires past tense, plus teachers is plural.",
+      "D": "You recognized that teachers is plural, but missed the time marker yesterday morning, which requires past tense (were, not are)."
+    },
+    "pedagogical_concept": "The Rule of Proximity: In compound subjects joined by either... or or neither... nor, the verb must agree in number and person with the noun or pronoun nearest to it.",
+    "socratic_prompt": "Look at the subject closest to the blank (the teachers) and look at the time phrase at the end (yesterday morning). Which option matches both plural number and past tense?"
+  },
+  {
+    "id": "eng_002",
+    "subject": "Use of English",
+    "topic": "Lexis & Structure",
+    "subtopic": "Redundancy & Phrasal Idioms",
+    "year": 2022,
+    "question": "The newly admitted student found it difficult to _______ with the rigorous academic pace of the university.",
+    "options": {
+      "A": "cope up",
+      "B": "cope with",
+      "C": "cope up with",
+      "D": "cope along"
+    },
+    "correct_option": "B",
+    "traps": {
+      "A": "Cope up is a very common Nigerian colloquial error. In Standard English, cope does not take up.",
+      "C": "Cope up with is an erroneous blend of keep up with and cope with. The correct idiom is simply cope with.",
+      "D": "Cope along is unidiomatic and non-standard English."
+    },
+    "pedagogical_concept": "Standard Phrasal Verbs vs. Common Vernacular Invasions: The verb cope takes only the preposition with when denoting managing difficulties.",
+    "socratic_prompt": "Think about the difference between keep up with and cope. Does the verb cope ever accept the particle up in standard formal English?"
+  },
+  {
+    "id": "eng_003",
+    "subject": "Use of English",
+    "topic": "Oral Forms & Phonology",
+    "subtopic": "Vowel Contrasts / Silent Letters",
+    "year": 2024,
+    "question": "In which of the following words is the letter \"b\" silent when pronounced in Standard British English?",
+    "options": {
+      "A": "Obtuse",
+      "B": "Subtle",
+      "C": "Brevity",
+      "D": "Disturb"
+    },
+    "correct_option": "B",
+    "traps": {
+      "A": "In obtuse (/\u0259b\u02c8tju\u02d0s/), the b is fully voiced and pronounced.",
+      "C": "In brevity (/\u02c8brev.\u0259.ti/), the b is the initial consonant and clearly articulated.",
+      "D": "In disturb (/d\u026a\u02c8st\u025c\u02d0b/), the final b is fully sounded."
+    },
+    "pedagogical_concept": "Silent Consonants: The letter b is consistently silent when it precedes t in root words of Latin/French origin (e.g., subtle, doubt, debt) or follows m at the end of a syllable (e.g., climb, comb, thumb).",
+    "socratic_prompt": "Recall the phonological rule: when the letter b appears directly before t in words like debt or doubt, do you articulate the b sound?"
+  },
+  {
+    "id": "phy_001",
+    "subject": "Physics",
+    "topic": "Thermal Physics",
+    "subtopic": "Gas Laws & Absolute Temperature",
+    "year": 2023,
+    "question": "A given mass of gas has a volume of 500 cm\u00b3 at 27\u00b0C. If the pressure remains constant, what will be its volume at 127\u00b0C?",
+    "options": {
+      "A": "2351.8 cm\u00b3",
+      "B": "666.7 cm\u00b3",
+      "C": "166.7 cm\u00b3",
+      "D": "234.3 cm\u00b3"
+    },
+    "correct_option": "B",
+    "traps": {
+      "A": "You multiplied by the ratio of Celsius temperatures without converting to Kelvin: 500 * (127 / 27) = 2351.8 cm\u00b3. Charles Law ONLY works with Absolute Temperature in Kelvin!",
+      "C": "You inverted the temperatures: V\u2082 = 500 * (300 / 400) = 375 or applied inverse proportions as in Boyles Law.",
+      "D": "You applied pressure formulas or subtracted the temperature differences instead of using V\u2081/T\u2081 = V\u2082/T\u2082."
+    },
+    "pedagogical_concept": "Charles Law (V\u2081/T\u2081 = V\u2082/T\u2082): Temperatures must ALWAYS be converted to absolute temperature (Kelvin) by adding 273. T\u2081 = 27 + 273 = 300 K; T\u2082 = 127 + 273 = 400 K. V\u2082 = (500 * 400) / 300 = 666.67 cm\u00b3.",
+    "socratic_prompt": "Before calculating gas laws, what is the mandatory unit for temperature? What is 27\u00b0C and 127\u00b0C in Kelvin?"
+  },
+  {
+    "id": "phy_002",
+    "subject": "Physics",
+    "topic": "Mechanics",
+    "subtopic": "Gravitational Fields & Inverse Square Law",
+    "year": 2022,
+    "question": "If the distance between two masses is doubled while keeping their masses constant, the gravitational force of attraction between them is _______.",
+    "options": {
+      "A": "doubled",
+      "B": "halved",
+      "C": "quartered",
+      "D": "multiplied by four"
+    },
+    "correct_option": "C",
+    "traps": {
+      "A": "You assumed direct proportionality between force and distance.",
+      "B": "You thought force is inversely proportional to distance (F ~ 1/r). Remember Newtons Law contains r SQUARED in the denominator!",
+      "D": "You squared the factor (2\u00b2 = 4) but applied it in the numerator rather than recognizing it weakens the force."
+    },
+    "pedagogical_concept": "Newtons Universal Law of Gravitation (F = G*m\u2081*m\u2082 / r\u00b2): The force obeys an INVERSE SQUARE law. Doubling r means the new force is F / (2)\u00b2 = F / 4.",
+    "socratic_prompt": "What power of distance (r) appears in Newtons Law of Gravitation formula? When r becomes 2r, what happens to (2r)\u00b2 in the denominator?"
+  },
+  {
+    "id": "phy_003",
+    "subject": "Physics",
+    "topic": "Waves & Optics",
+    "subtopic": "Refraction & Critical Angle",
+    "year": 2024,
+    "question": "A ray of light traveling from a dense medium of refractive index 1.5 into air will undergo total internal reflection if the angle of incidence is greater than _______.",
+    "options": {
+      "A": "30.0\u00b0",
+      "B": "41.8\u00b0",
+      "C": "48.6\u00b0",
+      "D": "60.0\u00b0"
+    },
+    "correct_option": "B",
+    "traps": {
+      "A": "sin(30\u00b0) = 0.5. You inverted the formula or confused 1.5 with 2.0.",
+      "C": "48.6\u00b0 is the critical angle for water (n = 1.33), not glass/dense medium with n = 1.5.",
+      "D": "You guessed an arbitrary large angle instead of solving sin(c) = 1/n."
+    },
+    "pedagogical_concept": "Critical Angle Formula: sin(c) = 1 / n. For n = 1.5, sin(c) = 1 / 1.5 = 0.6667. arcsin(0.6667) = 41.8\u00b0. Light incident at any angle greater than 41.8\u00b0 will completely reflect.",
+    "socratic_prompt": "What is the relationship between refractive index (n) and the critical angle (c)? What is arcsin(1 / 1.5)?"
+  },
+  {
+    "id": "mth_001",
+    "subject": "Mathematics",
+    "topic": "Calculus",
+    "subtopic": "Differentiation (Chain Rule)",
+    "year": 2023,
+    "question": "Find the derivative with respect to x of y = (3x\u00b2 - 5)\u2074.",
+    "options": {
+      "A": "4(3x\u00b2 - 5)\u00b3",
+      "B": "24x(3x\u00b2 - 5)\u00b3",
+      "C": "12x(3x\u00b2 - 5)\u00b3",
+      "D": "6x(3x\u00b2 - 5)\u00b3"
+    },
+    "correct_option": "B",
+    "traps": {
+      "A": "You differentiated the outer power (bringing 4 to the front) but completely forgot to multiply by the derivative of the inside function d/dx(3x\u00b2 - 5) = 6x.",
+      "C": "You multiplied by (2 * 6x) incorrectly or subtracted 1 from the inner term.",
+      "D": "You multiplied by just 6x without multiplying by the outer coefficient 4."
+    },
+    "pedagogical_concept": "The Chain Rule: dy/dx = (dy/du) * (du/dx). Let u = 3x\u00b2 - 5, so y = u\u2074. dy/du = 4u\u00b3, du/dx = 6x. dy/dx = 4(3x\u00b2 - 5)\u00b3 * 6x = 24x(3x\u00b2 - 5)\u00b3.",
+    "socratic_prompt": "When differentiating a function inside parentheses raised to a power, what step must you do after differentiating the outer power?"
+  },
+  {
+    "id": "mth_002",
+    "subject": "Mathematics",
+    "topic": "Algebra",
+    "subtopic": "Logarithms & Indices",
+    "year": 2024,
+    "question": "If log\u2081\u2080(x) + log\u2081\u2080(x - 3) = 1, find the valid value of x.",
+    "options": {
+      "A": "x = 5 and x = -2",
+      "B": "x = 5 only",
+      "C": "x = -2 only",
+      "D": "x = 10"
+    },
+    "correct_option": "B",
+    "traps": {
+      "A": "You solved the quadratic equation x\u00b2 - 3x - 10 = 0 correctly to get roots 5 and -2, but you forgot that log of a negative number is undefined in real numbers!",
+      "C": "You chose the negative root by mistaking the signs in (x - 5)(x + 2) = 0.",
+      "D": "You confused the base 10 with the value of x."
+    },
+    "pedagogical_concept": "Domain Constraints on Logarithmic Functions: log_b(y) is ONLY defined for y > 0. While x\u00b2 - 3x - 10 = 0 yields x = 5 and x = -2, substituting x = -2 into log\u2081\u2080(x) produces an undefined expression. Therefore, x = 5 is the sole valid solution.",
+    "socratic_prompt": "Can you evaluate log\u2081\u2080(-2)? What is the domain rule for the argument inside any real logarithm?"
+  },
+  {
+    "id": "mth_003",
+    "subject": "Mathematics",
+    "topic": "Probability",
+    "subtopic": "Independent vs Dependent Events",
+    "year": 2022,
+    "question": "A bag contains 5 red balls and 3 green balls. Two balls are drawn one after the other WITHOUT replacement. What is the probability that both balls are red?",
+    "options": {
+      "A": "25/64",
+      "B": "5/14",
+      "C": "15/56",
+      "D": "5/8"
+    },
+    "correct_option": "B",
+    "traps": {
+      "A": "You assumed the ball was replaced! P(Red) * P(Red) = (5/8) * (5/8) = 25/64. The question says WITHOUT replacement.",
+      "C": "15/56 is the probability of drawing one red and one green: (5/8) * (3/7).",
+      "D": "5/8 is the probability of drawing red on the first draw only."
+    },
+    "pedagogical_concept": "Probability Without Replacement (Conditional Probability): Total balls = 8. First draw P(R\u2081) = 5/8. Second draw has 4 red balls left out of 7 total balls: P(R\u2082|R\u2081) = 4/7. P(Both Red) = (5/8) * (4/7) = 20/56 = 5/14.",
+    "socratic_prompt": "If you take one red ball out of the bag and do not put it back, how many red balls are left? How many total balls are left?"
+  },
+  {
+    "id": "chm_001",
+    "subject": "Chemistry",
+    "topic": "Physical Chemistry",
+    "subtopic": "Chemical Equilibrium & Le Chateliers Principle",
+    "year": 2023,
+    "question": "For the industrial synthesis of hydrogen iodide: H\u2082(g) + I\u2082(g) <=> 2HI(g) (dH = -9.6 kJ/mol), what is the effect of an increase in total pressure on the equilibrium yield of HI?",
+    "options": {
+      "A": "The yield of HI increases",
+      "B": "The yield of HI decreases",
+      "C": "The yield of HI remains unchanged",
+      "D": "The reaction stops completely"
+    },
+    "correct_option": "C",
+    "traps": {
+      "A": "You memorized the general rule pressure favors the side with fewer moles without counting the moles here! Left side = 1 + 1 = 2 moles. Right side = 2 moles.",
+      "B": "You assumed pressure shifts the reaction backwards toward reactants.",
+      "D": "Pressure affects equilibrium position, it never causes a reversible system to stop completely."
+    },
+    "pedagogical_concept": "Le Chateliers Principle on Gaseous Equilibrium: Pressure changes only shift equilibrium when there is a difference in the number of gaseous moles (dn_gas != 0). Here, 1 mol H\u2082 + 1 mol I\u2082 = 2 moles of gas on reactants side, and 2 moles of HI on products side. Since dn = 2 - 2 = 0, pressure has NO effect on the position of equilibrium.",
+    "socratic_prompt": "Count the total moles of gas on the left hand side, and count the total moles of gas on the right hand side. Is there any difference in volume?"
+  },
+  {
+    "id": "chm_002",
+    "subject": "Chemistry",
+    "topic": "Inorganic Chemistry",
+    "subtopic": "Faradays Laws of Electrolysis",
+    "year": 2024,
+    "question": "How many Faradays of electricity are required to liberate 0.5 mole of copper metal during the electrolysis of aqueous copper(II) tetraoxosulphate(VI)?",
+    "options": {
+      "A": "0.5 F",
+      "B": "1.0 F",
+      "C": "2.0 F",
+      "D": "4.0 F"
+    },
+    "correct_option": "B",
+    "traps": {
+      "A": "You equated Faradays directly to the number of moles without accounting for the ionic charge (+2).",
+      "C": "2.0 F is required to discharge 1.0 mole of Cu\u00b2\u207a, but the question asked for 0.5 mole!",
+      "D": "You multiplied 2 F by 2 instead of taking half of 2 F."
+    },
+    "pedagogical_concept": "Faradays Law & Ionic Valency: Reduction half-reaction: Cu\u00b2\u207a + 2e\u207b -> Cu(s). 1 mole of Cu requires 2 Faradays of charge. Therefore, 0.5 mole of Cu requires 0.5 * 2 = 1.0 Faraday.",
+    "socratic_prompt": "What is the oxidation state of copper in CuSO\u2084? How many electrons must each copper ion gain to become neutral copper metal?"
+  },
+  {
+    "id": "bio_001",
+    "subject": "Biology",
+    "topic": "Genetics & Heredity",
+    "subtopic": "Sex-Linked Inheritance",
+    "year": 2023,
+    "question": "A normal woman whose father was red-green color blind marries a normal man. What is the probability of their first male child being color blind?",
+    "options": {
+      "A": "0%",
+      "B": "25%",
+      "C": "50%",
+      "D": "100%"
+    },
+    "correct_option": "C",
+    "traps": {
+      "A": "You assumed since the woman is normal, her sons cannot inherit color blindness.",
+      "B": "25% is the probability across ALL offspring (male and female combined). But the question specifies of their first MALE child!",
+      "D": "You assumed all sons must inherit the trait, but the carrier mother has two X chromosomes (one normal, one mutated)."
+    },
+    "pedagogical_concept": "Sex-Linked Recessive Inheritance: Since the womans father was color blind (X^c Y), she inherited his X^c chromosome, making her a carrier: X^C X^c. The husband is normal: X^C Y. Their sons receive either X^C (normal) or X^c (color blind) from the mother. Among male children, P(color blind) = 1/2 = 50%.",
+    "socratic_prompt": "What genotype did the mother inherit from her color-blind father? When she passes an X chromosome to her son, what is the chance she passes the defective one?"
+  },
+  {
+    "id": "eco_001",
+    "subject": "Economics",
+    "topic": "Price Theory & Elasticity",
+    "subtopic": "Price Elasticity of Demand",
+    "year": 2023,
+    "question": "If the price of a bag of rice rises by 20% and the quantity demanded falls by 10%, the price elasticity of demand is _______ and demand is _______.",
+    "options": {
+      "A": "2.0; elastic",
+      "B": "0.5; inelastic",
+      "C": "0.5; elastic",
+      "D": "-2.0; unitary"
+    },
+    "correct_option": "B",
+    "traps": {
+      "A": "You inverted the formula by dividing percentage change in price by percentage change in quantity demanded (20% / 10% = 2.0). Elasticity is %\u0394Qd / %\u0394P!",
+      "C": "You correctly computed 0.5, but mistakenly classified values less than 1 (< 1) as elastic rather than inelastic.",
+      "D": "You inverted the formula and confused negative signs with unitary elasticity."
+    },
+    "pedagogical_concept": "Price Elasticity of Demand (PED) = (% Change in Quantity Demanded) / (% Change in Price). Here, PED = 10% / 20% = 0.5. Because PED < 1, the demand is price inelastic (consumers are relatively unresponsive to price changes).",
+    "socratic_prompt": "Recall the PED formula: does Quantity go on top (numerator) or Price? When the absolute result is less than 1, does that make demand elastic or inelastic?"
+  },
+  {
+    "id": "eco_002",
+    "subject": "Economics",
+    "topic": "Money, Banking & Monetary Policy",
+    "subtopic": "Central Bank Monetary Tools",
+    "year": 2024,
+    "question": "To curb runaway demand-pull inflation in the Nigerian economy, the Central Bank of Nigeria (CBN) would most appropriately _______.",
+    "options": {
+      "A": "reduce the Monetary Policy Rate (MPR)",
+      "B": "purchase treasury bills in Open Market Operations (OMO)",
+      "C": "increase the Cash Reserve Ratio (CRR)",
+      "D": "lower the liquidity ratio of commercial banks"
+    },
+    "correct_option": "C",
+    "traps": {
+      "A": "Lowering the MPR encourages borrowing and expands money supply, worsening inflation.",
+      "B": "Purchasing treasury bills injects cash into the commercial banking system, which increases liquidity and inflames inflation.",
+      "D": "Lowering the liquidity ratio frees up bank deposits for lending, which expands money supply."
+    },
+    "pedagogical_concept": "Contractionary Monetary Policy: To fight inflation, the central bank must reduce money supply in circulation. Raising the Cash Reserve Ratio (CRR) forces commercial banks to lock away more reserves with the CBN, decreasing loan creation.",
+    "socratic_prompt": "To combat high inflation, should the Central Bank make money easier to borrow or tighten credit in the banking system? What happens to bank lending capacity when the CRR is raised?"
+  },
+  {
+    "id": "eco_003",
+    "subject": "Economics",
+    "topic": "National Income & Macroeconomics",
+    "subtopic": "The Multiplier Concept",
+    "year": 2022,
+    "question": "In a closed economy, if the Marginal Propensity to Consume (MPC) is 0.75, what is the value of the investment multiplier?",
+    "options": {
+      "A": "1.33",
+      "B": "3.0",
+      "C": "4.0",
+      "D": "0.25"
+    },
+    "correct_option": "C",
+    "traps": {
+      "A": "You calculated 1 / MPC = 1 / 0.75 = 1.33. The multiplier formula uses MPS in the denominator (1 - MPC), not MPC directly!",
+      "B": "You multiplied 0.75 by 4 or miscalculated the reciprocal of 0.25.",
+      "D": "You calculated the Marginal Propensity to Save (MPS = 1 - 0.75 = 0.25) but forgot to take its reciprocal."
+    },
+    "pedagogical_concept": "Investment Multiplier (K) = 1 / (1 - MPC) = 1 / MPS. Since MPC = 0.75, MPS = 1 - 0.75 = 0.25. Therefore, K = 1 / 0.25 = 4.0.",
+    "socratic_prompt": "What is the formula for the investment multiplier in terms of MPC? If households consume 75 kobo of every additional naira (0.75), how much do they save (MPS)?"
+  },
+  {
+    "id": "gov_001",
+    "subject": "Government",
+    "topic": "Constitutional Development in Nigeria",
+    "subtopic": "Indirect Rule in Northern vs Southern Nigeria",
+    "year": 2023,
+    "question": "The British colonial policy of Indirect Rule was most successful in Northern Nigeria primarily because _______.",
+    "options": {
+      "A": "the North possessed an existing centralized traditional emirate hierarchy with established taxation systems",
+      "B": "the Christian missionaries had established formal schools before colonial administrative arrival",
+      "C": "the British deployed a massive standing military force across every northern hamlet",
+      "D": "the educated northern elite enthusiastically drafted the local administrative decrees"
+    },
+    "correct_option": "A",
+    "traps": {
+      "B": "Christian missionaries were actively barred from the Islamic northern emirates by Lord Lugard's non-interference pact.",
+      "C": "The core purpose of Indirect Rule was low-budget governance due to severe shortages of British manpower and funds.",
+      "D": "Western-educated elite were virtually absent in Northern Nigeria at the time; governance relied on hereditary Emirs and Waziris."
+    },
+    "pedagogical_concept": "Indirect Rule Success Factors: Lord Lugard successfully applied Indirect Rule in Northern Nigeria because the Sokoto Caliphate structure provided autocratic, centralized rulers (Emirs) already accustomed to direct taxation and Sharia administration.",
+    "socratic_prompt": "Why did Indirect Rule fail in Eastern Nigeria (Igboland) while succeeding in the North? What existing administrative and taxation structure did the Emirs already maintain?"
+  },
+  {
+    "id": "gov_002",
+    "subject": "Government",
+    "topic": "Basic Concepts in Political Science",
+    "subtopic": "Sovereignty & Rule of Law",
+    "year": 2024,
+    "question": "According to A.V. Dicey, the doctrine of the Rule of Law encompasses which of the following cardinal tenets?",
+    "options": {
+      "A": "Supremacy of the constitution, military jurisdiction, and diplomatic immunity",
+      "B": "Supremacy of regular law, equality before the law, and predominance of legal spirit",
+      "C": "Absolute discretion of the sovereign, trial by jury, and parliamentary supremacy",
+      "D": "Presumption of guilt, right to appeal, and judicial precedent"
+    },
+    "correct_option": "B",
+    "traps": {
+      "A": "Military tribunals and diplomatic immunities represent exceptions/limitations to the rule of law, not Dicey's cardinal tenets.",
+      "C": "Dicey explicitly argued against arbitrary power and absolute discretion of rulers.",
+      "D": "The law presumes innocence until proven guilty, not guilt."
+    },
+    "pedagogical_concept": "A.V. Dicey's Three Pillars of Rule of Law (1885): 1. Absolute supremacy of regular law over arbitrary power. 2. Equality before the law (no person is above the law). 3. The primacy of individual liberties guaranteed through ordinary courts.",
+    "socratic_prompt": "Think of Professor A.V. Dicey's three fundamental principles. Can any individual or leader have arbitrary discretion under the Rule of Law?"
+  },
+  {
+    "id": "gov_003",
+    "subject": "Government",
+    "topic": "Organs of Government & Electoral Process",
+    "subtopic": "Legislative Process & Presidential Veto",
+    "year": 2022,
+    "question": "Under the 1999 Constitution of the Federal Republic of Nigeria, if the President withholds assent to a bill passed by the National Assembly, the bill can still become law if _______.",
+    "options": {
+      "A": "the Chief Justice of Nigeria issues a constitutional writ of mandamus",
+      "B": "a simple majority in both the Senate and House of Representatives repasses it",
+      "C": "a two-thirds majority in each house of the National Assembly passes it again",
+      "D": "the Council of State ratifies the bill during an extraordinary session"
+    },
+    "correct_option": "C",
+    "traps": {
+      "A": "The judiciary interprets laws; it cannot override a legislative veto or assent bills into law.",
+      "B": "A simple majority (50% + 1) is only needed for initial passage; overriding a presidential veto requires a supermajority.",
+      "D": "The Council of State is purely advisory and has no legislative enactment powers."
+    },
+    "pedagogical_concept": "Veto Override under Section 58(5) of the 1999 Constitution: Where the President withholds assent within 30 days, the bill can become law without assent if passed again by two-thirds majority of each House (Senate and House of Representatives).",
+    "socratic_prompt": "What special parliamentary majority is required to overcome a presidential veto in Nigeria's presidential democracy?"
+  },
+  {
+    "id": "lit_001",
+    "subject": "Literature in English",
+    "topic": "Literary Appreciation & Devices",
+    "subtopic": "Figures of Speech (Metaphor, Paradox, Oxymoron)",
+    "year": 2023,
+    "question": "\"Parting is such sweet sorrow that I shall say good night till it be morrow.\" The phrase 'sweet sorrow' exemplifies which literary device?",
+    "options": {
+      "A": "Hyperbole",
+      "B": "Oxymoron",
+      "C": "Synecdoche",
+      "D": "Euphemism"
+    },
+    "correct_option": "B",
+    "traps": {
+      "A": "Hyperbole is deliberate exaggeration for dramatic effect (e.g. 'I've cried an ocean of tears').",
+      "C": "Synecdoche is using a part to represent the whole (e.g. 'All hands on deck').",
+      "D": "Euphemism is a mild expression substituted for a harsh one (e.g. 'passed away' for died)."
+    },
+    "pedagogical_concept": "Oxymoron: A concise figure of speech where two contradictory or opposing terms appear side-by-side in juxtaposition ('sweet' and 'sorrow', 'deafening silence', 'living death').",
+    "socratic_prompt": "Notice how the words 'sweet' (pleasant) and 'sorrow' (grief/pain) are placed right beside each other. What is a two-word contradiction in terms called?"
+  },
+  {
+    "id": "lit_002",
+    "subject": "Literature in English",
+    "topic": "Non-African Prose & Drama",
+    "subtopic": "Soliloquy vs Monologue vs Aside",
+    "year": 2024,
+    "question": "When an actor on stage speaks their innermost private thoughts aloud while alone, allowing the audience direct access to their psyche, the dramatic device is a _______.",
+    "options": {
+      "A": "Monologue",
+      "B": "Soliloquy",
+      "C": "Aside",
+      "D": "Dialogue"
+    },
+    "correct_option": "B",
+    "traps": {
+      "A": "A monologue is a long uninterrupted speech delivered by one character TO other characters on stage.",
+      "C": "An aside is a brief remark directed to the audience or another character that characters on stage pretend not to hear.",
+      "D": "A dialogue requires a conversation between two or more characters."
+    },
+    "pedagogical_concept": "Soliloquy vs Monologue: In a soliloquy (from Latin 'solus' = alone, 'loqui' = speak), the character is ALONE on stage, speaking their inner thoughts to the audience. In a monologue, other characters are present and listening.",
+    "socratic_prompt": "Is the character speaking to other characters who are listening, or are they completely alone on stage revealing their private mind to the audience?"
+  },
+  {
+    "id": "bio_002",
+    "subject": "Biology",
+    "topic": "Genetics & Heredity",
+    "subtopic": "Sex-Linked Inheritance",
+    "year": 2023,
+    "question": "A carrier female for hemophilia (X\u1d34X\u02b0) marries a normal male (X\u1d34Y). What is the probability that their sons will have hemophilia?",
+    "options": {
+      "A": "0% (0.0)",
+      "B": "25% (0.25)",
+      "C": "50% (0.50)",
+      "D": "100% (1.0)"
+    },
+    "correct_option": "C",
+    "traps": {
+      "A": "You assumed hemophilia cannot be expressed in children if the father is normal.",
+      "B": "25% is the probability across ALL children (sons and daughters combined). The question specifically asks about SONS.",
+      "D": "You assumed all sons inherit the recessive allele, but the mother has one normal X\u1d34 and one mutant X\u02b0."
+    },
+    "pedagogical_concept": "Sex-Linked Inheritance in Sons: The father contributes the Y chromosome to all male offspring. The mother gives either X\u1d34 (normal son) or X\u02b0 (hemophiliac son) with equal probability (50% or 1 in 2).",
+    "socratic_prompt": "Carefully read the denominator in the question: it asks 'among their sons', not 'among all children'. What alleles can a son receive from this mother?"
+  },
+  {
+    "id": "eng_004",
+    "subject": "Use of English",
+    "topic": "Concord & Grammar",
+    "subtopic": "Subjunctive Mood",
+    "year": 2024,
+    "question": "The disciplinary committee recommended that the suspended student _______ reinstated immediately with a stern warning.",
+    "options": {
+      "A": "is",
+      "B": "be",
+      "C": "was",
+      "D": "should be"
+    },
+    "correct_option": "B",
+    "traps": {
+      "A": "You applied indicative present tense. Verbs of urging, recommending, or demanding (mandative subjunctive) take the base form of the verb without inflection.",
+      "C": "You matched past tense recommended with was. The subjunctive base form be is mandatory regardless of the main clause tense.",
+      "D": "Should be is wordy and less formally standard than the mandated subjunctive base form be in formal examination grammar."
+    },
+    "pedagogical_concept": "Mandative Subjunctive: After verbs and expressions of demand, recommendation, or necessity (e.g., recommend that, demand that, insist that), the subordinate clause verb must be in base form (be, go, do), regardless of subject person or number.",
+    "socratic_prompt": "Notice the verb of recommendation: recommended that... In formal grammar, what is the special subjunctive form of to be used in that-clauses after recommendations?"
+  },
+  {
+    "id": "chm_003",
+    "subject": "Chemistry",
+    "topic": "Inorganic Chemistry",
+    "subtopic": "Faradays Laws of Electrolysis",
+    "year": 2023,
+    "question": "What mass of copper (Cu = 64 g/mol) will be deposited at the cathode by a steady current of 2.0 A passing through a CuSO\u2084 solution for 965 seconds? (1 Faraday = 96,500 C/mol e\u207b)",
+    "options": {
+      "A": "1.28 g",
+      "B": "0.64 g",
+      "C": "2.56 g",
+      "D": "0.32 g"
+    },
+    "correct_option": "B",
+    "traps": {
+      "A": "You forgot that copper in CuSO\u2084 is divalent (Cu\u00b2\u207a + 2e\u207b \u2192 Cu), requiring 2 moles of electrons per mole of Cu deposited. You used n = 1 instead of n = 2: (2 * 965 * 64)/96500 = 1.28 g.",
+      "C": "You multiplied by 2 instead of dividing by the valency of copper.",
+      "D": "You divided by 4 instead of 2."
+    },
+    "pedagogical_concept": "Faraday's Law: Mass = (I * t * Molar Mass) / (n * F). Here: Q = I * t = 2.0 * 965 = 1,930 Coulombs. Number of Faradays = 1,930 / 96,500 = 0.02 F. Since Cu\u00b2\u207a needs 2 F per mole, moles of Cu = 0.02 / 2 = 0.01 mol. Mass = 0.01 * 64 = 0.64 g.",
+    "socratic_prompt": "What is the ionic charge on the copper ion in CuSO\u2084? How many electrons (Faradays) are required to deposit one atom of Cu\u00b2\u207a?"
+  },
+  {
+    "id": "phy_004",
+    "subject": "Physics",
+    "topic": "Mechanics",
+    "subtopic": "Projectiles",
+    "year": 2024,
+    "question": "A projectile is launched from ground level with an initial velocity of 40 m/s at an angle of 30\u00b0 to the horizontal. Calculate the maximum height reached. (Take g = 10 m/s\u00b2)",
+    "options": {
+      "A": "80 m",
+      "B": "20 m",
+      "C": "40 m",
+      "D": "60 m"
+    },
+    "correct_option": "B",
+    "traps": {
+      "A": "You calculated using the full launch speed without taking the vertical component: H = u\u00b2 / 2g = 1600 / 20 = 80 m. You must use uy = u*sin(\u03b8)!",
+      "C": "You forgot the square on uy: H = uy / 2g or made an arithmetic cancellation error.",
+      "D": "You used cos(30\u00b0) instead of sin(30\u00b0) for the vertical height component."
+    },
+    "pedagogical_concept": "Maximum Height of a Projectile: H_max = (u * sin \u03b8)\u00b2 / (2g). Here: u_y = 40 * sin(30\u00b0) = 40 * 0.5 = 20 m/s. H_max = (20)\u00b2 / (2 * 10) = 400 / 20 = 20 m.",
+    "socratic_prompt": "What is the vertical velocity component of a 40 m/s launch at 30 degrees? Once you have the vertical speed (uy), what is (uy)\u00b2 / (2g)?"
+  },
+  {
+    "id": "bio_003",
+    "subject": "Biology",
+    "topic": "Cell Biology & Organization",
+    "subtopic": "Osmosis & Plasmolysis",
+    "year": 2024,
+    "question": "When red blood cells (erythrocytes) and plant epidermal cells are placed simultaneously in pure distilled water, what happens after 30 minutes?",
+    "options": {
+      "A": "Both cell types burst due to continuous endosmosis",
+      "B": "Both cell types become flaccid and undergo plasmolysis",
+      "C": "Red blood cells swell and hemolyze (burst), while plant cells become turgid without bursting",
+      "D": "Plant cells burst, while red blood cells remain crenated"
+    },
+    "correct_option": "C",
+    "traps": {
+      "A": "Plant cells possess a rigid cellulose cell wall that generates wall pressure (turgor), preventing them from bursting in hypotonic solutions.",
+      "B": "Plasmolysis happens in HYPERTONIC solutions where water leaves the cell, not hypotonic distilled water.",
+      "D": "Red blood cells lack cell walls and burst (hemolysis), plant cells do not burst."
+    },
+    "pedagogical_concept": "Osmotic Balance & Cell Wall Pressure: Animal cells have only a fragile plasma membrane and undergo lysis/hemolysis in hypotonic water. Plant cells take in water until turgor pressure equals osmotic pressure, becoming turgid without bursting due to the cellulose cell wall.",
+    "socratic_prompt": "What cellular structure does a plant cell have that an animal red blood cell lacks? How does that rigid outer wall protect the plant cell from bursting?"
+  },
+  {
+    "id": "eco_004",
+    "subject": "Economics",
+    "topic": "Production & Market Structures",
+    "subtopic": "Cost Concepts (MC, AC, TC)",
+    "year": 2023,
+    "question": "At the point where Marginal Cost (MC) is equal to Average Total Cost (ATC), which of the following statements is ALWAYS true?",
+    "options": {
+      "A": "Total Revenue is maximized",
+      "B": "Average Total Cost is at its minimum point",
+      "C": "Average Variable Cost is zero",
+      "D": "The firm is earning supernormal profit"
+    },
+    "correct_option": "B",
+    "traps": {
+      "A": "Total revenue maximization occurs where MR = 0, which is unrelated to MC = ATC.",
+      "C": "AVC is never zero in positive production.",
+      "D": "Whether a firm earns normal, supernormal, or subnormal profit depends on price (AR), not merely where MC cuts ATC."
+    },
+    "pedagogical_concept": "The MC and AC Intersection Rule: The marginal cost curve always intersects both the Average Variable Cost (AVC) and Average Total Cost (ATC) curves at their respective lowest (minimum) points.",
+    "socratic_prompt": "Think about your grade average: if your next test score (marginal) is lower than your average, average falls. When the next test matches your average, the average stops falling. So where does MC intersect AC?"
+  },
+  {
+    "id": "gov_004",
+    "subject": "Government",
+    "topic": "Organs of Government & Electoral Process",
+    "subtopic": "Electoral Systems (PR vs Simple Majority)",
+    "year": 2023,
+    "question": "The Proportional Representation electoral system is praised primarily because it _______.",
+    "options": {
+      "A": "is extremely cheap and simple for illiterate electorates to understand",
+      "B": "guarantees that minority parties secure legislative representation in direct proportion to their total national votes",
+      "C": "always produces stable, single-party majority governments without need for coalitions",
+      "D": "eliminates political parties and allows only non-partisan candidates"
+    },
+    "correct_option": "B",
+    "traps": {
+      "A": "Proportional Representation is notoriously complex and mathematically demanding to compute compared to First-Past-The-Post.",
+      "C": "PR frequently leads to fragmented parliaments and unstable coalition governments.",
+      "D": "PR relies heavily on party-list tickets, making political parties central to the system."
+    },
+    "pedagogical_concept": "Merits of Proportional Representation: Unlike First-Past-The-Post ('winner-takes-all'), Proportional Representation ensures fair representation for minority parties and reduces wasted votes by allocating parliamentary seats strictly proportional to total votes won.",
+    "socratic_prompt": "What does the word \"Proportional\" mean in elections? If a party wins 15% of the total vote, how many seats do they receive under Proportional Representation?"
+  }
+]
