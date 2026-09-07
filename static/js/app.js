@@ -883,6 +883,8 @@ function openModal(id) {
   if (modal) modal.classList.add("active");
 }
 
+let currentCheckoutRef = null;
+
 async function openPaymentModal(planId) {
   activePlan = planId;
   const modal = document.getElementById("paymentModal");
@@ -894,10 +896,49 @@ async function openPaymentModal(planId) {
   const data = await res.json();
 
   if (data.status === "success") {
+    currentCheckoutRef = data.reference;
     document.getElementById("modalPlanTitle").textContent = "Activate " + data.plan_name;
     document.getElementById("modalAmountDisplay").textContent = "₦" + Number(data.amount_ngn).toLocaleString();
-    document.getElementById("modalAccountNumber").textContent = data.virtual_account.account_number;
+    
+    if (data.producer_account) {
+      document.getElementById("modalBankName").textContent = data.producer_account.bank_name;
+      document.getElementById("modalAccountNumber").textContent = data.producer_account.account_number;
+      document.getElementById("modalAccountName").textContent = data.producer_account.account_name;
+      
+      const waNum = (data.producer_account.whatsapp_phone || "2348012345678").replace("+", "");
+      const waMsg = encodeURIComponent("Hello PassMaster Producer! 🎯\n\nI want to pay ₦" + Number(data.amount_ngn).toLocaleString() + " for " + data.plan_name + ".\n• Candidate: " + candidateName + "\n• Ref ID: " + data.reference + "\n\nI am transferring now. Kindly confirm!");
+      document.getElementById("modalWhatsAppBtn").href = "https://wa.me/" + waNum + "?text=" + waMsg;
+    }
+    document.getElementById("modalRefDisplay").textContent = data.reference;
     modal.classList.add("active");
+  }
+}
+
+function copyAccountToClipboard() {
+  const num = document.getElementById("modalAccountNumber").textContent.trim();
+  navigator.clipboard.writeText(num);
+  alert("📋 Account Number copied to clipboard: " + num);
+}
+
+async function submitPaymentOrder() {
+  try {
+    const res = await fetch("/api/payments/submit-transfer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        plan_id: activePlan || "monthly",
+        reference: currentCheckoutRef,
+        name: candidateName
+      })
+    });
+    const d = await res.json();
+    if (d.status === "order_created") {
+      alert("✅ Payment order logged with Ref ID: " + d.reference + "\n\nClick OK to open WhatsApp and send your transfer receipt to the Producer for instant activation!");
+      window.open(d.whatsapp_url, "_blank");
+      closeModal("paymentModal");
+    }
+  } catch (err) {
+    alert("Error submitting payment: " + err);
   }
 }
 
@@ -905,7 +946,7 @@ async function simulatePaymentSuccess() {
   const res = await fetch("/api/payments/verify", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ reference: "PMS_" + Date.now(), plan_id: activePlan || "monthly" })
+    body: JSON.stringify({ reference: currentCheckoutRef || ("PMS_" + Date.now()), plan_id: activePlan || "monthly" })
   });
   const data = await res.json();
   alert(data.message);

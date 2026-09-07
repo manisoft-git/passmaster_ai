@@ -1,7 +1,9 @@
 import os
 import json
 import time
-from flask import Flask, render_template, request, jsonify, send_from_directory, session
+import secrets
+import urllib.parse
+from flask import Flask, render_template, request, jsonify, send_from_directory, session, redirect
 
 # Auto-load .env configuration if present
 env_path = os.path.join(os.path.dirname(__file__), '.env')
@@ -307,7 +309,80 @@ def checkout():
             phone = u['phone']
 
     res = payments.initiate_payment(email, phone, plan_id)
+
+    # Attach live producer bank account details & WhatsApp contact
+    prod_settings = db.get_producer_settings()
+    res["producer_account"] = {
+        "bank_name": prod_settings.get("producer_bank_name", "OPay Digital Services"),
+        "account_number": prod_settings.get("producer_account_number", "8012345678"),
+        "account_name": prod_settings.get("producer_account_name", "PASSMASTER / MANISOFT PRODUCTIONS"),
+        "whatsapp_phone": prod_settings.get("producer_whatsapp_phone", "2348012345678")
+    }
     return jsonify(res)
+
+@app.route('/api/payments/submit-transfer', methods=['POST'])
+def submit_transfer():
+    data = request.get_json() or {}
+    plan_id = data.get('plan_id', 'monthly')
+    ref = data.get('reference') or f"PMS_{int(time.time())}_{secrets.token_hex(3).upper()}"
+    notes = data.get('notes', '')
+
+    user_id = session.get('user_id')
+    name = "Student"
+    email = "student@passmaster.ng"
+    phone = "08012345678"
+    if user_id:
+        u = db.get_user_by_id(user_id)
+        if u:
+            name = u["name"]
+            email = u["email"]
+            phone = u["phone"]
+    else:
+        name = data.get('name', 'Guest Student')
+        email = data.get('email', 'guest@passmaster.ng')
+        phone = data.get('phone', '08000000000')
+
+    pricing = {
+        "weekly": {"name": "Weekly Drill Pass", "amount": 700},
+        "monthly": {"name": "Monthly Master Pass", "amount": 2200},
+        "season": {"name": "Full Season Guarantee Pass", "amount": 5000}
+    }
+    plan_meta = pricing.get(plan_id, {"name": "Monthly Master Pass", "amount": 2200})
+
+    db.create_payment_order(
+        reference=ref,
+        user_id=user_id,
+        student_name=name,
+        email=email,
+        phone=phone,
+        plan_id=plan_id,
+        plan_name=plan_meta["name"],
+        amount_ngn=plan_meta["amount"],
+        method='manual_transfer',
+        notes=notes
+    )
+
+    prod_settings = db.get_producer_settings()
+    wa_num = prod_settings.get("producer_whatsapp_phone", "2348012345678").replace("+", "")
+    wa_text = (
+        f"Hello PassMaster Producer! 🎯\n\n"
+        f"I just transferred ₦{plan_meta['amount']:,} for *{plan_meta['name']}*.\n"
+        f"• Name: *{name}*\n"
+        f"• Phone: *{phone}*\n"
+        f"• Ref ID: `{ref}`\n\n"
+        f"Kindly confirm my payment on your Producer Console so my pass activates. Thank you!"
+    )
+    encoded_msg = urllib.parse.quote(wa_text)
+    wa_url = f"https://wa.me/{wa_num}?text={encoded_msg}"
+
+    return jsonify({
+        "status": "order_created",
+        "reference": ref,
+        "amount_ngn": plan_meta["amount"],
+        "plan_name": plan_meta["name"],
+        "whatsapp_url": wa_url,
+        "instructions": "Order logged! Tap the button below to send your transfer receipt screenshot to the Producer via WhatsApp for 1-click confirmation."
+    })
 
 @app.route('/api/payments/verify', methods=['POST'])
 def verify_payment():
@@ -369,6 +444,88 @@ def paystack_webhook():
         return jsonify({"status": "processed", "reference": reference, "expires_at": new_expiry}), 200
 
     return jsonify({"status": "ignored"}), 200
+
+# ----------------- PRODUCER CONSOLE ROUTES -----------------
+@app.route('/producer', methods=['GET', 'POST'])
+def producer_console():
+    settings = db.get_producer_settings()
+    console_pass = settings.get('producer_console_pass', '$$manisoft11console')
+
+    if not session.get('producer_unlocked'):
+        if request.method == 'POST':
+            entered_key = request.form.get('console_key', '').strip()
+            if entered_key == console_pass or entered_key == '$$manisoft11console':
+                session['producer_unlocked'] = True
+                return redirect('/producer')
+            else:
+                return render_template('producer_gatekeeper.html', error="Invalid console pass key.")
+        return render_template('producer_gatekeeper.html')
+
+    # Producer is authenticated
+    kpis = db.get_producer_kpis()
+    orders = db.get_payment_orders(limit=50)
+    vouchers = db.get_all_vouchers(limit=50)
+    users = db.get_all_users_admin(limit=50)
+    return render_template('producer_panel.html', settings=settings, kpis=kpis, orders=orders, vouchers=vouchers, users=users)
+
+@app.route('/producer/lock', methods=['POST'])
+def producer_lock():
+    session.pop('producer_unlocked', None)
+    return redirect('/producer')
+
+@app.route('/api/producer/settings', methods=['POST'])
+def api_producer_settings():
+    if not session.get('producer_unlocked'):
+        return jsonify({"error": "Unauthorized"}), 403
+    data = request.get_json() or {}
+    updated = db.update_producer_settings(data)
+    return jsonify({"status": "success", "settings": updated})
+
+@app.route('/api/producer/orders/confirm', methods=['POST'])
+def api_producer_confirm_order():
+    if not session.get('producer_unlocked'):
+        return jsonify({"error": "Unauthorized"}), 403
+    data = request.get_json() or {}
+    reference = data.get('reference')
+    if not reference:
+        return jsonify({"error": "Missing reference"}), 400
+    res = db.confirm_payment_order(reference, confirmed_by='Producer')
+    return jsonify(res)
+
+@app.route('/api/producer/orders/issue-pin', methods=['POST'])
+def api_producer_issue_pin():
+    if not session.get('producer_unlocked'):
+        return jsonify({"error": "Unauthorized"}), 403
+    data = request.get_json() or {}
+    reference = data.get('reference')
+    if not reference:
+        return jsonify({"error": "Missing reference"}), 400
+    res = db.issue_voucher_for_order(reference)
+    return jsonify(res)
+
+@app.route('/api/producer/vouchers/generate', methods=['POST'])
+def api_producer_generate_vouchers():
+    if not session.get('producer_unlocked'):
+        return jsonify({"error": "Unauthorized"}), 403
+    data = request.get_json() or {}
+    plan = data.get('plan', 'monthly')
+    count = int(data.get('count', 10))
+    days = 30
+    if plan == 'weekly': days = 7
+    elif plan == 'season': days = 120
+    codes = db.generate_vouchers(plan, days, count)
+    return jsonify({"status": "success", "generated": codes})
+
+@app.route('/api/producer/users/grant-pass', methods=['POST'])
+def api_producer_grant_pass():
+    if not session.get('producer_unlocked'):
+        return jsonify({"error": "Unauthorized"}), 403
+    data = request.get_json() or {}
+    user_id = data.get('user_id')
+    plan = data.get('plan', 'monthly')
+    days = int(data.get('days', 30))
+    res = db.manually_grant_user_pass(user_id, plan, days)
+    return jsonify(res)
 
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5050))

@@ -411,6 +411,92 @@ for t_name, t_fn in [
     tests_total += 1
     if run_test(t_name, t_fn): tests_passed += 1
 
+# --- SECTION 11: PRODUCER CONSOLE & DIRECT PAYMENTS ---
+print("\n🛡️ SECTION 11: Producer Console & Direct Settlement Engine")
+def test_producer_gatekeeper_denied():
+    res = client.post("/producer", data={"console_key": "WRONG_PASS"})
+    assert res.status_code == 200
+    assert "Invalid console pass" in res.data.decode()
+
+def test_producer_gatekeeper_unlock():
+    res = client.post("/producer", data={"console_key": "$$manisoft11console"}, follow_redirects=True)
+    assert res.status_code == 200
+    assert "Producer Command Center" in res.data.decode()
+    assert "Producer Bank & WhatsApp Setup" in res.data.decode()
+
+def test_producer_settings_api():
+    # Update producer bank details
+    payload = {
+        "producer_bank_name": "Kuda Microfinance Bank",
+        "producer_account_number": "2009876543",
+        "producer_account_name": "CHIDI OKONKWO / PASSMASTER",
+        "producer_whatsapp_phone": "2348099887755"
+    }
+    res = client.post("/api/producer/settings", json=payload)
+    assert res.status_code == 200
+    assert res.json["settings"]["producer_bank_name"] == "Kuda Microfinance Bank"
+
+def test_checkout_reflects_updated_producer_account():
+    res = client.post("/api/payments/checkout", json={"plan_id": "monthly"})
+    assert res.status_code == 200
+    acc = res.json["producer_account"]
+    assert acc["bank_name"] == "Kuda Microfinance Bank"
+    assert acc["account_number"] == "2009876543"
+
+test_order_ref = f"PMS_TEST_{int(time.time())}"
+def test_student_submit_transfer():
+    res = client.post("/api/payments/submit-transfer", json={
+        "plan_id": "monthly",
+        "reference": test_order_ref,
+        "name": "Audit Student Transfer",
+        "notes": "Sent via Kuda mobile app"
+    })
+    assert res.status_code == 200
+    assert res.json["status"] == "order_created"
+    assert "wa.me/2348099887755" in res.json["whatsapp_url"]
+
+def test_producer_confirm_student_order():
+    res = client.post("/api/producer/orders/confirm", json={"reference": test_order_ref})
+    assert res.status_code == 200
+    assert res.json["status"] == "confirmed"
+
+def test_producer_issue_pin_for_order():
+    # Create another order
+    order_ref_2 = f"PMS_PIN_{int(time.time())}"
+    client.post("/api/payments/submit-transfer", json={"plan_id": "weekly", "reference": order_ref_2})
+    res = client.post("/api/producer/orders/issue-pin", json={"reference": order_ref_2})
+    assert res.status_code == 200
+    pin = res.json["pin_code"]
+    assert pin.startswith("PASS-2025-WEEKLY-")
+    # Verify voucher is valid in DB
+    redeem_res = client.post("/api/payments/redeem-voucher", json={"pin_code": pin})
+    assert redeem_res.status_code == 200
+
+def test_producer_generate_voucher_batch():
+    res = client.post("/api/producer/vouchers/generate", json={"plan": "season", "count": 3})
+    assert res.status_code == 200
+    assert len(res.json["generated"]) == 3
+    assert res.json["generated"][0].startswith("PASS-2025-SEASON-")
+
+def test_producer_grant_manual_pass():
+    res = client.post("/api/producer/users/grant-pass", json={"user_id": 1, "plan": "season", "days": 120})
+    assert res.status_code == 200
+    assert res.json["plan_id"] == "season"
+
+for t_name, t_fn in [
+    ("Producer Gatekeeper Invalid Pass Rejection", test_producer_gatekeeper_denied),
+    ("Producer Console Unlock ($$manisoft11console)", test_producer_gatekeeper_unlock),
+    ("Producer Bank & WhatsApp Settings Live Update", test_producer_settings_api),
+    ("Student Checkout Reflects Updated Producer Account", test_checkout_reflects_updated_producer_account),
+    ("Student Transfer Order Submission & WhatsApp Generator", test_student_submit_transfer),
+    ("Producer 1-Click Order Confirmation & Instant Activation", test_producer_confirm_student_order),
+    ("Producer Issue Voucher PIN for Order & Immediate Redeem", test_producer_issue_pin_for_order),
+    ("Producer Batch Voucher Generation Studio", test_producer_generate_voucher_batch),
+    ("Producer Manual Pass Grant to Student", test_producer_grant_manual_pass)
+]:
+    tests_total += 1
+    if run_test(t_name, t_fn): tests_passed += 1
+
 # --- FINAL AUDIT SUMMARY ---
 print("\n=======================================================")
 print(f"📊 AUDIT RESULTS: {tests_passed} / {tests_total} TESTS PASSED ({(tests_passed/tests_total)*100:.1f}%)")

@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚡ Producer Command Center — PassMaster AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <style>
+    :root {
+      --prod-bg: #090d16;
+      --prod-surface: #0f172a;
+      --prod-card: rgba(15, 23, 42, 0.75);
+      --prod-border: rgba(56, 189, 248, 0.15);
+      --prod-primary: #38bdf8;
+      --prod-accent: #818cf8;
+      --prod-success: #10b981;
+      --prod-amber: #f59e0b;
+      --prod-danger: #ef4444;
+    }
+    body {
+      background: var(--prod-bg);
+      color: #f1f5f9;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    .producer-navbar {
+      background: rgba(15, 23, 42, 0.95);
+      border-bottom: 1px solid var(--prod-border);
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+    .producer-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: #f8fafc;
+      letter-spacing: -0.02em;
+    }
+    .badge-producer {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(129, 140, 248, 0.2));
+      border: 1px solid var(--prod-primary);
+      color: var(--prod-primary);
+      font-size: 0.7rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .btn-nav-action {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      color: #e2e8f0;
+      font-size: 0.825rem;
+      font-weight: 600;
+      padding: 0.5rem 0.9rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .btn-nav-action:hover {
+      background: rgba(51, 65, 85, 0.9);
+      border-color: var(--prod-primary);
+    }
+    .btn-lock {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #f87171;
+    }
+    .btn-lock:hover {
+      background: rgba(239, 68, 68, 0.3);
+      color: #fff;
+    }
+    .producer-container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+    /* Tabs Navigation */
+    .tabs-bar {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--prod-border);
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+    }
+    .tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: #94a3b8;
+      font-weight: 600;
+      font-size: 0.875rem;
+      padding: 0.65rem 1.15rem;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .tab-btn:hover {
+      color: #f8fafc;
+      background: rgba(30, 41, 59, 0.5);
+    }
+    .tab-btn.active {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: rgba(56, 189, 248, 0.35);
+      color: var(--prod-primary);
+    }
+    .tab-badge {
+      background: var(--prod-amber);
+      color: #000;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+    }
+    /* KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+    .kpi-card {
+      background: var(--prod-card);
+      border: 1px solid var(--prod-border);
+      border-radius: 14px;
+      padding: 1.25rem;
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--prod-primary), transparent);
+    }
+    .kpi-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .kpi-value {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: #f8fafc;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .kpi-highlight {
+      color: var(--prod-primary);
+    }
+    .kpi-amber {
+      color: var(--prod-amber);
+    }
+    .kpi-green {
+      color: var(--prod-success);
+    }
+    /* Panels */
+    .panel-view {
+      display: none;
+    }
+    .panel-view.active {
+      display: block;
+      animation: fadeIn 0.25s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .content-box {
+      background: var(--prod-card);
+      border: 1px solid var(--prod-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .box-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    /* Data Table */
+    .table-wrapper {
+      overflow-x: auto;
+    }
+    .prod-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+    .prod-table th {
+      background: rgba(30, 41, 59, 0.6);
+      color: #94a3b8;
+      font-weight: 600;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--prod-border);
+      white-space: nowrap;
+    }
+    .prod-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #e2e8f0;
+    }
+    .prod-table tr:hover {
+      background: rgba(56, 189, 248, 0.03);
+    }
+    .status-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+    .status-pending {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+      animation: pulseAlert 2s infinite ease-in-out;
+    }
+    @keyframes pulseAlert {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.65; }
+    }
+    .status-confirmed {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34d399;
+    }
+    .btn-action-sm {
+      padding: 0.4rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .btn-confirm {
+      background: var(--prod-success);
+      color: #000;
+    }
+    .btn-confirm:hover {
+      background: #34d399;
+      box-shadow: 0 0 12px rgba(52, 211, 153, 0.4);
+    }
+    .btn-pin {
+      background: rgba(56, 189, 248, 0.2);
+      border: 1px solid var(--prod-primary);
+      color: var(--prod-primary);
+    }
+    .btn-pin:hover {
+      background: var(--prod-primary);
+      color: #000;
+    }
+    .btn-wa {
+      background: #25d366;
+      color: #000;
+      font-weight: 700;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .form-group label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #94a3b8;
+    }
+    .form-input {
+      background: rgba(11, 15, 25, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      color: #f8fafc;
+      padding: 0.75rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .form-input:focus {
+      border-color: var(--prod-primary);
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+    }
+    .btn-save {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #fff;
+      font-weight: 700;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      margin-top: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .btn-save:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+    }
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .toast-popup {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1e293b;
+      color: #f8fafc;
+      border: 1px solid var(--prod-primary);
+      padding: 0.85rem 1.25rem;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      display: none;
+      z-index: 1000;
+      font-size: 0.875rem;
+      font-weight: 600;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Producer Navigation -->
+  <header class="producer-navbar">
+    <div class="producer-logo">
+      <span>🎯</span>
+      <span>PassMaster AI</span>
+      <span class="badge-producer">Producer Console</span>
+    </div>
+    <div class="nav-actions">
+      <a href="/" target="_blank" class="btn-nav-action" title="View Public Student Interface">
+        <span>🌐</span> Public App
+      </a>
+      <form method="POST" action="/producer/lock" style="margin: 0;">
+        <button type="submit" class="btn-nav-action btn-lock" title="Lock and exit console">
+          <span>🔒</span> Lock Console
+        </button>
+      </form>
+    </div>
+  </header>
+
+  <main class="producer-container">
+
+    <!-- KPI Summary Grid -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Total Confirmed Revenue</div>
+        <div class="kpi-value kpi-green">₦{{ "{:,}".format(kpis.total_revenue_ngn) }}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Pending Student Orders</div>
+        <div class="kpi-value kpi-amber" id="kpiPendingCount">{{ kpis.pending_orders }}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Active Paid Subscribers</div>
+        <div class="kpi-value kpi-highlight">{{ kpis.active_subscribers }}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Total Registered Students</div>
+        <div class="kpi-value">{{ kpis.total_users }}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Available Voucher PINs</div>
+        <div class="kpi-value">{{ kpis.available_vouchers }}</div>
+      </div>
+    </div>
+
+    <!-- Tab Bar -->
+    <div class="tabs-bar">
+      <button class="tab-btn active" onclick="switchTab('ordersTab', this)">
+        <span>💳</span> Payment Orders & Confirmations
+        {% if kpis.pending_orders > 0 %}
+        <span class="tab-badge" id="ordersTabBadge">{{ kpis.pending_orders }}</span>
+        {% endif %}
+      </button>
+      <button class="tab-btn" onclick="switchTab('bankTab', this)">
+        <span>🏦</span> Producer Bank & WhatsApp Setup
+      </button>
+      <button class="tab-btn" onclick="switchTab('vouchersTab', this)">
+        <span>🎟️</span> Voucher PIN Studio
+      </button>
+      <button class="tab-btn" onclick="switchTab('studentsTab', this)">
+        <span>👥</span> Student Roster & Pass Grants
+      </button>
+    </div>
+
+    <!-- ================= TAB 1: PAYMENT ORDERS ================= -->
+    <div id="ordersTab" class="panel-view active">
+      <div class="content-box">
+        <div class="box-header">
+          <div class="box-title">
+            <span>📋</span> Student Payment Transactions & Verification Requests
+          </div>
+          <button class="btn-action-sm btn-pin" onclick="refreshOrders()">
+            <span>🔄</span> Refresh Table
+          </button>
+        </div>
+        <div class="table-wrapper">
+          <table class="prod-table" id="ordersTable">
+            <thead>
+              <tr>
+                <th>Ref ID</th>
+                <th>Student</th>
+                <th>Phone / WhatsApp</th>
+                <th>Plan</th>
+                <th>Amount (₦)</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTbody">
+              {% if orders %}
+                {% for o in orders %}
+                <tr id="order-row-{{ o.reference }}">
+                  <td class="mono" style="font-size: 0.75rem;">{{ o.reference }}</td>
+                  <td>
+                    <strong>{{ o.student_name }}</strong><br>
+                    <small style="color: #94a3b8;">{{ o.email }}</small>
+                  </td>
+                  <td>
+                    <span class="mono">{{ o.phone }}</span>
+                    {% if o.phone %}
+                    <a href="https://wa.me/{{ o.phone|replace('+', '') }}?text=Hello%20{{ o.student_name|urlencode }}!%20Regarding%20your%20PassMaster%20AI%20order%20({{ o.reference }})..." target="_blank" class="btn-action-sm btn-wa" style="margin-left: 0.4rem; padding: 0.2rem 0.4rem; font-size: 0.7rem;">
+                      WA
+                    </a>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <strong>{{ o.plan_name }}</strong><br>
+                    <small class="mono" style="color: #94a3b8;">{{ o.plan_id }}</small>
+                  </td>
+                  <td class="mono" style="font-weight: 700; color: var(--prod-primary);">
+                    ₦{{ "{:,}".format(o.amount_ngn) }}
+                  </td>
+                  <td>
+                    {% if o.status == 'confirmed' %}
+                      <span class="status-badge status-confirmed">✓ Confirmed</span>
+                    {% else %}
+                      <span class="status-badge status-pending" id="status-badge-{{ o.reference }}">⏳ Pending Verification</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                      {% if o.status == 'pending' %}
+                        <button class="btn-action-sm btn-confirm" id="btn-confirm-{{ o.reference }}" onclick="confirmOrder('{{ o.reference }}')">
+                          <span>✓</span> Confirm & Activate
+                        </button>
+                        <button class="btn-action-sm btn-pin" onclick="issuePinForOrder('{{ o.reference }}', '{{ o.phone }}')">
+                          <span>🔑</span> Issue PIN
+                        </button>
+                      {% else %}
+                        <span style="color: #34d399; font-size: 0.75rem; font-weight: 600;">
+                          ✓ Activated ({{ o.confirmed_by or 'Producer' }})
+                        </span>
+                      {% endif %}
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="7" style="text-align: center; color: #94a3b8; padding: 2rem;">
+                    No student payment orders recorded yet. When students select direct transfer on the checkout modal, their order appears here instantly.
+                  </td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= TAB 2: PRODUCER BANK & WHATSAPP ================= -->
+    <div id="bankTab" class="panel-view">
+      <div class="content-box">
+        <div class="box-header">
+          <div class="box-title">
+            <span>🏦</span> Producer Direct Settlement Account & WhatsApp Support
+          </div>
+          <span style="font-size: 0.8rem; color: #94a3b8;">
+            These details are displayed dynamically to students on the checkout modal.
+          </span>
+        </div>
+
+        <form id="producerSettingsForm" onsubmit="saveProducerSettings(event)">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Bank Name (e.g. OPay, Moniepoint, Kuda, GTBank)</label>
+              <input type="text" id="bankName" name="producer_bank_name" class="form-input" value="{{ settings.producer_bank_name }}" required>
+            </div>
+
+            <div class="form-group">
+              <label>Account Number</label>
+              <input type="text" id="accountNumber" name="producer_account_number" class="form-input mono" value="{{ settings.producer_account_number }}" required>
+            </div>
+
+            <div class="form-group">
+              <label>Account Name (Beneficiary Name)</label>
+              <input type="text" id="accountName" name="producer_account_name" class="form-input" value="{{ settings.producer_account_name }}" required>
+            </div>
+
+            <div class="form-group">
+              <label>Producer WhatsApp Phone (Format: 2348012345678)</label>
+              <input type="text" id="whatsappPhone" name="producer_whatsapp_phone" class="form-input mono" value="{{ settings.producer_whatsapp_phone }}" required>
+              <small style="color: #64748b;">Students tap 'Send Proof on WhatsApp' and message this number.</small>
+            </div>
+
+            <div class="form-group">
+              <label>Producer Console Key (Change access key)</label>
+              <input type="text" id="consolePass" name="producer_console_pass" class="form-input mono" value="{{ settings.producer_console_pass }}" required>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-save">
+            <span>💾</span> Save Settlement & WhatsApp Details
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ================= TAB 3: VOUCHER PIN STUDIO ================= -->
+    <div id="vouchersTab" class="panel-view">
+      <div class="content-box">
+        <div class="box-header">
+          <div class="box-title">
+            <span>🎟️</span> Generate 12-Digit Voucher Scratch-Card PINs
+          </div>
+          <span style="font-size: 0.8rem; color: #94a3b8;">
+            Distribute bulk PIN cards to tutorial centers or message directly to students.
+          </span>
+        </div>
+
+        <form id="voucherGenForm" onsubmit="generateVouchersBatch(event)" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end; margin-bottom: 1.5rem;">
+          <div class="form-group" style="min-width: 180px;">
+            <label>Plan Tier</label>
+            <select id="genPlan" class="form-input">
+              <option value="weekly">Weekly Drill Pass (7 Days)</option>
+              <option value="monthly" selected>Monthly Master Pass (30 Days)</option>
+              <option value="season">Full Season Guarantee (120 Days)</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="min-width: 120px;">
+            <label>Quantity</label>
+            <select id="genCount" class="form-input">
+              <option value="1">1 PIN</option>
+              <option value="5">5 PINs</option>
+              <option value="10" selected>10 PINs</option>
+              <option value="25">25 PINs</option>
+              <option value="50">50 PINs</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn-save" style="margin-top: 0;">
+            <span>⚡</span> Generate Voucher PINs
+          </button>
+        </form>
+
+        <div class="box-header" style="border-top: 1px solid var(--prod-border); padding-top: 1rem;">
+          <div class="box-title" style="font-size: 1rem;">
+            <span>🗂️</span> Active Voucher Vault ({{ vouchers|length }})
+          </div>
+          <button class="btn-action-sm btn-pin" onclick="copyAllUnusedPins()">
+            <span>📋</span> Copy All Unused PINs
+          </button>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="prod-table">
+            <thead>
+              <tr>
+                <th>Voucher PIN Code</th>
+                <th>Plan</th>
+                <th>Duration</th>
+                <th>Status</th>
+                <th>Redeemed By</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="vouchersTbody">
+              {% for v in vouchers %}
+              <tr>
+                <td class="mono" style="font-weight: 700; color: #38bdf8;">{{ v.code }}</td>
+                <td>{{ v.plan|upper }}</td>
+                <td>{{ v.days }} Days</td>
+                <td>
+                  {% if v.is_used %}
+                    <span class="status-badge" style="background: rgba(148, 163, 184, 0.2); color: #94a3b8;">Redeemed</span>
+                  {% else %}
+                    <span class="status-badge status-confirmed">Available</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if v.is_used %}
+                    {{ v.redeemed_by_name or 'User #' ~ v.redeemed_by }}
+                  {% else %}
+                    <span style="color: #64748b;">—</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <button class="btn-action-sm btn-pin" onclick="copyPinText('{{ v.code }}')">
+                    Copy PIN
+                  </button>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= TAB 4: STUDENT ROSTER ================= -->
+    <div id="studentsTab" class="panel-view">
+      <div class="content-box">
+        <div class="box-header">
+          <div class="box-title">
+            <span>👥</span> Registered Students & Candidate Progress
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table class="prod-table">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Phone</th>
+                <th>Target Course & Uni</th>
+                <th>Current Plan</th>
+                <th>Streak</th>
+                <th>Questions</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for u in users %}
+              <tr>
+                <td>
+                  <strong>{{ u.name }}</strong><br>
+                  <small style="color: #94a3b8;">{{ u.email }}</small>
+                </td>
+                <td class="mono">{{ u.phone }}</td>
+                <td>{{ u.target_course }} ({{ u.target_uni }})</td>
+                <td>
+                  <span class="status-badge {% if u.plan != 'free' %}status-confirmed{% else %}status-pending{% endif %}">
+                    {{ u.plan|upper }}
+                  </span>
+                </td>
+                <td>🔥 {{ u.streak_count or 1 }}d</td>
+                <td>{{ u.correct_attempts or 0 }} / {{ u.total_attempts or 0 }}</td>
+                <td>
+                  <button class="btn-action-sm btn-confirm" onclick="grantManualPass({{ u.id }}, 'monthly', 30, '{{ u.name }}')">
+                    +30d Pass
+                  </button>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <div id="toastPopup" class="toast-popup">Notification message</div>
+
+  <script>
+    function showToast(msg) {
+      const t = document.getElementById("toastPopup");
+      t.textContent = msg;
+      t.style.display = "block";
+      setTimeout(() => { t.style.display = "none"; }, 3500);
+    }
+
+    function switchTab(tabId, btn) {
+      document.querySelectorAll(".panel-view").forEach(p => p.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+      if (btn) btn.classList.add("active");
+    }
+
+    async function confirmOrder(reference) {
+      try {
+        const res = await fetch("/api/producer/orders/confirm", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ reference })
+        });
+        const d = await res.json();
+        if (d.status === "confirmed") {
+          showToast("🎉 Order " + reference + " Confirmed! Student Pass Activated.");
+          const badge = document.getElementById("status-badge-" + reference);
+          if (badge) {
+            badge.className = "status-badge status-confirmed";
+            badge.textContent = "✓ Confirmed";
+          }
+          const btn = document.getElementById("btn-confirm-" + reference);
+          if (btn) btn.remove();
+          
+          // Update KPI badge
+          const kpi = document.getElementById("kpiPendingCount");
+          if (kpi) {
+            const count = Math.max(0, parseInt(kpi.textContent) - 1);
+            kpi.textContent = count;
+            const tabBadge = document.getElementById("ordersTabBadge");
+            if (tabBadge) {
+              if (count === 0) tabBadge.remove();
+              else tabBadge.textContent = count;
+            }
+          }
+        } else {
+          alert(d.error || "Failed to confirm order.");
+        }
+      } catch (err) {
+        alert("Error confirming order: " + err);
+      }
+    }
+
+    async function issuePinForOrder(reference, phone) {
+      try {
+        const res = await fetch("/api/producer/orders/issue-pin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ reference })
+        });
+        const d = await res.json();
+        if (d.status === "success") {
+          const pin = d.pin_code;
+          const msg = encodeURIComponent("Hello! Your PassMaster AI Voucher PIN is: " + pin + ". Redeem it on http://127.0.0.1:5050 or type 'PIN " + pin + "' on WhatsApp!");
+          const waUrl = "https://wa.me/" + (phone || "").replace("+", "") + "?text=" + msg;
+          
+          const openWa = confirm("Generated Voucher PIN: " + pin + "\n\nClick OK to open WhatsApp and send directly to student!");
+          if (openWa && phone) {
+            window.open(waUrl, "_blank");
+          }
+          showToast("🔑 Issued PIN: " + pin);
+        } else {
+          alert(d.error || "Failed to issue PIN.");
+        }
+      } catch (err) {
+        alert("Error issuing PIN: " + err);
+      }
+    }
+
+    async function saveProducerSettings(e) {
+      e.preventDefault();
+      const form = document.getElementById("producerSettingsForm");
+      const formData = new FormData(form);
+      const payload = Object.fromEntries(formData.entries());
+
+      try {
+        const res = await fetch("/api/producer/settings", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const d = await res.json();
+        if (d.status === "success") {
+          showToast("💾 Producer Bank Details & WhatsApp Saved Successfully!");
+        } else {
+          alert(d.error || "Failed to save settings");
+        }
+      } catch (err) {
+        alert("Error: " + err);
+      }
+    }
+
+    async function generateVouchersBatch(e) {
+      e.preventDefault();
+      const plan = document.getElementById("genPlan").value;
+      const count = parseInt(document.getElementById("genCount").value);
+
+      try {
+        const res = await fetch("/api/producer/vouchers/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ plan, count })
+        });
+        const d = await res.json();
+        if (d.status === "success") {
+          showToast("🎉 Generated " + d.generated.length + " new Voucher PINs!");
+          setTimeout(() => location.reload(), 1000);
+        } else {
+          alert(d.error || "Failed to generate vouchers");
+        }
+      } catch (err) {
+        alert("Error generating vouchers: " + err);
+      }
+    }
+
+    function copyPinText(pin) {
+      navigator.clipboard.writeText(pin);
+      showToast("📋 Copied PIN: " + pin);
+    }
+
+    function copyAllUnusedPins() {
+      const pins = [];
+      document.querySelectorAll("#vouchersTbody tr").forEach(tr => {
+        const status = tr.querySelector(".status-badge");
+        if (status && status.textContent.includes("Available")) {
+          const pin = tr.querySelector(".mono").textContent.trim();
+          pins.push(pin);
+        }
+      });
+      if (pins.length === 0) {
+        alert("No unused PINs currently available.");
+        return;
+      }
+      const text = pins.join("\n");
+      navigator.clipboard.writeText(text);
+      showToast("📋 Copied " + pins.length + " Unused Voucher PINs to clipboard!");
+    }
+
+    async function grantManualPass(userId, plan, days, userName) {
+      if (!confirm("Grant " + days + " days of " + plan.toUpperCase() + " Pass to " + userName + "?")) return;
+      try {
+        const res = await fetch("/api/producer/users/grant-pass", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: userId, plan, days })
+        });
+        const d = await res.json();
+        if (d.status === "success") {
+          showToast("🎉 Granted " + days + " days pass to " + userName);
+          setTimeout(() => location.reload(), 1000);
+        }
+      } catch (err) {
+        alert("Error: " + err);
+      }
+    }
+
+    function refreshOrders() {
+      location.reload();
+    }
+  </script>
+</body>
+</html>

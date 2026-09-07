@@ -67,6 +67,46 @@ def init_db():
     )
     """)
 
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS payment_orders (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        reference TEXT UNIQUE NOT NULL,
+        user_id INTEGER,
+        student_name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        phone TEXT NOT NULL,
+        plan_id TEXT NOT NULL,
+        plan_name TEXT NOT NULL,
+        amount_ngn INTEGER NOT NULL,
+        status TEXT DEFAULT 'pending',
+        method TEXT DEFAULT 'manual_transfer',
+        receipt_notes TEXT,
+        issued_pin TEXT,
+        confirmed_by TEXT,
+        confirmed_at REAL,
+        created_at REAL NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id)
+    )
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS producer_settings (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL
+    )
+    """)
+
+    # Seed default producer account and WhatsApp settings
+    default_settings = [
+        ("producer_bank_name", "OPay Digital Services"),
+        ("producer_account_number", "8012345678"),
+        ("producer_account_name", "PASSMASTER / MANISOFT PRODUCTIONS"),
+        ("producer_whatsapp_phone", "2348012345678"),
+        ("producer_console_pass", "$$manisoft11console")
+    ]
+    for k, v in default_settings:
+        cursor.execute("INSERT OR IGNORE INTO producer_settings (key, value) VALUES (?, ?)", (k, v))
+
     # Seed demo vouchers
     demo_vouchers = [
         ("PASS-2025-DEMO-WEEK", "weekly", 7),
@@ -343,3 +383,212 @@ def redeem_voucher_code(user_id, code):
 
     new_expiry = apply_subscription(user_id, plan, days)
     return {"success": True, "plan": plan, "days": days, "expires_at": new_expiry}
+
+# ----------------- PRODUCER SETTINGS & DIRECT PAYMENTS -----------------
+def get_producer_settings():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT key, value FROM producer_settings")
+    rows = cursor.fetchall()
+    conn.close()
+    return {r["key"]: r["value"] for r in rows}
+
+def update_producer_settings(settings_dict):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    for k, v in settings_dict.items():
+        cursor.execute("INSERT OR REPLACE INTO producer_settings (key, value) VALUES (?, ?)", (k, str(v).strip()))
+    conn.commit()
+    conn.close()
+    return get_producer_settings()
+
+def create_payment_order(reference, user_id, student_name, email, phone, plan_id, plan_name, amount_ngn, method='manual_transfer', notes=None):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    INSERT INTO payment_orders (reference, user_id, student_name, email, phone, plan_id, plan_name, amount_ngn, status, method, receipt_notes, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?)
+    """, (reference, user_id, student_name, email, phone, plan_id, plan_name, amount_ngn, method, notes, time.time()))
+    conn.commit()
+    conn.close()
+    return reference
+
+def get_payment_orders(status=None, limit=100):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    if status:
+        cursor.execute("SELECT * FROM payment_orders WHERE status = ? ORDER BY created_at DESC LIMIT ?", (status, limit))
+    else:
+        cursor.execute("SELECT * FROM payment_orders ORDER BY created_at DESC LIMIT ?", (limit,))
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+def get_payment_order_by_ref(reference):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM payment_orders WHERE reference = ?", (reference.strip(),))
+    row = cursor.fetchone()
+    conn.close()
+    return dict(row) if row else None
+
+def confirm_payment_order(reference, confirmed_by='Producer'):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM payment_orders WHERE reference = ?", (reference.strip(),))
+    order = cursor.fetchone()
+    if not order:
+        conn.close()
+        return {"error": "Order not found."}
+    
+    order = dict(order)
+    plan_id = order["plan_id"]
+    days = 30
+    if plan_id == "weekly": days = 7
+    elif plan_id == "season": days = 120
+
+    user_id = order["user_id"]
+    if not user_id and order.get("phone"):
+        # Match user by phone or email
+        u = cursor.execute("SELECT id FROM users WHERE phone = ? OR email = ?", (order["phone"], order["email"])).fetchone()
+        if u:
+            user_id = u["id"]
+
+    now = time.time()
+    cursor.execute("""
+    UPDATE payment_orders
+    SET status = 'confirmed', confirmed_by = ?, confirmed_at = ?
+    WHERE reference = ?
+    """, (confirmed_by, now, reference))
+    conn.commit()
+    conn.close()
+
+    new_expiry = None
+    if user_id:
+        new_expiry = apply_subscription(user_id, plan_id, days)
+
+    return {
+        "status": "confirmed",
+        "reference": reference,
+        "student_name": order["student_name"],
+        "plan_id": plan_id,
+        "days": days,
+        "user_id": user_id,
+        "expires_at": new_expiry
+    }
+
+import secrets
+
+def issue_voucher_for_order(reference):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM payment_orders WHERE reference = ?", (reference.strip(),))
+    order = cursor.fetchone()
+    if not order:
+        conn.close()
+        return {"error": "Order not found"}
+    order = dict(order)
+    plan_id = order["plan_id"]
+    days = 30
+    if plan_id == "weekly": days = 7
+    elif plan_id == "season": days = 120
+
+    code = f"PASS-2025-{plan_id.upper()}-{secrets.token_hex(3).upper()}"
+    cursor.execute("INSERT OR REPLACE INTO vouchers (code, plan, days, is_used) VALUES (?, ?, ?, 0)", (code, plan_id, days))
+    cursor.execute("UPDATE payment_orders SET issued_pin = ? WHERE reference = ?", (code, reference))
+    conn.commit()
+    conn.close()
+    return {"status": "success", "pin_code": code, "plan_id": plan_id, "days": days}
+
+def generate_vouchers(plan_id, days, count=10):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    generated = []
+    for _ in range(count):
+        code = f"PASS-2025-{plan_id.upper()}-{secrets.token_hex(3).upper()}"
+        cursor.execute("INSERT INTO vouchers (code, plan, days, is_used) VALUES (?, ?, ?, 0)", (code, plan_id, days))
+        generated.append(code)
+    conn.commit()
+    conn.close()
+    return generated
+
+def get_all_vouchers(limit=200):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    SELECT v.*, u.name as redeemed_by_name, u.phone as redeemed_by_phone
+    FROM vouchers v
+    LEFT JOIN users u ON v.redeemed_by = u.id
+    ORDER BY v.is_used ASC, v.redeemed_at DESC
+    LIMIT ?
+    """, (limit,))
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+def get_all_users_admin(limit=100):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    SELECT u.id, u.name, u.email, u.phone, u.target_course, u.target_uni, u.target_score,
+           u.plan, u.plan_expires_at, u.xp, u.created_at,
+           COUNT(a.id) as total_attempts,
+           SUM(CASE WHEN a.is_correct = 1 THEN 1 ELSE 0 END) as correct_attempts,
+           s.streak_count
+    FROM users u
+    LEFT JOIN attempts a ON u.id = a.user_id
+    LEFT JOIN user_streaks s ON u.id = s.user_id
+    GROUP BY u.id
+    ORDER BY u.created_at DESC
+    LIMIT ?
+    """, (limit,))
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+def manually_grant_user_pass(user_id, plan_id, days):
+    new_expiry = apply_subscription(user_id, plan_id, days)
+    return {"status": "success", "user_id": user_id, "plan_id": plan_id, "expires_at": new_expiry}
+
+def get_producer_kpis():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    now = time.time()
+
+    cursor.execute("SELECT COUNT(*) as count FROM users")
+    total_users = cursor.fetchone()["count"]
+
+    cursor.execute("SELECT COUNT(*) as count FROM users WHERE plan_expires_at > ?", (now,))
+    active_subscribers = cursor.fetchone()["count"]
+
+    cursor.execute("SELECT COUNT(*) as count, SUM(amount_ngn) as total_rev FROM payment_orders WHERE status = 'confirmed'")
+    rev_row = cursor.fetchone()
+    confirmed_orders = rev_row["count"] or 0
+    total_revenue = rev_row["total_rev"] or 0
+
+    cursor.execute("SELECT COUNT(*) as count FROM payment_orders WHERE status = 'pending'")
+    pending_orders = cursor.fetchone()["count"]
+
+    cursor.execute("SELECT COUNT(*) as count, SUM(is_correct) as correct FROM attempts")
+    att_row = cursor.fetchone()
+    total_attempts = att_row["count"] or 0
+    correct_attempts = att_row["correct"] or 0
+
+    cursor.execute("SELECT COUNT(*) as count FROM vouchers WHERE is_used = 0")
+    available_vouchers = cursor.fetchone()["count"]
+
+    conn.close()
+
+    accuracy = int((correct_attempts / total_attempts * 100)) if total_attempts > 0 else 0
+
+    return {
+        "total_users": total_users,
+        "active_subscribers": active_subscribers,
+        "confirmed_orders": confirmed_orders,
+        "total_revenue_ngn": total_revenue,
+        "pending_orders": pending_orders,
+        "total_attempts": total_attempts,
+        "accuracy_pct": accuracy,
+        "available_vouchers": available_vouchers
+    }
+
