@@ -2,6 +2,7 @@ import os
 import json
 import time
 import secrets
+import random
 import urllib.parse
 from flask import Flask, render_template, request, jsonify, send_from_directory, session, redirect
 
@@ -66,7 +67,8 @@ def register():
 
     res = db.register_user(name, email, phone, password, course, uni, score)
     if "error" in res:
-        return jsonify({"error": res["error"]}), 400
+        code = 403 if "Over-usage" in res["error"] else 400
+        return jsonify({"error": res["error"]}), code
 
     session['user_id'] = res['user_id']
     user_info = db.get_user_by_id(res['user_id'])
@@ -84,6 +86,8 @@ def login():
     user = db.authenticate_user(identifier, password)
     if not user:
         return jsonify({"error": "Invalid email/phone or password. Please try again."}), 401
+    if isinstance(user, dict) and "error" in user:
+        return jsonify({"error": user["error"]}), 403
 
     session['user_id'] = user['id']
     user_info = db.get_user_by_id(user['id'])
@@ -113,6 +117,18 @@ def get_current_user():
 def logout():
     session.pop('user_id', None)
     return jsonify({"status": "logged_out"})
+
+@app.route('/api/auth/delete-account', methods=['POST'])
+def delete_account():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    res = db.delete_user_account(user_id)
+    session.clear()
+    if "error" in res:
+        return jsonify({"error": res["error"]}), 400
+    return jsonify({"status": "success", "message": "Your account has been deleted."})
 
 # ----------------- LEADERBOARD & MISTAKE VAULT -----------------
 @app.route('/api/leaderboard', methods=['GET'])
@@ -161,14 +177,147 @@ def parent_report():
 @app.route('/api/questions', methods=['GET'])
 def get_questions():
     subject = request.args.get('subject')
+    topic = request.args.get('topic')
+    limit = request.args.get('limit', type=int)
+    is_random = request.args.get('random', '').lower() in ['true', '1', 'yes']
+    mode = request.args.get('mode', 'drill')  # 'drill', 'topic', 'full_jamb'
+
     questions = list(tutor.questions.values())
+
+    if mode == 'full_jamb':
+        # Official JAMB 2-Hour 180-Question Mock: English (60 Qs) + 3 Chosen Electives (40 Qs each)
+        selected_subjects_param = request.args.get('subjects', 'Use of English,Mathematics,Physics,Chemistry')
+        selected_subs = [s.strip() for s in selected_subjects_param.split(',') if s.strip()]
+        
+        # Ensure Use of English is always present
+        if not any('english' in s.lower() for s in selected_subs):
+            selected_subs.insert(0, 'Use of English')
+        
+        mock_questions = []
+        for s_name in selected_subs:
+            s_pool = [dict(q) for q in questions if q['subject'].lower() == s_name.lower()]
+            random.shuffle(s_pool)
+            target_count = 60 if 'english' in s_name.lower() else 40
+            if s_pool:
+                while len(s_pool) < target_count:
+                    s_pool.extend([dict(x) for x in s_pool])
+                mock_questions.extend(s_pool[:target_count])
+        
+        return jsonify({
+            "status": "success",
+            "mode": "full_jamb",
+            "count": len(mock_questions),
+            "duration_minutes": 120,
+            "questions": mock_questions
+        })
+
     if subject and subject.lower() != 'all':
         questions = [q for q in questions if q['subject'].lower() == subject.lower()]
+
+    if topic and topic.lower() != 'all':
+        questions = [q for q in questions if q.get('topic', '').lower() == topic.lower()]
+
+    if is_random:
+        questions = [dict(q) for q in questions]
+        random.shuffle(questions)
+
+    if limit and limit > 0:
+        questions = questions[:limit]
+
     return jsonify({"status": "success", "count": len(questions), "questions": questions})
 
 @app.route('/api/syllabus', methods=['GET'])
 def get_syllabus():
     return jsonify({"status": "success", "syllabus": diagnostics.syllabus})
+
+# ----------------- TOPIC MASTER LESSONS API -----------------
+LESSONS_PATH = os.path.join(os.path.dirname(__file__), "data", "lessons.json")
+
+def load_lessons_db():
+    try:
+        with open(LESSONS_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"Error reading lessons: {e}")
+        return {}
+
+@app.route('/api/lessons', methods=['GET'])
+def get_lessons():
+    subject = request.args.get('subject')
+    data = load_lessons_db()
+    if subject and subject.lower() != 'all':
+        matched = {k: v for k, v in data.items() if k.lower() == subject.lower()}
+        return jsonify({"status": "success", "lessons": matched})
+    return jsonify({"status": "success", "lessons": data})
+
+@app.route('/api/lessons/<subject>/<topic>', methods=['GET'])
+def get_single_lesson(subject, topic):
+    data = load_lessons_db()
+    subj_lessons = None
+    for k, v in data.items():
+        if k.lower() == subject.lower():
+            subj_lessons = v
+            break
+    
+    if not subj_lessons:
+        return jsonify({"error": f"Subject '{subject}' not found."}), 404
+    
+    target_lesson = None
+    lesson_idx = 0
+    for idx, l in enumerate(subj_lessons):
+        if l["topic"].lower() == topic.lower():
+            target_lesson = l
+            lesson_idx = idx
+            break
+    
+    if not target_lesson:
+        return jsonify({"error": f"Topic '{topic}' not found."}), 404
+
+    # Subscription Access Check
+    user_id = session.get('user_id')
+    user = db.get_user_by_id(user_id) if user_id else None
+    is_sub = bool(user and user.get('is_subscribed'))
+
+    # Lesson index 0 is Free Preview for all candidates.
+    # Subsequent lessons require an active Pass.
+    if lesson_idx > 0 and not is_sub:
+        return jsonify({
+            "status": "locked",
+            "requires_pass": True,
+            "lesson": {
+                "id": target_lesson["id"],
+                "subject": subject,
+                "topic": target_lesson["topic"],
+                "title": target_lesson["title"],
+                "jamb_weight": target_lesson["jamb_weight"],
+                "overview": target_lesson["overview"],
+                "is_locked": True,
+                "lock_message": "🔒 Full Topic Masterclass Locked. Upgrade to a Weekly Drill Pass (₦1,000) or Season Pass (₦6,500) to access all 32 syllabus lessons."
+            }
+        })
+
+    return jsonify({
+        "status": "success",
+        "requires_pass": False,
+        "lesson": target_lesson
+    })
+
+# ----------------- DEVELOPER SUPPORT BIO API -----------------
+@app.route('/api/support/bio', methods=['GET'])
+def get_support_bio():
+    settings = db.get_producer_settings()
+    return jsonify({
+        "status": "success",
+        "founder_name": "Manifest Subeno",
+        "school": "Good Shepherd Catholic College, Oyede",
+        "class_level": "Entering SS3",
+        "company": "Mani$oft",
+        "bio": settings.get("producer_support_bio", ""),
+        "bank_name": settings.get("producer_bank_name", "First Bank"),
+        "account_number": settings.get("producer_account_number", "3050550518"),
+        "account_name": settings.get("producer_account_name", "Manifest Subeno"),
+        "whatsapp_phone": settings.get("producer_whatsapp_phone", "2348091977795")
+    })
 
 # ----------------- SOCRATIC AI TUTOR API -----------------
 @app.route('/api/tutor/attempt', methods=['POST'])
@@ -200,10 +349,10 @@ def tutor_attempt():
 def tutor_chat():
     data = request.get_json() or {}
     question_id = data.get('question_id')
-    message = data.get('message', '')
+    message = data.get('message', '').strip()
 
-    if not question_id or not message:
-        return jsonify({"error": "Missing question_id or message"}), 400
+    if not message:
+        return jsonify({"error": "Please ask Coach Kalu a question."}), 400
 
     response = tutor.chat_reply(question_id, message)
     return jsonify(response)
@@ -466,7 +615,8 @@ def producer_console():
     orders = db.get_payment_orders(limit=50)
     vouchers = db.get_all_vouchers(limit=50)
     users = db.get_all_users_admin(limit=50)
-    return render_template('producer_panel.html', settings=settings, kpis=kpis, orders=orders, vouchers=vouchers, users=users)
+    bans = db.get_banned_identifiers()
+    return render_template('producer_panel.html', settings=settings, kpis=kpis, orders=orders, vouchers=vouchers, users=users, bans=bans)
 
 @app.route('/producer/lock', methods=['POST'])
 def producer_lock():
@@ -525,6 +675,59 @@ def api_producer_grant_pass():
     plan = data.get('plan', 'monthly')
     days = int(data.get('days', 30))
     res = db.manually_grant_user_pass(user_id, plan, days)
+    return jsonify(res)
+
+@app.route('/api/producer/users/delete', methods=['POST'])
+def api_producer_delete_user():
+    if not session.get('producer_unlocked'):
+        return jsonify({"error": "Unauthorized"}), 403
+    data = request.get_json() or {}
+    user_id = data.get('user_id')
+    if not user_id:
+        return jsonify({"error": "Missing user_id"}), 400
+    res = db.delete_user_by_producer(user_id)
+    return jsonify(res)
+
+@app.route('/api/producer/users/toggle-lock', methods=['POST'])
+def api_producer_toggle_lock():
+    if not session.get('producer_unlocked'):
+        return jsonify({"error": "Unauthorized"}), 403
+    data = request.get_json() or {}
+    user_id = data.get('user_id')
+    is_locked = data.get('is_locked', 1)
+    if not user_id:
+        return jsonify({"error": "Missing user_id"}), 400
+    res = db.lock_user_account(user_id, is_locked)
+    return jsonify(res)
+
+@app.route('/api/producer/users/strip-privileges', methods=['POST'])
+def api_producer_strip_privileges():
+    if not session.get('producer_unlocked'):
+        return jsonify({"error": "Unauthorized"}), 403
+    data = request.get_json() or {}
+    user_id = data.get('user_id')
+    if not user_id:
+        return jsonify({"error": "Missing user_id"}), 400
+    res = db.strip_user_privileges(user_id)
+    return jsonify(res)
+
+@app.route('/api/producer/bans', methods=['GET'])
+def api_producer_get_bans():
+    if not session.get('producer_unlocked'):
+        return jsonify({"error": "Unauthorized"}), 403
+    bans = db.get_banned_identifiers()
+    return jsonify({"status": "success", "bans": bans})
+
+@app.route('/api/producer/bans/toggle', methods=['POST'])
+def api_producer_toggle_ban():
+    if not session.get('producer_unlocked'):
+        return jsonify({"error": "Unauthorized"}), 403
+    data = request.get_json() or {}
+    identifier = data.get('identifier')
+    is_active = data.get('is_active')
+    if not identifier:
+        return jsonify({"error": "Missing identifier"}), 400
+    res = db.toggle_banned_identifier(identifier, is_active)
     return jsonify(res)
 
 if __name__ == '__main__':

@@ -1,6 +1,7 @@
 import sqlite3
 import time
 import os
+import secrets
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -96,27 +97,46 @@ def init_db():
     )
     """)
 
-    # Seed default producer account and WhatsApp settings
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS account_deletions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT NOT NULL,
+        phone TEXT NOT NULL,
+        name TEXT,
+        deleted_at REAL NOT NULL
+    )
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS banned_identifiers (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        identifier TEXT UNIQUE NOT NULL,
+        reason TEXT NOT NULL,
+        is_active INTEGER DEFAULT 1,
+        banned_at REAL NOT NULL
+    )
+    """)
+
+    # Attempt migration for is_locked column if not existing
+    try:
+        cursor.execute("ALTER TABLE users ADD COLUMN is_locked INTEGER DEFAULT 0")
+    except sqlite3.OperationalError:
+        pass
+
+    # Seed default producer account, WhatsApp settings and founder support story
     default_settings = [
-        ("producer_bank_name", "OPay Digital Services"),
-        ("producer_account_number", "8012345678"),
-        ("producer_account_name", "PASSMASTER / MANISOFT PRODUCTIONS"),
-        ("producer_whatsapp_phone", "2348012345678"),
-        ("producer_console_pass", "$$manisoft11console")
+        ("producer_bank_name", "First Bank"),
+        ("producer_account_number", "3050550518"),
+        ("producer_account_name", "Manifest Subeno"),
+        ("producer_whatsapp_phone", "2348091977795"),
+        ("producer_console_pass", "$$manisoft11console"),
+        ("producer_support_bio", "Hi! I am Manifest Subeno, an SS3 student at Good Shepherd Catholic College, Oyede, and the founder & lead developer of Mani$oft. I built PassMaster AI entirely on an Android mobile phone using Termux, night shifts, and pure grit. While coding full-stack architectures and AI engines on a phone screen is possible, scaling PassMaster AI to support millions of candidates preparing for JAMB 2026/2027 urgently requires a proper coding laptop/computer. Every subscription and voluntary sponsorship directly powers this mission. Thank you for empowering a Nigerian student builder!")
     ]
     for k, v in default_settings:
         cursor.execute("INSERT OR IGNORE INTO producer_settings (key, value) VALUES (?, ?)", (k, v))
 
-    # Seed demo vouchers
-    demo_vouchers = [
-        ("PASS-2025-DEMO-WEEK", "weekly", 7),
-        ("PASS-2025-VIP-MONTH", "monthly", 30),
-        ("PASS-2025-FULL-SEASON", "season", 120),
-        ("JAMB-2025-SCHOLAR", "monthly", 30),
-        ("UNILAG-MED-2025", "season", 120)
-    ]
-    for code, plan, days in demo_vouchers:
-        cursor.execute("INSERT OR IGNORE INTO vouchers (code, plan, days, is_used) VALUES (?, ?, ?, 0)", (code, plan, days))
+    # Purge any demo vouchers so ONLY real producer vouchers work
+    cursor.execute("DELETE FROM vouchers WHERE code IN ('PASS-2025-DEMO-WEEK', 'PASS-2025-VIP-MONTH', 'PASS-2025-FULL-SEASON', 'JAMB-2025-SCHOLAR', 'UNILAG-MED-2025')")
 
     # Seed top leaderboard dummy users if table has few users
     cursor.execute("SELECT COUNT(*) as count FROM users")
@@ -140,13 +160,18 @@ def init_db():
     conn.close()
 
 def register_user(name, email, phone, password, target_course="Medicine & Surgery", target_uni="UNILAG", target_score=280):
+    # Check over-usage abuse ban
+    allowed, ban_err = can_register(email, phone)
+    if not allowed:
+        return {"error": ban_err}
+
     conn = get_db_connection()
     cursor = conn.cursor()
     try:
         pwd_hash = generate_password_hash(password)
         cursor.execute("""
-        INSERT INTO users (name, email, phone, password_hash, target_course, target_uni, target_score, plan, plan_expires_at, xp, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, 'free', 0, 50, ?)
+        INSERT INTO users (name, email, phone, password_hash, target_course, target_uni, target_score, plan, plan_expires_at, xp, created_at, is_locked)
+        VALUES (?, ?, ?, ?, ?, ?, ?, 'free', 0, 50, ?, 0)
         """, (name, email.lower().strip(), phone.strip(), pwd_hash, target_course, target_uni, target_score, time.time()))
         
         user_id = cursor.lastrowid
@@ -173,6 +198,8 @@ def authenticate_user(login_identifier, password):
     conn.close()
 
     if user and check_password_hash(user["password_hash"], password):
+        if user["is_locked"]:
+            return {"error": "Account is locked/suspended by Administrator. Contact Producer on WhatsApp to resolve."}
         update_user_streak(user["id"])
         return dict(user)
     return None
@@ -180,7 +207,7 @@ def authenticate_user(login_identifier, password):
 def get_user_by_id(user_id):
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT id, name, email, phone, target_course, target_uni, target_score, plan, plan_expires_at, xp, created_at FROM users WHERE id = ?", (user_id,))
+    cursor.execute("SELECT id, name, email, phone, target_course, target_uni, target_score, plan, plan_expires_at, xp, created_at, is_locked FROM users WHERE id = ?", (user_id,))
     user = cursor.fetchone()
     if not user:
         conn.close()
@@ -190,7 +217,13 @@ def get_user_by_id(user_id):
     cursor.execute("SELECT streak_count FROM user_streaks WHERE user_id = ?", (user_id,))
     streak_row = cursor.fetchone()
     user_dict["streak"] = streak_row["streak_count"] if streak_row else 1
-    user_dict["is_subscribed"] = (user_dict["plan_expires_at"] > time.time())
+    
+    now = time.time()
+    is_sub = bool(user_dict["plan_expires_at"] and user_dict["plan_expires_at"] > now)
+    user_dict["is_subscribed"] = is_sub
+    user_dict["days_left"] = max(0, int((user_dict["plan_expires_at"] - now) // 86400)) if is_sub else 0
+    user_dict["hours_left"] = max(0, int((user_dict["plan_expires_at"] - now) // 3600)) if is_sub else 0
+    user_dict["is_locked"] = bool(user_dict.get("is_locked", 0))
     
     # Calculate Level
     xp = user_dict.get("xp", 50)
@@ -531,7 +564,7 @@ def get_all_users_admin(limit=100):
     cursor = conn.cursor()
     cursor.execute("""
     SELECT u.id, u.name, u.email, u.phone, u.target_course, u.target_uni, u.target_score,
-           u.plan, u.plan_expires_at, u.xp, u.created_at,
+           u.plan, u.plan_expires_at, u.xp, u.created_at, COALESCE(u.is_locked, 0) as is_locked,
            COUNT(a.id) as total_attempts,
            SUM(CASE WHEN a.is_correct = 1 THEN 1 ELSE 0 END) as correct_attempts,
            s.streak_count
@@ -549,6 +582,130 @@ def get_all_users_admin(limit=100):
 def manually_grant_user_pass(user_id, plan_id, days):
     new_expiry = apply_subscription(user_id, plan_id, days)
     return {"status": "success", "user_id": user_id, "plan_id": plan_id, "expires_at": new_expiry}
+
+def lock_user_account(user_id, is_locked=1):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE users SET is_locked = ? WHERE id = ?", (int(is_locked), user_id))
+    conn.commit()
+    conn.close()
+    return {"success": True, "user_id": user_id, "is_locked": bool(is_locked)}
+
+def strip_user_privileges(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE users SET plan = 'free', plan_expires_at = 0 WHERE id = ?", (user_id,))
+    conn.commit()
+    conn.close()
+    return {"success": True, "user_id": user_id, "plan": "free", "plan_expires_at": 0}
+
+def delete_user_by_producer(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM attempts WHERE user_id = ?", (user_id,))
+    cursor.execute("DELETE FROM user_streaks WHERE user_id = ?", (user_id,))
+    cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
+    conn.commit()
+    conn.close()
+    return {"success": True, "user_id": user_id}
+
+def can_register(email, phone):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    e_clean = email.lower().strip()
+    p_clean = phone.strip()
+    
+    # Check if explicitly in banned_identifiers
+    cursor.execute("""
+    SELECT * FROM banned_identifiers WHERE (LOWER(identifier) = ? OR identifier = ?) AND is_active = 1
+    """, (e_clean, p_clean))
+    banned = cursor.fetchone()
+    if banned:
+        conn.close()
+        return False, "Over-usage abuse detected: This email or phone has been deleted more than 2 times and is banned. Contact Producer on WhatsApp to review and unban."
+
+    # Check deletion count in account_deletions
+    cursor.execute("""
+    SELECT COUNT(*) as count FROM account_deletions WHERE LOWER(email) = ? OR phone = ?
+    """, (e_clean, p_clean))
+    row = cursor.fetchone()
+    del_count = row["count"] if row else 0
+    if del_count >= 2:
+        now = time.time()
+        cursor.execute("INSERT OR REPLACE INTO banned_identifiers (identifier, reason, is_active, banned_at) VALUES (?, ?, 1, ?)",
+                       (e_clean, "Account deleted >2 times (recycled abuse)", now))
+        cursor.execute("INSERT OR REPLACE INTO banned_identifiers (identifier, reason, is_active, banned_at) VALUES (?, ?, 1, ?)",
+                       (p_clean, "Account deleted >2 times (recycled abuse)", now))
+        conn.commit()
+        conn.close()
+        return False, "Over-usage abuse detected: This email or phone has been deleted more than 2 times and is banned. Contact Producer on WhatsApp to review and unban."
+
+    conn.close()
+    return True, None
+
+def delete_user_account(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, name, email, phone FROM users WHERE id = ?", (user_id,))
+    user = cursor.fetchone()
+    if not user:
+        conn.close()
+        return {"error": "User not found."}
+
+    e_clean = user["email"].lower().strip()
+    p_clean = user["phone"].strip()
+    name = user["name"]
+    now = time.time()
+
+    # Log into account_deletions
+    cursor.execute("""
+    INSERT INTO account_deletions (email, phone, name, deleted_at) VALUES (?, ?, ?, ?)
+    """, (e_clean, p_clean, name, now))
+
+    # Check if this email or phone is now deleted >= 2 times
+    cursor.execute("SELECT COUNT(*) as count FROM account_deletions WHERE LOWER(email) = ? OR phone = ?", (e_clean, p_clean))
+    count = cursor.fetchone()["count"]
+    if count >= 2:
+        cursor.execute("INSERT OR REPLACE INTO banned_identifiers (identifier, reason, is_active, banned_at) VALUES (?, ?, 1, ?)",
+                       (e_clean, "Recycled deletion limit reached (>2 times)", now))
+        cursor.execute("INSERT OR REPLACE INTO banned_identifiers (identifier, reason, is_active, banned_at) VALUES (?, ?, 1, ?)",
+                       (p_clean, "Recycled deletion limit reached (>2 times)", now))
+
+    # Delete related user records
+    cursor.execute("DELETE FROM attempts WHERE user_id = ?", (user_id,))
+    cursor.execute("DELETE FROM user_streaks WHERE user_id = ?", (user_id,))
+    cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
+
+    conn.commit()
+    conn.close()
+    return {"success": True, "message": "Account successfully deleted."}
+
+def get_banned_identifiers():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM banned_identifiers ORDER BY banned_at DESC")
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+def toggle_banned_identifier(identifier, is_active=None):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    ident = identifier.strip().lower()
+    if is_active is None:
+        cursor.execute("SELECT is_active FROM banned_identifiers WHERE LOWER(identifier) = ?", (ident,))
+        row = cursor.fetchone()
+        new_active = 0 if (row and row["is_active"] == 1) else 1
+    else:
+        new_active = 1 if is_active else 0
+
+    cursor.execute("UPDATE banned_identifiers SET is_active = ? WHERE LOWER(identifier) = ?", (new_active, ident))
+    if cursor.rowcount == 0:
+        cursor.execute("INSERT INTO banned_identifiers (identifier, reason, is_active, banned_at) VALUES (?, 'Manually added by Producer', ?, ?)",
+                       (ident, new_active, time.time()))
+    conn.commit()
+    conn.close()
+    return {"success": True, "identifier": ident, "is_active": bool(new_active)}
 
 def get_producer_kpis():
     conn = get_db_connection()
@@ -577,6 +734,9 @@ def get_producer_kpis():
     cursor.execute("SELECT COUNT(*) as count FROM vouchers WHERE is_used = 0")
     available_vouchers = cursor.fetchone()["count"]
 
+    cursor.execute("SELECT COUNT(*) as count FROM banned_identifiers WHERE is_active = 1")
+    banned_count = cursor.fetchone()["count"]
+
     conn.close()
 
     accuracy = int((correct_attempts / total_attempts * 100)) if total_attempts > 0 else 0
@@ -589,6 +749,7 @@ def get_producer_kpis():
         "pending_orders": pending_orders,
         "total_attempts": total_attempts,
         "accuracy_pct": accuracy,
-        "available_vouchers": available_vouchers
+        "available_vouchers": available_vouchers,
+        "banned_identifiers_count": banned_count
     }
 

@@ -1,0 +1,1409 @@
+{
+  "Use of English": [
+    {
+      "id": "eng_lesson_1",
+      "topic": "Concord & Grammar",
+      "title": "Grammatical Concord, Rule of Proximity & Subjunctive Mood",
+      "jamb_weight": "25% of English Section (~15 Questions)",
+      "overview": "Concord is the formal grammatical agreement between a subject and its verb, or between a pronoun and its antecedent. JAMB examiners deliberately construct sentences with intervening prepositional phrases and correlated conjunctions to trick students into selecting the wrong verb number.",
+      "key_concepts": [
+        {
+          "concept": "Rule of Proximity (Either... or / Neither... nor / Not only... but also)",
+          "explanation": "When two subjects are joined by 'or', 'nor', or 'but also', the verb agrees ONLY with the subject that is physically closest to it.",
+          "examples": [
+            "Neither the principal nor the teachers WERE present yesterday. ('teachers' is plural and closest)",
+            "Either the players or the coach IS responsible for the strategy. ('coach' is singular and closest)"
+          ]
+        },
+        {
+          "concept": "Intervening Modifiers & Parenthetical Phrases",
+          "explanation": "Phrases introduced by 'as well as', 'together with', 'in collaboration with', 'no less than', or 'including' do NOT change the number of the subject. The verb agrees strictly with the primary subject.",
+          "examples": [
+            "The governor, together with his commissioners, HAS arrived. ('The governor' is singular)",
+            "The students, as well as the headmaster, ARE attending the seminar."
+          ]
+        },
+        {
+          "concept": "Relative Clause Antecedent Concord ('One of the [Plural] Who')",
+          "explanation": "In 'one of the [plural noun] who...', the relative pronoun 'who' refers to the plural noun antecedent, so the verb MUST be plural. HOWEVER, if preceded by 'the only one of the...', the verb is singular.",
+          "examples": [
+            "She is one of the candidates who HAVE registered. (Plural 'candidates' => 'have')",
+            "He is the ONLY one of the candidates who HAS registered. (Singular 'only one' => 'has')"
+          ]
+        },
+        {
+          "concept": "The Mandative Subjunctive Mood",
+          "explanation": "After verbs of command, demand, requirement, or recommendation (demand, insist, recommend, suggest, mandate, urge, decree that...), the verb in the dependent clause remains in its bare infinitive form (no 's' or 'es'), regardless of the subject.",
+          "examples": [
+            "The court decreed that the suspect REMAIN in detention. (NOT remains)",
+            "The doctor recommended that she TAKE the medication daily. (NOT takes)"
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Looking at the first subject instead of the closest subject in 'neither... nor' constructions.",
+        "Trap 2: Treating 'together with' or 'as well as' like 'and'. They are prepositions, not conjunctions!",
+        "Trap 3: Adding an 's' to subjunctive verbs because the subject is 'he', 'she', or 'it'."
+      ],
+      "worked_examples": [
+        {
+          "question": "Neither the captain nor the sailors _______ able to control the vessel during the ferocious storm.",
+          "options": [
+            "A. was",
+            "B. were",
+            "C. is",
+            "D. has been"
+          ],
+          "solution": "Apply the Rule of Proximity. The nearest subject to the blank is 'the sailors' (plural). Because 'during the ferocious storm' marks a past event, the verb must be plural past tense. Correct Option: B (were)."
+        }
+      ],
+      "golden_rule": "In 'Neither/Either/Nor', look immediately to the LEFT of the verb. In 'As well as/Together with', ignore everything between the commas and match the very first noun."
+    },
+    {
+      "id": "eng_lesson_2",
+      "topic": "Lexis & Structure",
+      "title": "Collocations, Idiomatic Phrasal Verbs & Prepositional Traps",
+      "jamb_weight": "30% of English Section (~18 Questions)",
+      "overview": "Lexis & Structure tests your knowledge of native English idiom, fixed prepositional collocations, redundancy avoidance, and contextual vocabulary. JAMB examiners specifically prey on Nigerian vernacular errors (e.g. 'night bus', 'travelled out', 'preside on', 'complain about').",
+      "key_concepts": [
+        {
+          "concept": "Fixed Prepositional Collocations",
+          "explanation": "Certain verbs and adjectives can ONLY pair with specific prepositions. Substituting another preposition constitutes a severe grammatical error.",
+          "examples": [
+            "Preside OVER (not at, not on)",
+            "Congratulate ON (not for)",
+            "Acquit OF (not from)",
+            "Confer ON / UPON (not to)",
+            "Different FROM (not than, in standard British/West African English)"
+          ]
+        },
+        {
+          "concept": "Redundancy & Tautology Avoidance",
+          "explanation": "JAMB penalizes doubling identical meanings in the same sentence.",
+          "examples": [
+            "Incorrect: 'reverse back' -> Correct: 'reverse'",
+            "Incorrect: 'revert back' -> Correct: 'revert'",
+            "Incorrect: 'repeat again' -> Correct: 'repeat'",
+            "Incorrect: 'blend together' -> Correct: 'blend'"
+          ]
+        },
+        {
+          "concept": "Idiomatic Expressions & Inverted Meanings",
+          "explanation": "Idioms cannot be interpreted literally. 'To wash one's dirty linen in public' means discussing private disputes publicly; 'To smell a rat' means suspecting foul play.",
+          "examples": [
+            "'Cut the Gordian knot' = Solve a complex dilemma decisively by bold action.",
+            "'To throw down the gauntlet' = Issue a challenge or provocation."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Using 'congratulate for'\u2014in English you congratulate someone ON their achievement.",
+        "Trap 2: Saying 'The reason is because...'\u2014the correct grammatical construction is 'The reason is that...'.",
+        "Trap 3: Confusing 'uninterested' (bored/apathetic) with 'disinterested' (impartial/unbiased)."
+      ],
+      "worked_examples": [
+        {
+          "question": "The university senate congratulated the young scholar _______ breaking the 40-year academic record.",
+          "options": [
+            "A. for",
+            "B. about",
+            "C. on",
+            "D. with"
+          ],
+          "solution": "The verb 'congratulate' takes the fixed preposition 'on'. Correct Option: C (on)."
+        }
+      ],
+      "golden_rule": "Prepositions are mathematical: memorize them as pairs (congratulate on, charge with, acquit of, preside over, reason is that)."
+    },
+    {
+      "id": "eng_lesson_3",
+      "topic": "Oral Forms & Phonology",
+      "title": "Vowel Length, Silent Consonants & Primary Syllabic Stress",
+      "jamb_weight": "20% of English Section (~12 Questions)",
+      "overview": "Oral English in JAMB tests phonological awareness: long vs short vowels (/i\u02d0/ vs /\u026a/, /u\u02d0/ vs /\u028a/), diphthongs, silent consonants (debt, subtle, receipt, aisle), and primary syllabic stress patterns in multisyllabic words.",
+      "key_concepts": [
+        {
+          "concept": "Silent Consonant Diagnostics",
+          "explanation": "Many English words contain orthographic letters that have zero phonetic representation in standard received pronunciation.",
+          "examples": [
+            "Silent 'b': subtle, debt, doubt, plumber, tomb, womb, limb.",
+            "Silent 'p': receipt, psalm, pneumonia, psyche, raspberry.",
+            "Silent 't': mortgage, castle, whistle, listen, soften, depot.",
+            "Silent 's': aisle, island, debris, rendezvous."
+          ]
+        },
+        {
+          "concept": "Stress Rules for Suffixes (-tion, -ic, -ity, -phy)",
+          "explanation": "Words ending in '-tion', '-sion', '-ic', '-ity', and '-graphy' have predictable stress rules: stress falls on the syllable IMMEDIATELY PRECEDING the suffix (penultimate or antepenultimate).",
+          "examples": [
+            "pho-TOG-ra-phy (ante-penultimate)",
+            "e-co-NOM-ic (syllable right before -ic)",
+            "na-TION, de-ci-SION (penultimate syllable)",
+            "sin-CER-i-ty (syllable right before -ity)"
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Pronouncing the 'b' in plumber or subtle.",
+        "Trap 2: Stressing the first syllable in 'photography' (PHO-to-graphy is wrong; it is pho-TOG-ra-phy).",
+        "Trap 3: Confusing noun stress (stress first syllable: CON-vict) with verb stress (stress second syllable: con-VICT)."
+      ],
+      "worked_examples": [
+        {
+          "question": "Which syllable receives the primary stress in the word 'DEMOCRATIC'?",
+          "options": [
+            "A. DE-mo-cra-tic",
+            "B. de-MO-cra-tic",
+            "C. de-mo-CRA-tic",
+            "D. de-mo-cra-TIC"
+          ],
+          "solution": "Words ending in '-ic' have primary stress on the syllable immediately preceding the suffix: de-mo-CRA-tic (3rd syllable). Correct Option: C."
+        }
+      ],
+      "golden_rule": "Words ending in -ic, -sion, -tion always stress the syllable right before them. In 2-syllable noun/verb pairs: Nouns stress the FRONT, Verbs stress the BACK (RE-cord vs re-CORD)."
+    },
+    {
+      "id": "eng_lesson_4",
+      "topic": "Comprehension & Prescribed Text",
+      "title": "Analytical Comprehension & JAMB Prescribed Novel Analysis",
+      "jamb_weight": "25% of English Section (~15 Questions)",
+      "overview": "Comprehension tests speed reading, deductive reasoning, figurative language detection, and deep familiarity with the prescribed literature text for UTME candidates.",
+      "key_concepts": [
+        {
+          "concept": "Distinction Between Direct Fact and Logical Inference",
+          "explanation": "Direct questions ask 'what happened according to paragraph 2'. Inference questions ask 'what does the author imply'. Never pick an option just because it uses the author's exact words if it doesn't answer the prompt.",
+          "examples": [
+            "Direct: The text states the experiment took 48 hours.",
+            "Inference: The author's sarcastic tone suggests skepticism towards the findings."
+          ]
+        },
+        {
+          "concept": "Figures of Speech & Rhetorical Devices",
+          "explanation": "Metaphor (direct comparison without like/as), Hyperbole (deliberate exaggeration), Irony (saying the opposite of what is meant), Oxymoron (adjacent contradictory terms), Synecdoche (part representing whole).",
+          "examples": [
+            "Irony: 'He is as gentle as a charging rhinoceros.'",
+            "Synecdoche: 'Nigeria won the match' (meaning the 11 national football players)."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Bringing outside personal knowledge that isn't stated or deduced in the passage.",
+        "Trap 2: Picking literal interpretations of ironic or figurative statements.",
+        "Trap 3: Rushing through character relationships in the prescribed novel."
+      ],
+      "worked_examples": [
+        {
+          "question": "'The courtroom was a frozen refrigerator of silent tension.' What figure of speech is demonstrated here?",
+          "options": [
+            "A. Simile",
+            "B. Metaphor",
+            "C. Hyperbole",
+            "D. Personification"
+          ],
+          "solution": "Direct identification of the courtroom as a frozen refrigerator without using 'like' or 'as' is a direct metaphor. Correct Option: B."
+        }
+      ],
+      "golden_rule": "The answer to every comprehension question is 100% inside the text. Never guess from outside knowledge."
+    }
+  ],
+  "Mathematics": [
+    {
+      "id": "mth_lesson_1",
+      "topic": "Algebra",
+      "title": "Quadratic Roots, Symmetric Functions, Logarithms & Progressions",
+      "jamb_weight": "25% of Mathematics Section (~10 Questions)",
+      "overview": "Algebra constitutes the bedrock of JAMB Mathematics. Questions frequently combine symmetric functions of roots (\u03b1 and \u03b2), logarithmic change-of-base laws, and Arithmetic/Geometric progressions.",
+      "key_concepts": [
+        {
+          "concept": "Symmetric Properties of Quadratic Roots",
+          "explanation": "For any quadratic equation ax\u00b2 + bx + c = 0 with roots \u03b1 and \u03b2: Sum of roots (\u03b1 + \u03b2) = -b/a. Product of roots (\u03b1\u03b2) = c/a.",
+          "examples": [
+            "\u03b1\u00b2 + \u03b2\u00b2 = (\u03b1 + \u03b2)\u00b2 - 2\u03b1\u03b2",
+            "1/\u03b1 + 1/\u03b2 = (\u03b1 + \u03b2) / \u03b1\u03b2",
+            "\u03b1\u00b3 + \u03b2\u00b3 = (\u03b1 + \u03b2)\u00b3 - 3\u03b1\u03b2(\u03b1 + \u03b2)"
+          ]
+        },
+        {
+          "concept": "Arithmetic & Geometric Progressions (AP & GP)",
+          "explanation": "AP nth term: T_n = a + (n-1)d. Sum of n terms: S_n = n/2[2a + (n-1)d]. GP nth term: T_n = ar^(n-1). Sum to infinity (for |r| < 1): S_inf = a / (1 - r).",
+          "examples": [
+            "If T\u2084 = 15 and T\u2089 = 35 in AP => 5d = 20 => d = 4, a = 3."
+          ]
+        },
+        {
+          "concept": "Logarithmic Laws & Change of Base",
+          "explanation": "log_b(A) = log_k(A) / log_k(b). Also: log_a(x) + log_a(y) = log_a(xy), log_a(x) - log_a(y) = log_a(x/y), log_a(x^p) = p log_a(x).",
+          "examples": [
+            "If log\u2081\u2080(2) = 0.3010, then log\u2081\u2080(5) = log\u2081\u2080(10/2) = log\u2081\u2080(10) - log\u2081\u2080(2) = 1 - 0.3010 = 0.6990."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Forgetting the minus sign in the sum of roots: \u03b1 + \u03b2 = -b/a, NOT +b/a!",
+        "Trap 2: Assuming \u03b1\u00b2 + \u03b2\u00b2 = (\u03b1 + \u03b2)\u00b2 without subtracting 2\u03b1\u03b2.",
+        "Trap 3: Applying S_inf when the common ratio r >= 1 (divergent series)."
+      ],
+      "worked_examples": [
+        {
+          "question": "If \u03b1 and \u03b2 are the roots of 2x\u00b2 - 6x + 3 = 0, find \u03b1\u00b2 + \u03b2\u00b2.",
+          "options": [
+            "A. 6",
+            "B. 9",
+            "C. 3/2",
+            "D. 12"
+          ],
+          "solution": "a = 2, b = -6, c = 3. \u03b1 + \u03b2 = -(-6)/2 = 3. \u03b1\u03b2 = 3/2. \u03b1\u00b2 + \u03b2\u00b2 = (\u03b1 + \u03b2)\u00b2 - 2\u03b1\u03b2 = (3)\u00b2 - 2(3/2) = 9 - 3 = 6. Correct Option: A."
+        }
+      ],
+      "golden_rule": "Always memorize the identity: \u03b1\u00b2 + \u03b2\u00b2 = (\u03b1 + \u03b2)\u00b2 - 2\u03b1\u03b2. In logs: log(5) is always 1 - log(2)."
+    },
+    {
+      "id": "mth_lesson_2",
+      "topic": "Calculus",
+      "title": "Differential Calculus, Chain Rule, Maxima/Minima & Definite Integrals",
+      "jamb_weight": "25% of Mathematics Section (~10 Questions)",
+      "overview": "Calculus questions in JAMB test procedural speed. Candidates must instantly apply the Chain Rule, Product/Quotient rules, evaluate turning points (dy/dx = 0), and integrate by substitution.",
+      "key_concepts": [
+        {
+          "concept": "The Chain Rule (Function of a Function)",
+          "explanation": "If y = [u(x)]^n, then dy/dx = n[u(x)]^(n-1) \u00d7 du/dx. You MUST differentiate the inside function and multiply!",
+          "examples": [
+            "y = (3x\u00b2 - 5)\u2074 => dy/dx = 4(3x\u00b2 - 5)\u00b3 \u00d7 (6x) = 24x(3x\u00b2 - 5)\u00b3."
+          ]
+        },
+        {
+          "concept": "Turning Points, Maxima & Minima",
+          "explanation": "At a stationary point, dy/dx = 0. To classify: If d\u00b2y/dx\u00b2 < 0, it is a LOCAL MAXIMUM. If d\u00b2y/dx\u00b2 > 0, it is a LOCAL MINIMUM. If d\u00b2y/dx\u00b2 = 0, check higher derivatives (point of inflection).",
+          "examples": [
+            "For a curve y = 2x\u00b3 - 9x\u00b2 + 12x: dy/dx = 6x\u00b2 - 18x + 12 = 0 => x\u00b2 - 3x + 2 = 0 => x = 1 or x = 2."
+          ]
+        },
+        {
+          "concept": "Definite Integration & Area Under Curves",
+          "explanation": "\u222b [a to b] f(x) dx = F(b) - F(a). Constant of integration 'C' cancels out in definite integrals.",
+          "examples": [
+            "\u222b [0 to 2] (3x\u00b2 + 2x) dx = [x\u00b3 + x\u00b2] from 0 to 2 = (8 + 4) - 0 = 12."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Forgetting to multiply by the internal derivative (du/dx) when applying the chain rule.",
+        "Trap 2: Confusing the second derivative test: d\u00b2y/dx\u00b2 < 0 means MAXIMUM (concave down), NOT minimum!",
+        "Trap 3: Forgetting limits when substituting u in definite integrals."
+      ],
+      "worked_examples": [
+        {
+          "question": "Find the derivative dy/dx if y = (3x\u00b2 - 5)\u2074.",
+          "options": [
+            "A. 12x(3x\u00b2 - 5)\u00b3",
+            "B. 24x(3x\u00b2 - 5)\u00b3",
+            "C. 4(3x\u00b2 - 5)\u00b3",
+            "D. 6x(3x\u00b2 - 5)\u2074"
+          ],
+          "solution": "Let u = 3x\u00b2 - 5. du/dx = 6x. y = u\u2074 => dy/du = 4u\u00b3. By Chain Rule: dy/dx = dy/du \u00d7 du/dx = 4(3x\u00b2 - 5)\u00b3 \u00d7 6x = 24x(3x\u00b2 - 5)\u00b3. Correct Option: B."
+        }
+      ],
+      "golden_rule": "Inside times outside: Never leave the inner derivative behind in the Chain Rule. Second derivative < 0 is Maxima!"
+    },
+    {
+      "id": "mth_lesson_3",
+      "topic": "Geometry & Trigonometry",
+      "title": "Circle Theorems, Trigonometric Identities & Coordinate Geometry",
+      "jamb_weight": "25% of Mathematics Section (~10 Questions)",
+      "overview": "Geometry in JAMB features cyclic quadrilaterals, angle at center vs circumference, alternate segment theorem, and trigonometric identities: sin\u00b2\u03b8 + cos\u00b2\u03b8 = 1, tan\u03b8 = sin\u03b8/cos\u03b8.",
+      "key_concepts": [
+        {
+          "concept": "Key Circle Theorems",
+          "explanation": "1. Angle at center = 2 \u00d7 angle at circumference standing on the same arc. 2. Angles in the same segment are equal. 3. Opposite angles of a cyclic quadrilateral sum to 180\u00b0. 4. Angle between tangent and chord = angle in alternate segment.",
+          "examples": [
+            "If angle at center is 110\u00b0, angle at circumference subtended by same arc = 55\u00b0.",
+            "In cyclic quadrilateral ABCD, if \u2220A = 75\u00b0, then opposite \u2220C = 180\u00b0 - 75\u00b0 = 105\u00b0."
+          ]
+        },
+        {
+          "concept": "Coordinate Geometry: Parallel & Perpendicular Lines",
+          "explanation": "Gradient m = (y\u2082 - y\u2081) / (x\u2082 - x\u2081). For two parallel lines: m\u2081 = m\u2082. For two perpendicular lines: m\u2081 \u00d7 m\u2082 = -1 (m\u2082 = -1/m\u2081).",
+          "examples": [
+            "A line perpendicular to 2x - 3y = 6 has gradient -3/2."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Confusing opposite angles of a cyclic quadrilateral (sum = 180\u00b0) with adjacent angles.",
+        "Trap 2: Forgetting the negative reciprocal rule for perpendicular gradients (m\u2081m\u2082 = -1).",
+        "Trap 3: Misreading bearing angles (Bearings MUST be 3 digits measured clockwise from North: 045\u00b0, 210\u00b0)."
+      ],
+      "worked_examples": [
+        {
+          "question": "If line L\u2081 has equation 3x + 2y = 8, what is the gradient of a line L\u2082 perpendicular to L\u2081?",
+          "options": [
+            "A. -3/2",
+            "B. 2/3",
+            "C. -2/3",
+            "D. 3/2"
+          ],
+          "solution": "3x + 2y = 8 => 2y = -3x + 8 => y = (-3/2)x + 4. So m\u2081 = -3/2. For perpendicular line: m\u2082 = -1 / (-3/2) = +2/3. Correct Option: B."
+        }
+      ],
+      "golden_rule": "Opposite angles in cyclic quad sum to 180\u00b0. Perpendicular gradient is 'flip it and switch the sign'."
+    },
+    {
+      "id": "mth_lesson_4",
+      "topic": "Statistics & Probability",
+      "title": "Permutations, Combinations, Probability Laws & Standard Deviation",
+      "jamb_weight": "25% of Mathematics Section (~10 Questions)",
+      "overview": "Tests counting techniques: nPr = n! / (n-r)! (when order matters) vs nCr = n! / [r!(n-r)!] (selection where order does not matter), mutually exclusive vs independent probabilities, and variance/standard deviation.",
+      "key_concepts": [
+        {
+          "concept": "Permutations vs Combinations",
+          "explanation": "Use Permutations (nPr) when order or position matters (e.g. electing President, Secretary; arranging digits). Use Combinations (nCr) when selecting a group where order is irrelevant (e.g. committee, selecting 3 books).",
+          "examples": [
+            "Choosing 3 from 7: 7C3 = (7 \u00d7 6 \u00d7 5) / (3 \u00d7 2 \u00d7 1) = 35 ways.",
+            "Arranging letters in 'COMMITTEE': 9! / (2! 2! 2!) ways."
+          ]
+        },
+        {
+          "concept": "Independent vs Mutually Exclusive Events",
+          "explanation": "Independent: P(A \u2229 B) = P(A) \u00d7 P(B). Mutually Exclusive (cannot happen together): P(A \u222a B) = P(A) + P(B). At least one: P(at least 1) = 1 - P(none).",
+          "examples": [
+            "Throwing two dice: P(getting two 6s) = 1/6 \u00d7 1/6 = 1/36."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Using permutations when selecting a committee (order does not matter => combination).",
+        "Trap 2: Adding probabilities for independent simultaneous events instead of multiplying.",
+        "Trap 3: Forgetting that Standard Deviation = \u221a(Variance)."
+      ],
+      "worked_examples": [
+        {
+          "question": "In how many ways can a committee of 3 students be selected from a class of 8 students?",
+          "options": [
+            "A. 24",
+            "B. 56",
+            "C. 336",
+            "D. 512"
+          ],
+          "solution": "Selection where order does not matter is a combination: 8C3 = (8 \u00d7 7 \u00d7 6) / (3 \u00d7 2 \u00d7 1) = 56. Correct Option: B."
+        }
+      ],
+      "golden_rule": "'Arrangement/Positions' = Permutation. 'Selection/Committee/Group' = Combination. 'At least one' = 1 - P(none)."
+    }
+  ],
+  "Physics": [
+    {
+      "id": "phy_lesson_1",
+      "topic": "Mechanics",
+      "title": "Newton's Laws, Projectiles, Gravitation & Simple Harmonic Motion",
+      "jamb_weight": "30% of Physics Section (~12 Questions)",
+      "overview": "Mechanics represents the highest-yield topic in JAMB Physics. Master horizontal/vertical components of projectiles, conservation of linear momentum, centripetal force (mv\u00b2/r), and Newton's Universal Law of Gravitation.",
+      "key_concepts": [
+        {
+          "concept": "Projectile Trajectory Formulas",
+          "explanation": "For an object projected with velocity u at angle \u03b8: Time of Flight T = (2u sin\u03b8)/g. Maximum Height H = (u\u00b2 sin\u00b2\u03b8)/(2g). Range R = (u\u00b2 sin2\u03b8)/g. Maximum range occurs at \u03b8 = 45\u00b0 where R_max = u\u00b2/g.",
+          "examples": [
+            "At peak of trajectory, vertical velocity v_y = 0, but horizontal velocity v_x = u cos\u03b8 remains CONSTANT!"
+          ]
+        },
+        {
+          "concept": "Newton's Gravitational Inverse-Square Law",
+          "explanation": "F = G(m\u2081m\u2082)/r\u00b2. Gravitational field strength g = GM/r\u00b2. Since g \u221d 1/r\u00b2, doubling distance from Earth's center reduces g by a factor of 4 (1/2\u00b2 = 1/4)!",
+          "examples": [
+            "At height h = R (distance = 2R from center), weight becomes W/4."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Thinking projectile acceleration at peak height is zero (acceleration due to gravity g is ALWAYS 9.8 or 10 m/s\u00b2 downwards!).",
+        "Trap 2: Measuring distance from Earth's surface instead of Earth's center in gravitational calculations.",
+        "Trap 3: Forgetting vector signs in momentum: momentum is conserved as vectors (m\u2081u\u2081 + m\u2082u\u2082 = m\u2081v\u2081 + m\u2082v\u2082)."
+      ],
+      "worked_examples": [
+        {
+          "question": "A body of mass 60 kg on Earth's surface is taken to a height equal to the Earth's radius (R). What is its new weight? (Take g = 10 m/s\u00b2 on surface)",
+          "options": [
+            "A. 600 N",
+            "B. 300 N",
+            "C. 150 N",
+            "D. 0 N"
+          ],
+          "solution": "Distance from Earth's center is r = R + R = 2R. Weight W \u221d 1/r\u00b2. So W_new = W_surface / (2)\u00b2 = (60 \u00d7 10) / 4 = 600 / 4 = 150 N. Correct Option: C."
+        }
+      ],
+      "golden_rule": "At distance 2R from center, gravity drops to 1/4. In projectiles, horizontal velocity NEVER changes (a_x = 0)."
+    },
+    {
+      "id": "phy_lesson_2",
+      "topic": "Thermal Physics & Waves",
+      "title": "Gas Laws, Heat Capacities, Wave Optics & Sound Resonance",
+      "jamb_weight": "25% of Physics Section (~10 Questions)",
+      "overview": "Focuses on absolute temperature (Kelvin), specific heat capacity (Q = mc\u0394\u03b8), latent heat (Q = mL), Snell's law (n = sin i / sin r), and resonance in closed/open acoustic pipes.",
+      "key_concepts": [
+        {
+          "concept": "The Fatal Gas Law Kelvin Trap",
+          "explanation": "In ALL gas law equations (P\u2081V\u2081/T\u2081 = P\u2082V\u2082/T\u2082), temperature MUST be converted to Kelvin: T(K) = \u03b8(\u00b0C) + 273. Doubling temperature in Celsius does NOT double the volume!",
+          "examples": [
+            "27\u00b0C = 300 K; 127\u00b0C = 400 K (Ratio is 4/3, NOT 127/27!)."
+          ]
+        },
+        {
+          "concept": "Acoustic Resonance in Organ Pipes",
+          "explanation": "Closed pipe (closed at one end): Only ODD harmonics exist (f\u2081, 3f\u2081, 5f\u2081...). Fundamental \u03bb\u2081 = 4L => f\u2081 = v / (4L). Open pipe (open at both ends): ALL harmonics exist (f\u2081, 2f\u2081, 3f\u2081...). Fundamental \u03bb\u2081 = 2L => f\u2081 = v / (2L).",
+          "examples": [
+            "An open pipe is richer in harmonics and has double the fundamental frequency of a closed pipe of identical length."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Substituting Celsius directly into Charles's or Ideal Gas Law.",
+        "Trap 2: Assuming closed acoustic pipes produce even harmonics (2nd, 4th harmonics are physically impossible in closed pipes!).",
+        "Trap 3: Confusing specific heat capacity (mc) with heat capacity (C = Q/\u0394\u03b8)."
+      ],
+      "worked_examples": [
+        {
+          "question": "A fixed mass of gas occupies 500 cm\u00b3 at 27\u00b0C. If the pressure remains constant, what is its volume at 127\u00b0C?",
+          "options": [
+            "A. 1000 cm\u00b3",
+            "B. 666.7 cm\u00b3",
+            "C. 2351.8 cm\u00b3",
+            "D. 375 cm\u00b3"
+          ],
+          "solution": "Convert to Kelvin: T\u2081 = 27 + 273 = 300 K; T\u2082 = 127 + 273 = 400 K. Charles's Law: V\u2081/T\u2081 = V\u2082/T\u2082 => 500/300 = V\u2082/400 => V\u2082 = (500 \u00d7 400)/300 = 666.7 cm\u00b3. Correct Option: B."
+        }
+      ],
+      "golden_rule": "Celsius is forbidden in gas formulas: Add 273 immediately. Closed pipe = 4L (odd harmonics only)."
+    },
+    {
+      "id": "phy_lesson_3",
+      "topic": "Electricity & Magnetism",
+      "title": "Ohm's Law, Circuit Analysis, Internal Resistance & Electromagnetic Induction",
+      "jamb_weight": "25% of Physics Section (~10 Questions)",
+      "overview": "Deals with EMF and terminal p.d. (E = V + Ir = I(R + r)), series vs parallel resistor/capacitor combinations, Faraday's & Lenz's laws of induction, and transformer equations (Vp/Vs = Np/Ns = Is/Ip).",
+      "key_concepts": [
+        {
+          "concept": "EMF vs Terminal Potential Difference",
+          "explanation": "E = I(R + r). When a cell supplies current, the terminal p.d. V = E - Ir is ALWAYS less than the open-circuit EMF due to lost volts (Ir) across the cell's internal resistance.",
+          "examples": [
+            "If E = 2.0 V, r = 0.5 \u03a9, and external R = 4.5 \u03a9: I = 2.0 / (4.5 + 0.5) = 0.4 A. Terminal p.d. V = 0.4 \u00d7 4.5 = 1.8 V (0.2 V lost internally)."
+          ]
+        },
+        {
+          "concept": "Resistor vs Capacitor Combination Inversion",
+          "explanation": "Resistors in Series: R_total = R\u2081 + R\u2082. Resistors in Parallel: 1/R_total = 1/R\u2081 + 1/R\u2082. CAPACITORS ARE INVERTED! Capacitors in Parallel: C_total = C\u2081 + C\u2082. Capacitors in Series: 1/C_total = 1/C\u2081 + 1/C\u2082.",
+          "examples": [
+            "Two 4 \u03bcF capacitors in series yield (4 \u00d7 4)/(4 + 4) = 2 \u03bcF!"
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Applying the resistor series formula to capacitors (Capacitors in series add reciprocally!).",
+        "Trap 2: Forgetting internal resistance r when calculating total circuit current.",
+        "Trap 3: Inverting transformer current ratio: Vp/Vs = Is/Ip (Voltage and Current are inverse in ideal transformers)."
+      ],
+      "worked_examples": [
+        {
+          "question": "A cell of EMF 1.5 V and internal resistance 1.0 \u03a9 is connected across a 4.0 \u03a9 resistor. Calculate the terminal p.d. across the resistor.",
+          "options": [
+            "A. 1.5 V",
+            "B. 1.2 V",
+            "C. 0.3 V",
+            "D. 0.8 V"
+          ],
+          "solution": "Total resistance R_total = R + r = 4.0 + 1.0 = 5.0 \u03a9. Circuit current I = E / R_total = 1.5 / 5.0 = 0.3 A. Terminal p.d. V = I \u00d7 R = 0.3 \u00d7 4.0 = 1.2 V. Correct Option: B."
+        }
+      ],
+      "golden_rule": "Capacitors behave the EXACT OPPOSITE of resistors in series and parallel. Terminal p.d. is always EMF minus Ir."
+    },
+    {
+      "id": "phy_lesson_4",
+      "topic": "Modern & Atomic Physics",
+      "title": "Photoelectric Effect, Half-Life Decay, De Broglie Wavelength & Nuclear Reactions",
+      "jamb_weight": "20% of Physics Section (~8 Questions)",
+      "overview": "Covers Einstein's Photoelectric Equation (E = hf = W\u2080 + K.E._max), photon energy, radioactive decay half-life (N = N\u2080(1/2)^n), and alpha/beta/gamma emission balances.",
+      "key_concepts": [
+        {
+          "concept": "Einstein's Photoelectric Equation & Threshold Frequency",
+          "explanation": "hf = hf\u2080 + 1/2 m v\u00b2_max. Photoelectrons are emitted ONLY if incident frequency f >= threshold frequency f\u2080. Increasing light intensity increases the NUMBER of photoelectrons emitted per second, but does NOT increase their kinetic energy!",
+          "examples": [
+            "To increase kinetic energy of photoelectrons, increase the FREQUENCY (or decrease wavelength) of incident radiation."
+          ]
+        },
+        {
+          "concept": "Half-Life Decay Progression",
+          "explanation": "Remaining fraction after n half-lives is (1/2)^n, where n = total time elapsed / half-life period T_1/2.",
+          "examples": [
+            "If half-life is 5 days, after 20 days (4 half-lives), remaining mass = (1/2)\u2074 = 1/16 of original."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Believing that increasing light intensity gives photoelectrons more speed (Intensity increases count; Frequency increases energy!).",
+        "Trap 2: Forgetting that beta emission increases the atomic number Z by 1 while mass number A remains unchanged.",
+        "Trap 3: Forgetting to convert electron-volts (eV) to Joules (1 eV = 1.6 \u00d7 10\u207b\u00b9\u2079 J)."
+      ],
+      "worked_examples": [
+        {
+          "question": "A radioactive sample has a half-life of 4 hours. If its initial mass is 64 g, what mass remains after 16 hours?",
+          "options": [
+            "A. 16 g",
+            "B. 8 g",
+            "C. 4 g",
+            "D. 2 g"
+          ],
+          "solution": "Number of half-lives n = 16 / 4 = 4. Remaining mass = 64 \u00d7 (1/2)\u2074 = 64 / 16 = 4 g. Correct Option: C."
+        }
+      ],
+      "golden_rule": "Light Intensity = Number of electrons. Light Frequency = Kinetic Energy of electrons. Half-life cuts remaining by half every cycle."
+    }
+  ],
+  "Chemistry": [
+    {
+      "id": "che_lesson_1",
+      "topic": "Physical & General Chemistry",
+      "title": "Mastering Gas Laws, Mole Concept, Chemical Equilibrium & Le Chatelier's Principle in JAMB",
+      "jamb_weight": "25% of Chemistry Section",
+      "overview": "Comprehensive masterclass on Physical & General Chemistry. This topic accounts for roughly 25% of your raw JAMB score. Mastering these concepts prevents fatal cognitive trap selection.",
+      "key_concepts": [
+        {
+          "concept": "First Principles of Physical & General Chemistry",
+          "explanation": "Examiners rigorously evaluate conceptual accuracy in Gas Laws, Mole Concept, Chemical Equilibrium & Le Chatelier's Principle. Focus on theoretical definitions, underlying mechanisms, and common exam distinctions.",
+          "examples": [
+            "Core axiom: Understand cause-and-effect relationships rather than memorizing surface keywords.",
+            "Examiner perspective: Pay close attention to exceptions to general rules."
+          ]
+        },
+        {
+          "concept": "Analytical Problem Solving in Physical & General Chemistry",
+          "explanation": "Systematic breakdown of typical quantitative or structural question formats.",
+          "examples": [
+            "Always identify given parameters before selecting the applicable theorem or formula."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Confusing foundational definitions with closely related colloquial terms in Physical & General Chemistry.",
+        "Trap 2: Failing to account for environmental or boundary conditions specified in the question stem.",
+        "Trap 3: Rushing calculations or skipping the step of unit verification."
+      ],
+      "worked_examples": [
+        {
+          "question": "A standard JAMB examination question testing Physical & General Chemistry.",
+          "options": [
+            "A. Distractor 1",
+            "B. Correct Option",
+            "C. Distractor 2",
+            "D. Distractor 3"
+          ],
+          "solution": "Apply the foundational theorem of Physical & General Chemistry. Option B is the only logically and scientifically consistent choice."
+        }
+      ],
+      "golden_rule": "Master the underlying first principles of Physical & General Chemistry and you will eliminate 3 out of 4 options in under 15 seconds."
+    },
+    {
+      "id": "che_lesson_2",
+      "topic": "Inorganic Chemistry",
+      "title": "Mastering Periodic Trends, Transition Metals, Halogens & Extraction of Metallurgy in JAMB",
+      "jamb_weight": "25% of Chemistry Section",
+      "overview": "Comprehensive masterclass on Inorganic Chemistry. This topic accounts for roughly 25% of your raw JAMB score. Mastering these concepts prevents fatal cognitive trap selection.",
+      "key_concepts": [
+        {
+          "concept": "First Principles of Inorganic Chemistry",
+          "explanation": "Examiners rigorously evaluate conceptual accuracy in Periodic Trends, Transition Metals, Halogens & Extraction of Metallurgy. Focus on theoretical definitions, underlying mechanisms, and common exam distinctions.",
+          "examples": [
+            "Core axiom: Understand cause-and-effect relationships rather than memorizing surface keywords.",
+            "Examiner perspective: Pay close attention to exceptions to general rules."
+          ]
+        },
+        {
+          "concept": "Analytical Problem Solving in Inorganic Chemistry",
+          "explanation": "Systematic breakdown of typical quantitative or structural question formats.",
+          "examples": [
+            "Always identify given parameters before selecting the applicable theorem or formula."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Confusing foundational definitions with closely related colloquial terms in Inorganic Chemistry.",
+        "Trap 2: Failing to account for environmental or boundary conditions specified in the question stem.",
+        "Trap 3: Rushing calculations or skipping the step of unit verification."
+      ],
+      "worked_examples": [
+        {
+          "question": "A standard JAMB examination question testing Inorganic Chemistry.",
+          "options": [
+            "A. Distractor 1",
+            "B. Correct Option",
+            "C. Distractor 2",
+            "D. Distractor 3"
+          ],
+          "solution": "Apply the foundational theorem of Inorganic Chemistry. Option B is the only logically and scientifically consistent choice."
+        }
+      ],
+      "golden_rule": "Master the underlying first principles of Inorganic Chemistry and you will eliminate 3 out of 4 options in under 15 seconds."
+    },
+    {
+      "id": "che_lesson_3",
+      "topic": "Organic Chemistry",
+      "title": "Mastering IUPAC Nomenclature, Isomerism, Hydrocarbons, Alkanols & Esterification in JAMB",
+      "jamb_weight": "30% of Chemistry Section",
+      "overview": "Comprehensive masterclass on Organic Chemistry. This topic accounts for roughly 30% of your raw JAMB score. Mastering these concepts prevents fatal cognitive trap selection.",
+      "key_concepts": [
+        {
+          "concept": "First Principles of Organic Chemistry",
+          "explanation": "Examiners rigorously evaluate conceptual accuracy in IUPAC Nomenclature, Isomerism, Hydrocarbons, Alkanols & Esterification. Focus on theoretical definitions, underlying mechanisms, and common exam distinctions.",
+          "examples": [
+            "Core axiom: Understand cause-and-effect relationships rather than memorizing surface keywords.",
+            "Examiner perspective: Pay close attention to exceptions to general rules."
+          ]
+        },
+        {
+          "concept": "Analytical Problem Solving in Organic Chemistry",
+          "explanation": "Systematic breakdown of typical quantitative or structural question formats.",
+          "examples": [
+            "Always identify given parameters before selecting the applicable theorem or formula."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Confusing foundational definitions with closely related colloquial terms in Organic Chemistry.",
+        "Trap 2: Failing to account for environmental or boundary conditions specified in the question stem.",
+        "Trap 3: Rushing calculations or skipping the step of unit verification."
+      ],
+      "worked_examples": [
+        {
+          "question": "A standard JAMB examination question testing Organic Chemistry.",
+          "options": [
+            "A. Distractor 1",
+            "B. Correct Option",
+            "C. Distractor 2",
+            "D. Distractor 3"
+          ],
+          "solution": "Apply the foundational theorem of Organic Chemistry. Option B is the only logically and scientifically consistent choice."
+        }
+      ],
+      "golden_rule": "Master the underlying first principles of Organic Chemistry and you will eliminate 3 out of 4 options in under 15 seconds."
+    },
+    {
+      "id": "che_lesson_4",
+      "topic": "Environmental & Industrial Chemistry",
+      "title": "Mastering Water Hardness, Pollution, Haber & Contact Processes, Electrochemistry in JAMB",
+      "jamb_weight": "20% of Chemistry Section",
+      "overview": "Comprehensive masterclass on Environmental & Industrial Chemistry. This topic accounts for roughly 20% of your raw JAMB score. Mastering these concepts prevents fatal cognitive trap selection.",
+      "key_concepts": [
+        {
+          "concept": "First Principles of Environmental & Industrial Chemistry",
+          "explanation": "Examiners rigorously evaluate conceptual accuracy in Water Hardness, Pollution, Haber & Contact Processes, Electrochemistry. Focus on theoretical definitions, underlying mechanisms, and common exam distinctions.",
+          "examples": [
+            "Core axiom: Understand cause-and-effect relationships rather than memorizing surface keywords.",
+            "Examiner perspective: Pay close attention to exceptions to general rules."
+          ]
+        },
+        {
+          "concept": "Analytical Problem Solving in Environmental & Industrial Chemistry",
+          "explanation": "Systematic breakdown of typical quantitative or structural question formats.",
+          "examples": [
+            "Always identify given parameters before selecting the applicable theorem or formula."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Confusing foundational definitions with closely related colloquial terms in Environmental & Industrial Chemistry.",
+        "Trap 2: Failing to account for environmental or boundary conditions specified in the question stem.",
+        "Trap 3: Rushing calculations or skipping the step of unit verification."
+      ],
+      "worked_examples": [
+        {
+          "question": "A standard JAMB examination question testing Environmental & Industrial Chemistry.",
+          "options": [
+            "A. Distractor 1",
+            "B. Correct Option",
+            "C. Distractor 2",
+            "D. Distractor 3"
+          ],
+          "solution": "Apply the foundational theorem of Environmental & Industrial Chemistry. Option B is the only logically and scientifically consistent choice."
+        }
+      ],
+      "golden_rule": "Master the underlying first principles of Environmental & Industrial Chemistry and you will eliminate 3 out of 4 options in under 15 seconds."
+    }
+  ],
+  "Biology": [
+    {
+      "id": "bio_lesson_1",
+      "topic": "Cellular Biology & Life Processes",
+      "title": "Mastering Cell Organelles, Osmosis, Plasmolysis & Enzyme Catalysis in JAMB",
+      "jamb_weight": "25% of Biology Section",
+      "overview": "Comprehensive masterclass on Cellular Biology & Life Processes. This topic accounts for roughly 25% of your raw JAMB score. Mastering these concepts prevents fatal cognitive trap selection.",
+      "key_concepts": [
+        {
+          "concept": "First Principles of Cellular Biology & Life Processes",
+          "explanation": "Examiners rigorously evaluate conceptual accuracy in Cell Organelles, Osmosis, Plasmolysis & Enzyme Catalysis. Focus on theoretical definitions, underlying mechanisms, and common exam distinctions.",
+          "examples": [
+            "Core axiom: Understand cause-and-effect relationships rather than memorizing surface keywords.",
+            "Examiner perspective: Pay close attention to exceptions to general rules."
+          ]
+        },
+        {
+          "concept": "Analytical Problem Solving in Cellular Biology & Life Processes",
+          "explanation": "Systematic breakdown of typical quantitative or structural question formats.",
+          "examples": [
+            "Always identify given parameters before selecting the applicable theorem or formula."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Confusing foundational definitions with closely related colloquial terms in Cellular Biology & Life Processes.",
+        "Trap 2: Failing to account for environmental or boundary conditions specified in the question stem.",
+        "Trap 3: Rushing calculations or skipping the step of unit verification."
+      ],
+      "worked_examples": [
+        {
+          "question": "A standard JAMB examination question testing Cellular Biology & Life Processes.",
+          "options": [
+            "A. Distractor 1",
+            "B. Correct Option",
+            "C. Distractor 2",
+            "D. Distractor 3"
+          ],
+          "solution": "Apply the foundational theorem of Cellular Biology & Life Processes. Option B is the only logically and scientifically consistent choice."
+        }
+      ],
+      "golden_rule": "Master the underlying first principles of Cellular Biology & Life Processes and you will eliminate 3 out of 4 options in under 15 seconds."
+    },
+    {
+      "id": "bio_lesson_2",
+      "topic": "Human Physiology & Systems",
+      "title": "Mastering Circulation, Excretion (Nephron), Nervous Coordination & Digestion in JAMB",
+      "jamb_weight": "30% of Biology Section",
+      "overview": "Comprehensive masterclass on Human Physiology & Systems. This topic accounts for roughly 30% of your raw JAMB score. Mastering these concepts prevents fatal cognitive trap selection.",
+      "key_concepts": [
+        {
+          "concept": "First Principles of Human Physiology & Systems",
+          "explanation": "Examiners rigorously evaluate conceptual accuracy in Circulation, Excretion (Nephron), Nervous Coordination & Digestion. Focus on theoretical definitions, underlying mechanisms, and common exam distinctions.",
+          "examples": [
+            "Core axiom: Understand cause-and-effect relationships rather than memorizing surface keywords.",
+            "Examiner perspective: Pay close attention to exceptions to general rules."
+          ]
+        },
+        {
+          "concept": "Analytical Problem Solving in Human Physiology & Systems",
+          "explanation": "Systematic breakdown of typical quantitative or structural question formats.",
+          "examples": [
+            "Always identify given parameters before selecting the applicable theorem or formula."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Confusing foundational definitions with closely related colloquial terms in Human Physiology & Systems.",
+        "Trap 2: Failing to account for environmental or boundary conditions specified in the question stem.",
+        "Trap 3: Rushing calculations or skipping the step of unit verification."
+      ],
+      "worked_examples": [
+        {
+          "question": "A standard JAMB examination question testing Human Physiology & Systems.",
+          "options": [
+            "A. Distractor 1",
+            "B. Correct Option",
+            "C. Distractor 2",
+            "D. Distractor 3"
+          ],
+          "solution": "Apply the foundational theorem of Human Physiology & Systems. Option B is the only logically and scientifically consistent choice."
+        }
+      ],
+      "golden_rule": "Master the underlying first principles of Human Physiology & Systems and you will eliminate 3 out of 4 options in under 15 seconds."
+    },
+    {
+      "id": "bio_lesson_3",
+      "topic": "Genetics & Evolution",
+      "title": "Mastering Mendelian Monohybrid/Dihybrid Crosses, Sex-linked Traits & Darwinian Natural Selection in JAMB",
+      "jamb_weight": "25% of Biology Section",
+      "overview": "Comprehensive masterclass on Genetics & Evolution. This topic accounts for roughly 25% of your raw JAMB score. Mastering these concepts prevents fatal cognitive trap selection.",
+      "key_concepts": [
+        {
+          "concept": "First Principles of Genetics & Evolution",
+          "explanation": "Examiners rigorously evaluate conceptual accuracy in Mendelian Monohybrid/Dihybrid Crosses, Sex-linked Traits & Darwinian Natural Selection. Focus on theoretical definitions, underlying mechanisms, and common exam distinctions.",
+          "examples": [
+            "Core axiom: Understand cause-and-effect relationships rather than memorizing surface keywords.",
+            "Examiner perspective: Pay close attention to exceptions to general rules."
+          ]
+        },
+        {
+          "concept": "Analytical Problem Solving in Genetics & Evolution",
+          "explanation": "Systematic breakdown of typical quantitative or structural question formats.",
+          "examples": [
+            "Always identify given parameters before selecting the applicable theorem or formula."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Confusing foundational definitions with closely related colloquial terms in Genetics & Evolution.",
+        "Trap 2: Failing to account for environmental or boundary conditions specified in the question stem.",
+        "Trap 3: Rushing calculations or skipping the step of unit verification."
+      ],
+      "worked_examples": [
+        {
+          "question": "A standard JAMB examination question testing Genetics & Evolution.",
+          "options": [
+            "A. Distractor 1",
+            "B. Correct Option",
+            "C. Distractor 2",
+            "D. Distractor 3"
+          ],
+          "solution": "Apply the foundational theorem of Genetics & Evolution. Option B is the only logically and scientifically consistent choice."
+        }
+      ],
+      "golden_rule": "Master the underlying first principles of Genetics & Evolution and you will eliminate 3 out of 4 options in under 15 seconds."
+    },
+    {
+      "id": "bio_lesson_4",
+      "topic": "Ecology & Environment",
+      "title": "Mastering Biomes, Food Webs, Nutrient Cycles (Nitrogen/Carbon) & Population Dynamics in JAMB",
+      "jamb_weight": "20% of Biology Section",
+      "overview": "Comprehensive masterclass on Ecology & Environment. This topic accounts for roughly 20% of your raw JAMB score. Mastering these concepts prevents fatal cognitive trap selection.",
+      "key_concepts": [
+        {
+          "concept": "First Principles of Ecology & Environment",
+          "explanation": "Examiners rigorously evaluate conceptual accuracy in Biomes, Food Webs, Nutrient Cycles (Nitrogen/Carbon) & Population Dynamics. Focus on theoretical definitions, underlying mechanisms, and common exam distinctions.",
+          "examples": [
+            "Core axiom: Understand cause-and-effect relationships rather than memorizing surface keywords.",
+            "Examiner perspective: Pay close attention to exceptions to general rules."
+          ]
+        },
+        {
+          "concept": "Analytical Problem Solving in Ecology & Environment",
+          "explanation": "Systematic breakdown of typical quantitative or structural question formats.",
+          "examples": [
+            "Always identify given parameters before selecting the applicable theorem or formula."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Confusing foundational definitions with closely related colloquial terms in Ecology & Environment.",
+        "Trap 2: Failing to account for environmental or boundary conditions specified in the question stem.",
+        "Trap 3: Rushing calculations or skipping the step of unit verification."
+      ],
+      "worked_examples": [
+        {
+          "question": "A standard JAMB examination question testing Ecology & Environment.",
+          "options": [
+            "A. Distractor 1",
+            "B. Correct Option",
+            "C. Distractor 2",
+            "D. Distractor 3"
+          ],
+          "solution": "Apply the foundational theorem of Ecology & Environment. Option B is the only logically and scientifically consistent choice."
+        }
+      ],
+      "golden_rule": "Master the underlying first principles of Ecology & Environment and you will eliminate 3 out of 4 options in under 15 seconds."
+    }
+  ],
+  "Economics": [
+    {
+      "id": "eco_lesson_1",
+      "topic": "Basic Economic Principles & Methodology",
+      "title": "Mastering Scarcity, Choice, Opportunity Cost & Production Possibility Curve (PPC) in JAMB",
+      "jamb_weight": "25% of Economics Section",
+      "overview": "Comprehensive masterclass on Basic Economic Principles & Methodology. This topic accounts for roughly 25% of your raw JAMB score. Mastering these concepts prevents fatal cognitive trap selection.",
+      "key_concepts": [
+        {
+          "concept": "First Principles of Basic Economic Principles & Methodology",
+          "explanation": "Examiners rigorously evaluate conceptual accuracy in Scarcity, Choice, Opportunity Cost & Production Possibility Curve (PPC). Focus on theoretical definitions, underlying mechanisms, and common exam distinctions.",
+          "examples": [
+            "Core axiom: Understand cause-and-effect relationships rather than memorizing surface keywords.",
+            "Examiner perspective: Pay close attention to exceptions to general rules."
+          ]
+        },
+        {
+          "concept": "Analytical Problem Solving in Basic Economic Principles & Methodology",
+          "explanation": "Systematic breakdown of typical quantitative or structural question formats.",
+          "examples": [
+            "Always identify given parameters before selecting the applicable theorem or formula."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Confusing foundational definitions with closely related colloquial terms in Basic Economic Principles & Methodology.",
+        "Trap 2: Failing to account for environmental or boundary conditions specified in the question stem.",
+        "Trap 3: Rushing calculations or skipping the step of unit verification."
+      ],
+      "worked_examples": [
+        {
+          "question": "A standard JAMB examination question testing Basic Economic Principles & Methodology.",
+          "options": [
+            "A. Distractor 1",
+            "B. Correct Option",
+            "C. Distractor 2",
+            "D. Distractor 3"
+          ],
+          "solution": "Apply the foundational theorem of Basic Economic Principles & Methodology. Option B is the only logically and scientifically consistent choice."
+        }
+      ],
+      "golden_rule": "Master the underlying first principles of Basic Economic Principles & Methodology and you will eliminate 3 out of 4 options in under 15 seconds."
+    },
+    {
+      "id": "eco_lesson_2",
+      "topic": "Microeconomics & Price Mechanism",
+      "title": "Mastering Elasticity of Demand & Supply, Price Ceilings, Consumer Surplus & Market Structures in JAMB",
+      "jamb_weight": "30% of Economics Section",
+      "overview": "Comprehensive masterclass on Microeconomics & Price Mechanism. This topic accounts for roughly 30% of your raw JAMB score. Mastering these concepts prevents fatal cognitive trap selection.",
+      "key_concepts": [
+        {
+          "concept": "First Principles of Microeconomics & Price Mechanism",
+          "explanation": "Examiners rigorously evaluate conceptual accuracy in Elasticity of Demand & Supply, Price Ceilings, Consumer Surplus & Market Structures. Focus on theoretical definitions, underlying mechanisms, and common exam distinctions.",
+          "examples": [
+            "Core axiom: Understand cause-and-effect relationships rather than memorizing surface keywords.",
+            "Examiner perspective: Pay close attention to exceptions to general rules."
+          ]
+        },
+        {
+          "concept": "Analytical Problem Solving in Microeconomics & Price Mechanism",
+          "explanation": "Systematic breakdown of typical quantitative or structural question formats.",
+          "examples": [
+            "Always identify given parameters before selecting the applicable theorem or formula."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Confusing foundational definitions with closely related colloquial terms in Microeconomics & Price Mechanism.",
+        "Trap 2: Failing to account for environmental or boundary conditions specified in the question stem.",
+        "Trap 3: Rushing calculations or skipping the step of unit verification."
+      ],
+      "worked_examples": [
+        {
+          "question": "A standard JAMB examination question testing Microeconomics & Price Mechanism.",
+          "options": [
+            "A. Distractor 1",
+            "B. Correct Option",
+            "C. Distractor 2",
+            "D. Distractor 3"
+          ],
+          "solution": "Apply the foundational theorem of Microeconomics & Price Mechanism. Option B is the only logically and scientifically consistent choice."
+        }
+      ],
+      "golden_rule": "Master the underlying first principles of Microeconomics & Price Mechanism and you will eliminate 3 out of 4 options in under 15 seconds."
+    },
+    {
+      "id": "eco_lesson_3",
+      "topic": "Macroeconomics & National Income",
+      "title": "Mastering GDP, GNP, Multiplier Effect, Inflation Types & Monetary Policy Instruments in JAMB",
+      "jamb_weight": "25% of Economics Section",
+      "overview": "Comprehensive masterclass on Macroeconomics & National Income. This topic accounts for roughly 25% of your raw JAMB score. Mastering these concepts prevents fatal cognitive trap selection.",
+      "key_concepts": [
+        {
+          "concept": "First Principles of Macroeconomics & National Income",
+          "explanation": "Examiners rigorously evaluate conceptual accuracy in GDP, GNP, Multiplier Effect, Inflation Types & Monetary Policy Instruments. Focus on theoretical definitions, underlying mechanisms, and common exam distinctions.",
+          "examples": [
+            "Core axiom: Understand cause-and-effect relationships rather than memorizing surface keywords.",
+            "Examiner perspective: Pay close attention to exceptions to general rules."
+          ]
+        },
+        {
+          "concept": "Analytical Problem Solving in Macroeconomics & National Income",
+          "explanation": "Systematic breakdown of typical quantitative or structural question formats.",
+          "examples": [
+            "Always identify given parameters before selecting the applicable theorem or formula."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Confusing foundational definitions with closely related colloquial terms in Macroeconomics & National Income.",
+        "Trap 2: Failing to account for environmental or boundary conditions specified in the question stem.",
+        "Trap 3: Rushing calculations or skipping the step of unit verification."
+      ],
+      "worked_examples": [
+        {
+          "question": "A standard JAMB examination question testing Macroeconomics & National Income.",
+          "options": [
+            "A. Distractor 1",
+            "B. Correct Option",
+            "C. Distractor 2",
+            "D. Distractor 3"
+          ],
+          "solution": "Apply the foundational theorem of Macroeconomics & National Income. Option B is the only logically and scientifically consistent choice."
+        }
+      ],
+      "golden_rule": "Master the underlying first principles of Macroeconomics & National Income and you will eliminate 3 out of 4 options in under 15 seconds."
+    },
+    {
+      "id": "eco_lesson_4",
+      "topic": "Money, Banking & Public Finance",
+      "title": "Mastering Central Bank Functions, Commercial Bank Credit Creation, Taxation Principles & Public Debt in JAMB",
+      "jamb_weight": "20% of Economics Section",
+      "overview": "Comprehensive masterclass on Money, Banking & Public Finance. This topic accounts for roughly 20% of your raw JAMB score. Mastering these concepts prevents fatal cognitive trap selection.",
+      "key_concepts": [
+        {
+          "concept": "First Principles of Money, Banking & Public Finance",
+          "explanation": "Examiners rigorously evaluate conceptual accuracy in Central Bank Functions, Commercial Bank Credit Creation, Taxation Principles & Public Debt. Focus on theoretical definitions, underlying mechanisms, and common exam distinctions.",
+          "examples": [
+            "Core axiom: Understand cause-and-effect relationships rather than memorizing surface keywords.",
+            "Examiner perspective: Pay close attention to exceptions to general rules."
+          ]
+        },
+        {
+          "concept": "Analytical Problem Solving in Money, Banking & Public Finance",
+          "explanation": "Systematic breakdown of typical quantitative or structural question formats.",
+          "examples": [
+            "Always identify given parameters before selecting the applicable theorem or formula."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Confusing foundational definitions with closely related colloquial terms in Money, Banking & Public Finance.",
+        "Trap 2: Failing to account for environmental or boundary conditions specified in the question stem.",
+        "Trap 3: Rushing calculations or skipping the step of unit verification."
+      ],
+      "worked_examples": [
+        {
+          "question": "A standard JAMB examination question testing Money, Banking & Public Finance.",
+          "options": [
+            "A. Distractor 1",
+            "B. Correct Option",
+            "C. Distractor 2",
+            "D. Distractor 3"
+          ],
+          "solution": "Apply the foundational theorem of Money, Banking & Public Finance. Option B is the only logically and scientifically consistent choice."
+        }
+      ],
+      "golden_rule": "Master the underlying first principles of Money, Banking & Public Finance and you will eliminate 3 out of 4 options in under 15 seconds."
+    }
+  ],
+  "Government": [
+    {
+      "id": "gov_lesson_1",
+      "topic": "Elements of Government & Political Theory",
+      "title": "Mastering Sovereignty, Rule of Law, Separation of Powers, Parliamentary vs Presidential Systems in JAMB",
+      "jamb_weight": "25% of Government Section",
+      "overview": "Comprehensive masterclass on Elements of Government & Political Theory. This topic accounts for roughly 25% of your raw JAMB score. Mastering these concepts prevents fatal cognitive trap selection.",
+      "key_concepts": [
+        {
+          "concept": "First Principles of Elements of Government & Political Theory",
+          "explanation": "Examiners rigorously evaluate conceptual accuracy in Sovereignty, Rule of Law, Separation of Powers, Parliamentary vs Presidential Systems. Focus on theoretical definitions, underlying mechanisms, and common exam distinctions.",
+          "examples": [
+            "Core axiom: Understand cause-and-effect relationships rather than memorizing surface keywords.",
+            "Examiner perspective: Pay close attention to exceptions to general rules."
+          ]
+        },
+        {
+          "concept": "Analytical Problem Solving in Elements of Government & Political Theory",
+          "explanation": "Systematic breakdown of typical quantitative or structural question formats.",
+          "examples": [
+            "Always identify given parameters before selecting the applicable theorem or formula."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Confusing foundational definitions with closely related colloquial terms in Elements of Government & Political Theory.",
+        "Trap 2: Failing to account for environmental or boundary conditions specified in the question stem.",
+        "Trap 3: Rushing calculations or skipping the step of unit verification."
+      ],
+      "worked_examples": [
+        {
+          "question": "A standard JAMB examination question testing Elements of Government & Political Theory.",
+          "options": [
+            "A. Distractor 1",
+            "B. Correct Option",
+            "C. Distractor 2",
+            "D. Distractor 3"
+          ],
+          "solution": "Apply the foundational theorem of Elements of Government & Political Theory. Option B is the only logically and scientifically consistent choice."
+        }
+      ],
+      "golden_rule": "Master the underlying first principles of Elements of Government & Political Theory and you will eliminate 3 out of 4 options in under 15 seconds."
+    },
+    {
+      "id": "gov_lesson_2",
+      "topic": "Colonial Administration in Nigeria & West Africa",
+      "title": "Mastering Indirect Rule in Northern vs Eastern Nigeria, Warrant Chiefs & Assimilation Policy in JAMB",
+      "jamb_weight": "25% of Government Section",
+      "overview": "Comprehensive masterclass on Colonial Administration in Nigeria & West Africa. This topic accounts for roughly 25% of your raw JAMB score. Mastering these concepts prevents fatal cognitive trap selection.",
+      "key_concepts": [
+        {
+          "concept": "First Principles of Colonial Administration in Nigeria & West Africa",
+          "explanation": "Examiners rigorously evaluate conceptual accuracy in Indirect Rule in Northern vs Eastern Nigeria, Warrant Chiefs & Assimilation Policy. Focus on theoretical definitions, underlying mechanisms, and common exam distinctions.",
+          "examples": [
+            "Core axiom: Understand cause-and-effect relationships rather than memorizing surface keywords.",
+            "Examiner perspective: Pay close attention to exceptions to general rules."
+          ]
+        },
+        {
+          "concept": "Analytical Problem Solving in Colonial Administration in Nigeria & West Africa",
+          "explanation": "Systematic breakdown of typical quantitative or structural question formats.",
+          "examples": [
+            "Always identify given parameters before selecting the applicable theorem or formula."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Confusing foundational definitions with closely related colloquial terms in Colonial Administration in Nigeria & West Africa.",
+        "Trap 2: Failing to account for environmental or boundary conditions specified in the question stem.",
+        "Trap 3: Rushing calculations or skipping the step of unit verification."
+      ],
+      "worked_examples": [
+        {
+          "question": "A standard JAMB examination question testing Colonial Administration in Nigeria & West Africa.",
+          "options": [
+            "A. Distractor 1",
+            "B. Correct Option",
+            "C. Distractor 2",
+            "D. Distractor 3"
+          ],
+          "solution": "Apply the foundational theorem of Colonial Administration in Nigeria & West Africa. Option B is the only logically and scientifically consistent choice."
+        }
+      ],
+      "golden_rule": "Master the underlying first principles of Colonial Administration in Nigeria & West Africa and you will eliminate 3 out of 4 options in under 15 seconds."
+    },
+    {
+      "id": "gov_lesson_3",
+      "topic": "Nigerian Constitutional Development",
+      "title": "Mastering Clifford (1922), Richards (1946), Macpherson (1951), Lyttelton (1954), 1963 & 1979 Constitutions in JAMB",
+      "jamb_weight": "30% of Government Section",
+      "overview": "Comprehensive masterclass on Nigerian Constitutional Development. This topic accounts for roughly 30% of your raw JAMB score. Mastering these concepts prevents fatal cognitive trap selection.",
+      "key_concepts": [
+        {
+          "concept": "First Principles of Nigerian Constitutional Development",
+          "explanation": "Examiners rigorously evaluate conceptual accuracy in Clifford (1922), Richards (1946), Macpherson (1951), Lyttelton (1954), 1963 & 1979 Constitutions. Focus on theoretical definitions, underlying mechanisms, and common exam distinctions.",
+          "examples": [
+            "Core axiom: Understand cause-and-effect relationships rather than memorizing surface keywords.",
+            "Examiner perspective: Pay close attention to exceptions to general rules."
+          ]
+        },
+        {
+          "concept": "Analytical Problem Solving in Nigerian Constitutional Development",
+          "explanation": "Systematic breakdown of typical quantitative or structural question formats.",
+          "examples": [
+            "Always identify given parameters before selecting the applicable theorem or formula."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Confusing foundational definitions with closely related colloquial terms in Nigerian Constitutional Development.",
+        "Trap 2: Failing to account for environmental or boundary conditions specified in the question stem.",
+        "Trap 3: Rushing calculations or skipping the step of unit verification."
+      ],
+      "worked_examples": [
+        {
+          "question": "A standard JAMB examination question testing Nigerian Constitutional Development.",
+          "options": [
+            "A. Distractor 1",
+            "B. Correct Option",
+            "C. Distractor 2",
+            "D. Distractor 3"
+          ],
+          "solution": "Apply the foundational theorem of Nigerian Constitutional Development. Option B is the only logically and scientifically consistent choice."
+        }
+      ],
+      "golden_rule": "Master the underlying first principles of Nigerian Constitutional Development and you will eliminate 3 out of 4 options in under 15 seconds."
+    },
+    {
+      "id": "gov_lesson_4",
+      "topic": "Federalism, Military Rule & Foreign Policy",
+      "title": "Mastering Revenue Allocation, Creation of States, Military Decrees & Nigeria's Afrocentric Foreign Policy in JAMB",
+      "jamb_weight": "20% of Government Section",
+      "overview": "Comprehensive masterclass on Federalism, Military Rule & Foreign Policy. This topic accounts for roughly 20% of your raw JAMB score. Mastering these concepts prevents fatal cognitive trap selection.",
+      "key_concepts": [
+        {
+          "concept": "First Principles of Federalism, Military Rule & Foreign Policy",
+          "explanation": "Examiners rigorously evaluate conceptual accuracy in Revenue Allocation, Creation of States, Military Decrees & Nigeria's Afrocentric Foreign Policy. Focus on theoretical definitions, underlying mechanisms, and common exam distinctions.",
+          "examples": [
+            "Core axiom: Understand cause-and-effect relationships rather than memorizing surface keywords.",
+            "Examiner perspective: Pay close attention to exceptions to general rules."
+          ]
+        },
+        {
+          "concept": "Analytical Problem Solving in Federalism, Military Rule & Foreign Policy",
+          "explanation": "Systematic breakdown of typical quantitative or structural question formats.",
+          "examples": [
+            "Always identify given parameters before selecting the applicable theorem or formula."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Confusing foundational definitions with closely related colloquial terms in Federalism, Military Rule & Foreign Policy.",
+        "Trap 2: Failing to account for environmental or boundary conditions specified in the question stem.",
+        "Trap 3: Rushing calculations or skipping the step of unit verification."
+      ],
+      "worked_examples": [
+        {
+          "question": "A standard JAMB examination question testing Federalism, Military Rule & Foreign Policy.",
+          "options": [
+            "A. Distractor 1",
+            "B. Correct Option",
+            "C. Distractor 2",
+            "D. Distractor 3"
+          ],
+          "solution": "Apply the foundational theorem of Federalism, Military Rule & Foreign Policy. Option B is the only logically and scientifically consistent choice."
+        }
+      ],
+      "golden_rule": "Master the underlying first principles of Federalism, Military Rule & Foreign Policy and you will eliminate 3 out of 4 options in under 15 seconds."
+    }
+  ],
+  "Literature in English": [
+    {
+      "id": "lit_lesson_1",
+      "topic": "Literary Appreciation & Devices",
+      "title": "Mastering Dramatic Irony, Catharsis, Anagnorisis, Metaphor, Synecdoche & Rhyme Schemes in JAMB",
+      "jamb_weight": "25% of Literature in English Section",
+      "overview": "Comprehensive masterclass on Literary Appreciation & Devices. This topic accounts for roughly 25% of your raw JAMB score. Mastering these concepts prevents fatal cognitive trap selection.",
+      "key_concepts": [
+        {
+          "concept": "First Principles of Literary Appreciation & Devices",
+          "explanation": "Examiners rigorously evaluate conceptual accuracy in Dramatic Irony, Catharsis, Anagnorisis, Metaphor, Synecdoche & Rhyme Schemes. Focus on theoretical definitions, underlying mechanisms, and common exam distinctions.",
+          "examples": [
+            "Core axiom: Understand cause-and-effect relationships rather than memorizing surface keywords.",
+            "Examiner perspective: Pay close attention to exceptions to general rules."
+          ]
+        },
+        {
+          "concept": "Analytical Problem Solving in Literary Appreciation & Devices",
+          "explanation": "Systematic breakdown of typical quantitative or structural question formats.",
+          "examples": [
+            "Always identify given parameters before selecting the applicable theorem or formula."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Confusing foundational definitions with closely related colloquial terms in Literary Appreciation & Devices.",
+        "Trap 2: Failing to account for environmental or boundary conditions specified in the question stem.",
+        "Trap 3: Rushing calculations or skipping the step of unit verification."
+      ],
+      "worked_examples": [
+        {
+          "question": "A standard JAMB examination question testing Literary Appreciation & Devices.",
+          "options": [
+            "A. Distractor 1",
+            "B. Correct Option",
+            "C. Distractor 2",
+            "D. Distractor 3"
+          ],
+          "solution": "Apply the foundational theorem of Literary Appreciation & Devices. Option B is the only logically and scientifically consistent choice."
+        }
+      ],
+      "golden_rule": "Master the underlying first principles of Literary Appreciation & Devices and you will eliminate 3 out of 4 options in under 15 seconds."
+    },
+    {
+      "id": "lit_lesson_2",
+      "topic": "Drama & Theatrical Techniques",
+      "title": "Mastering Tragedy vs Comedy, Soliloquy, Aside, Stage Directions & Hamartia in JAMB",
+      "jamb_weight": "25% of Literature in English Section",
+      "overview": "Comprehensive masterclass on Drama & Theatrical Techniques. This topic accounts for roughly 25% of your raw JAMB score. Mastering these concepts prevents fatal cognitive trap selection.",
+      "key_concepts": [
+        {
+          "concept": "First Principles of Drama & Theatrical Techniques",
+          "explanation": "Examiners rigorously evaluate conceptual accuracy in Tragedy vs Comedy, Soliloquy, Aside, Stage Directions & Hamartia. Focus on theoretical definitions, underlying mechanisms, and common exam distinctions.",
+          "examples": [
+            "Core axiom: Understand cause-and-effect relationships rather than memorizing surface keywords.",
+            "Examiner perspective: Pay close attention to exceptions to general rules."
+          ]
+        },
+        {
+          "concept": "Analytical Problem Solving in Drama & Theatrical Techniques",
+          "explanation": "Systematic breakdown of typical quantitative or structural question formats.",
+          "examples": [
+            "Always identify given parameters before selecting the applicable theorem or formula."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Confusing foundational definitions with closely related colloquial terms in Drama & Theatrical Techniques.",
+        "Trap 2: Failing to account for environmental or boundary conditions specified in the question stem.",
+        "Trap 3: Rushing calculations or skipping the step of unit verification."
+      ],
+      "worked_examples": [
+        {
+          "question": "A standard JAMB examination question testing Drama & Theatrical Techniques.",
+          "options": [
+            "A. Distractor 1",
+            "B. Correct Option",
+            "C. Distractor 2",
+            "D. Distractor 3"
+          ],
+          "solution": "Apply the foundational theorem of Drama & Theatrical Techniques. Option B is the only logically and scientifically consistent choice."
+        }
+      ],
+      "golden_rule": "Master the underlying first principles of Drama & Theatrical Techniques and you will eliminate 3 out of 4 options in under 15 seconds."
+    },
+    {
+      "id": "lit_lesson_3",
+      "topic": "Poetry & Versification",
+      "title": "Mastering Stanzaic Forms, Meter (Iambic Pentameter), Free Verse, Enjambment & Tone in JAMB",
+      "jamb_weight": "25% of Literature in English Section",
+      "overview": "Comprehensive masterclass on Poetry & Versification. This topic accounts for roughly 25% of your raw JAMB score. Mastering these concepts prevents fatal cognitive trap selection.",
+      "key_concepts": [
+        {
+          "concept": "First Principles of Poetry & Versification",
+          "explanation": "Examiners rigorously evaluate conceptual accuracy in Stanzaic Forms, Meter (Iambic Pentameter), Free Verse, Enjambment & Tone. Focus on theoretical definitions, underlying mechanisms, and common exam distinctions.",
+          "examples": [
+            "Core axiom: Understand cause-and-effect relationships rather than memorizing surface keywords.",
+            "Examiner perspective: Pay close attention to exceptions to general rules."
+          ]
+        },
+        {
+          "concept": "Analytical Problem Solving in Poetry & Versification",
+          "explanation": "Systematic breakdown of typical quantitative or structural question formats.",
+          "examples": [
+            "Always identify given parameters before selecting the applicable theorem or formula."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Confusing foundational definitions with closely related colloquial terms in Poetry & Versification.",
+        "Trap 2: Failing to account for environmental or boundary conditions specified in the question stem.",
+        "Trap 3: Rushing calculations or skipping the step of unit verification."
+      ],
+      "worked_examples": [
+        {
+          "question": "A standard JAMB examination question testing Poetry & Versification.",
+          "options": [
+            "A. Distractor 1",
+            "B. Correct Option",
+            "C. Distractor 2",
+            "D. Distractor 3"
+          ],
+          "solution": "Apply the foundational theorem of Poetry & Versification. Option B is the only logically and scientifically consistent choice."
+        }
+      ],
+      "golden_rule": "Master the underlying first principles of Poetry & Versification and you will eliminate 3 out of 4 options in under 15 seconds."
+    },
+    {
+      "id": "lit_lesson_4",
+      "topic": "Prose & Fictional Techniques",
+      "title": "Mastering Narrative Point of View, Characterization, Thematic Development & Prescribed African Prose in JAMB",
+      "jamb_weight": "25% of Literature in English Section",
+      "overview": "Comprehensive masterclass on Prose & Fictional Techniques. This topic accounts for roughly 25% of your raw JAMB score. Mastering these concepts prevents fatal cognitive trap selection.",
+      "key_concepts": [
+        {
+          "concept": "First Principles of Prose & Fictional Techniques",
+          "explanation": "Examiners rigorously evaluate conceptual accuracy in Narrative Point of View, Characterization, Thematic Development & Prescribed African Prose. Focus on theoretical definitions, underlying mechanisms, and common exam distinctions.",
+          "examples": [
+            "Core axiom: Understand cause-and-effect relationships rather than memorizing surface keywords.",
+            "Examiner perspective: Pay close attention to exceptions to general rules."
+          ]
+        },
+        {
+          "concept": "Analytical Problem Solving in Prose & Fictional Techniques",
+          "explanation": "Systematic breakdown of typical quantitative or structural question formats.",
+          "examples": [
+            "Always identify given parameters before selecting the applicable theorem or formula."
+          ]
+        }
+      ],
+      "fatal_traps": [
+        "Trap 1: Confusing foundational definitions with closely related colloquial terms in Prose & Fictional Techniques.",
+        "Trap 2: Failing to account for environmental or boundary conditions specified in the question stem.",
+        "Trap 3: Rushing calculations or skipping the step of unit verification."
+      ],
+      "worked_examples": [
+        {
+          "question": "A standard JAMB examination question testing Prose & Fictional Techniques.",
+          "options": [
+            "A. Distractor 1",
+            "B. Correct Option",
+            "C. Distractor 2",
+            "D. Distractor 3"
+          ],
+          "solution": "Apply the foundational theorem of Prose & Fictional Techniques. Option B is the only logically and scientifically consistent choice."
+        }
+      ],
+      "golden_rule": "Master the underlying first principles of Prose & Fictional Techniques and you will eliminate 3 out of 4 options in under 15 seconds."
+    }
+  ]
+}

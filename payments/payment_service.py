@@ -7,17 +7,13 @@ import requests
 class PaymentService:
     def __init__(self):
         self.paystack_secret = os.getenv("PAYSTACK_SECRET_KEY", "")
-        # In-memory storage for active subscriptions and vouchers (can back with SQLite)
+        # In-memory fallback (production relies strictly on SQLite db.redeem_voucher_code)
         self.active_passes = {}
-        self.vouchers = {
-            "PASS-2025-DEMO-WEEK": {"plan": "weekly", "days": 7, "used": False},
-            "PASS-2025-VIP-MONTH": {"plan": "monthly", "days": 30, "used": False},
-            "PASS-2025-FULL-SEASON": {"plan": "season", "days": 120, "used": False}
-        }
+        self.vouchers = {}
         self.pricing = {
-            "weekly": {"name": "Weekly Drill Pass", "amount_ngn": 700, "days": 7},
-            "monthly": {"name": "Monthly Master Pass", "amount_ngn": 2200, "days": 30},
-            "season": {"name": "Full Season Guarantee Pass", "amount_ngn": 5000, "days": 120}
+            "weekly": {"name": "Weekly Drill Pass", "amount_ngn": 1000, "days": 7},
+            "monthly": {"name": "Monthly Master Pass", "amount_ngn": 2800, "days": 30},
+            "season": {"name": "Full Season Guarantee Pass", "amount_ngn": 6500, "days": 120}
         }
 
     def initiate_payment(self, email, phone, plan_id):
@@ -72,8 +68,8 @@ class PaymentService:
             "amount_ngn": plan["amount_ngn"],
             "virtual_account": virtual_account,
             "instructions": (
-                f"Transfer exactly ₦{plan['amount_ngn']:,} to the virtual account above "
-                f"or click 'Simulate Instant Payment' to activate immediately."
+                f"Transfer exactly ₦{plan['amount_ngn']:,} to the settlement account above "
+                f"and tap 'Send Receipt to Producer on WhatsApp' for instant activation."
             )
         }
 

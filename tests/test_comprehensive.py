@@ -424,6 +424,8 @@ def test_producer_gatekeeper_unlock():
     assert "Producer Command Center" in res.data.decode()
     assert "Producer Bank & WhatsApp Setup" in res.data.decode()
 
+orig_producer_settings = db.get_producer_settings()
+
 def test_producer_settings_api():
     # Update producer bank details
     payload = {
@@ -496,6 +498,9 @@ for t_name, t_fn in [
 ]:
     tests_total += 1
     if run_test(t_name, t_fn): tests_passed += 1
+
+if orig_producer_settings:
+    db.update_producer_settings(orig_producer_settings)
 
 # --- FINAL AUDIT SUMMARY ---
 print("\n=======================================================")
