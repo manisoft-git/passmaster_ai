@@ -12,8 +12,8 @@
 
   <!-- Live Exam Countdown Banner -->
   <div class="countdown-banner">
-    <span>⏳ <strong>JAMB 2025/2026 Exam Countdown:</strong></span>
-    <span style="font-family: monospace; font-weight: 800; color: #38bdf8;" id="examCountdownDisplay">54d : 14h : 22m : 05s</span>
+    <span>⏳ <strong>JAMB 2026/2027 Exam Countdown:</strong></span>
+    <span style="font-family: monospace; font-weight: 800; color: #38bdf8;" id="examCountdownDisplay">220d : 11h : 08m : 15s</span>
     <span class="hide-mobile">| 🎯 Target: 280+ for Top Tier Universities</span>
   </div>
 
@@ -42,6 +42,11 @@
           <span class="hide-mobile">Share Scorecard</span>
         </button>
 
+        <button class="btn-pill" onclick="openSupportModal()" style="border-color: rgba(251, 191, 36, 0.4); color: #fbbf24;">
+          <span>💛</span>
+          <span class="hide-mobile">Support Manifest</span>
+        </button>
+
         <button class="btn-pill btn-primary" onclick="openPaymentModal('monthly')">
           <span>⚡</span>
           <span>Activate Pass</span>
@@ -58,6 +63,9 @@
       </button>
       <button class="tab-btn" id="tab-cbt" onclick="switchView('cbt')">
         <span>⚡</span> JAMB CBT Exam
+      </button>
+      <button class="tab-btn" id="tab-lessons" onclick="switchView('lessons')">
+        <span>📖</span> Topic Lessons
       </button>
       <button class="tab-btn" id="tab-vault" onclick="switchView('vault')">
         <span>📓</span> Mistake Vault
@@ -154,7 +162,10 @@
           <button class="filter-pill" onclick="filterBySubject('Literature in English', this)">🎭 Literature</button>
         </div>
 
-        <div style="display: flex; gap: 0.5rem;">
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button class="btn-pill btn-primary" onclick="openCbtSetupModal()" title="Customize Drill, Topic or Mock">
+            <span>⚙️</span> Drill / Mock Setup
+          </button>
           <button class="btn-pill" onclick="openModal('calcModal')" title="Official JAMB CBT Calculator">
             <span>🧮</span> Calculator
           </button>
@@ -165,6 +176,12 @@
             <span>🚩</span> Flag
           </button>
         </div>
+      </div>
+
+      <!-- Anti-Cheat Tab-Switch Detection Banner -->
+      <div id="cbtAntiCheatBanner" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #fca5a5; padding: 0.65rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1rem; font-size: 0.85rem; align-items: center; justify-content: space-between;">
+        <span>🛡️ <strong>Anti-Cheat Active:</strong> Tab switches detected: <span id="cbtCheatCountDisplay" style="font-weight: 800; color: #ffffff;">0</span>. Tab switches are logged to your official scorecard!</span>
+        <button class="btn-pill" style="font-size: 0.7rem; padding: 0.2rem 0.6rem; background: rgba(239,68,68,0.3); color: #fff;" onclick="dismissAntiCheatWarning()">Acknowledge</button>
       </div>
 
       <div class="cbt-container">
@@ -236,6 +253,33 @@
           </form>
         </div>
 
+      </div>
+    </section>
+
+    <!-- 2B. TOPIC MASTERCLASS LESSONS VIEW -->
+    <section id="view-lessons" class="view-section">
+      <div style="text-align: center; max-width: 680px; margin: 0 auto 1.5rem;">
+        <h2 style="font-size: 1.6rem; font-weight: 900;">📖 JAMB Syllabus Topic Masterclasses</h2>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.3rem;">
+          Topic-by-topic deep dives designed by top JAMB examiners. Unlock all topics with any active pass. Lesson 1 in every subject is 100% Free!
+        </p>
+      </div>
+
+      <!-- Subject Filters for Lessons -->
+      <div class="subject-filter-bar" id="lessonsFilterBar" style="justify-content: center; margin-bottom: 1.5rem;">
+        <button class="filter-pill active" onclick="filterLessonsBySubject('all', this)">🌟 All Subjects</button>
+        <button class="filter-pill" onclick="filterLessonsBySubject('Use of English', this)">📖 English</button>
+        <button class="filter-pill" onclick="filterLessonsBySubject('Mathematics', this)">📐 Math</button>
+        <button class="filter-pill" onclick="filterLessonsBySubject('Physics', this)">⚡ Physics</button>
+        <button class="filter-pill" onclick="filterLessonsBySubject('Chemistry', this)">🧪 Chemistry</button>
+        <button class="filter-pill" onclick="filterLessonsBySubject('Biology', this)">🧬 Biology</button>
+        <button class="filter-pill" onclick="filterLessonsBySubject('Economics', this)">📊 Economics</button>
+        <button class="filter-pill" onclick="filterLessonsBySubject('Government', this)">🏛️ Government</button>
+        <button class="filter-pill" onclick="filterLessonsBySubject('Literature in English', this)">🎭 Literature</button>
+      </div>
+
+      <div id="lessonsCardsContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+        <!-- Dynamically populated lesson cards -->
       </div>
     </section>
 
@@ -373,13 +417,24 @@ Reply with a number:
         </p>
       </div>
 
+      <!-- Active Subscription Banner Card -->
+      <div id="activeSubscriptionCard" style="display: none; background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(56, 189, 248, 0.15)); border: 1px solid #10b981; border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.75rem; text-align: center;">
+        <div style="font-size: 1.2rem; font-weight: 800; color: #34d399;" id="activeCardTitle">👑 Active Plan: Monthly Master Pass</div>
+        <div style="font-size: 0.95rem; color: #e2e8f0; margin-top: 0.4rem;" id="activeCardCountdown">
+          Time remaining: <strong style="color: #38bdf8; font-family: monospace;" id="activeCardDaysLeft">29 days, 14 hours</strong>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.4rem; margin-bottom: 0;">
+          All 32 Topic Masterclasses, Unlimited CBT Mocks, and Coach Kalu Socratic Guidance are fully unlocked.
+        </p>
+      </div>
+
       <div class="pricing-grid">
         <!-- Weekly Pass -->
         <div class="pricing-card">
           <div>
             <h3 style="font-size: 1.2rem; font-weight: 700;">Weekly Drill Pass</h3>
             <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">For quick pre-mock revision</p>
-            <div class="price-amount">₦700 <span>/ 7 days</span></div>
+            <div class="price-amount">₦1,000 <span>/ 7 days</span></div>
             <ul class="pricing-features">
               <li class="check">✓ 7 Days Unlimited Socratic AI Coaching</li>
               <li class="check">✓ WhatsApp Bot & Web App Access</li>
@@ -396,7 +451,7 @@ Reply with a number:
           <div>
             <h3 style="font-size: 1.2rem; font-weight: 700;">Monthly Master Pass</h3>
             <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">Complete confidence builder</p>
-            <div class="price-amount">₦2,200 <span>/ 30 days</span></div>
+            <div class="price-amount">₦2,800 <span>/ 30 days</span></div>
             <ul class="pricing-features">
               <li class="check">✓ Everything in Weekly Pass</li>
               <li class="check">✓ Unlimited Full-Length CBT Mocks</li>
@@ -412,8 +467,8 @@ Reply with a number:
         <div class="pricing-card">
           <div>
             <h3 style="font-size: 1.2rem; font-weight: 700;">Full Season Guarantee</h3>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">Until JAMB 2025/2026 Exam Day</p>
-            <div class="price-amount">₦5,000 <span>/ full season</span></div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">Until JAMB 2026/2027 Exam Day</p>
+            <div class="price-amount">₦6,500 <span>/ full season</span></div>
             <ul class="pricing-features">
               <li class="check">✓ Unlimited Access until Exam Day</li>
               <li class="check">✓ Post-UTME Coaching Included</li>
@@ -436,7 +491,7 @@ Reply with a number:
           <button class="btn-pill btn-primary" onclick="redeemVoucher()">Redeem PIN</button>
         </div>
         <p style="font-size: 0.75rem; color: var(--accent-cyan); margin-top: 0.5rem;">
-          Try demo PINs: <code>PASS-2025-DEMO-WEEK</code> | <code>UNILAG-MED-2025</code>
+          🔒 Only authentic Producer PINs issued by Mani are accepted. Demo PINs have been permanently retired.
         </p>
       </div>
     </section>
@@ -458,15 +513,13 @@ Reply with a number:
       <form id="loginForm" onsubmit="handleLogin(event)">
         <div class="form-group">
           <label class="form-label">Email Address or Phone Number</label>
-          <input type="text" id="loginIdentifier" class="form-input" placeholder="e.g. favour@student.ng or 08012345678" required>
+          <input type="text" id="loginIdentifier" class="form-input" placeholder="e.g. tobi585olive@gmail.com or 08012345678" required>
         </div>
         <div class="form-group">
           <label class="form-label">Password</label>
           <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required>
         </div>
-        <p style="font-size: 0.75rem; color: var(--text-dim); margin-bottom: 1rem;">
-          Demo Login: <code>favour@student.ng</code> / <code>password123</code>
-        </p>
+
         <button type="submit" class="btn-pill btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem;">
           🔐 Sign In to PassMaster
         </button>
@@ -476,12 +529,12 @@ Reply with a number:
       <form id="registerForm" style="display: none;" onsubmit="handleRegister(event)">
         <div class="form-group">
           <label class="form-label">Full Name</label>
-          <input type="text" id="regName" class="form-input" placeholder="e.g. Favour Adeyemi" required>
+          <input type="text" id="regName" class="form-input" placeholder="e.g. Olive Tobi" required>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Email</label>
-            <input type="email" id="regEmail" class="form-input" placeholder="name@email.com" required>
+            <input type="email" id="regEmail" class="form-input" placeholder="tobi585olive@gmail.com" required>
           </div>
           <div class="form-group">
             <label class="form-label">Phone</label>
@@ -576,7 +629,7 @@ Reply with a number:
       <div style="background: var(--bg-card); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1rem; border: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
         <div>
           <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0;">Amount to Transfer:</p>
-          <div style="font-size: 1.75rem; font-weight: 900; color: #ffffff;" id="modalAmountDisplay">₦2,200</div>
+          <div style="font-size: 1.75rem; font-weight: 900; color: #ffffff;" id="modalAmountDisplay">₦2,800</div>
         </div>
         <div style="text-align: right;">
           <span class="status-badge status-pending" style="font-size: 0.7rem;">Direct Bank Settlement</span><br>
@@ -648,6 +701,276 @@ Reply with a number:
     </div>
   </div>
 
-  <script src="/static/js/app.js?v=1788778076"></script>
+    <!-- MODAL: Custom CBT Drill & Mock Setup -->
+  <div class="modal-overlay" id="cbtSetupModal">
+    <div class="modal-box" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3 style="font-size: 1.15rem; font-weight: 800;">⚙️ Drill & CBT Mock Setup</h3>
+        <button class="modal-close" onclick="closeModal('cbtSetupModal')">&times;</button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <!-- Practice Mode Selection -->
+        <div class="form-group">
+          <label class="form-label" style="font-weight: 700;">Select Mode</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+            <button type="button" class="btn-pill active" id="modeBtnDrill" onclick="setCbtSetupMode('drill')">
+              ⚡ Practice Drill
+            </button>
+            <button type="button" class="btn-pill" id="modeBtnMock" onclick="setCbtSetupMode('full_jamb')">
+              🏆 Full JAMB Mock (180 Qs)
+            </button>
+          </div>
+        </div>
+
+        <!-- Subject Selection -->
+        <div class="form-group" id="cbtSubjectGroup">
+          <label class="form-label" style="font-weight: 700;">Subject</label>
+          <select id="setupSubjectSelect" class="form-input" onchange="onSetupSubjectChanged()">
+            <option value="all">🌟 All Subjects (Shuffled)</option>
+            <option value="Use of English">📖 Use of English</option>
+            <option value="Mathematics">📐 Mathematics</option>
+            <option value="Physics">⚡ Physics</option>
+            <option value="Chemistry">🧪 Chemistry</option>
+            <option value="Biology">🧬 Biology</option>
+            <option value="Economics">📊 Economics</option>
+            <option value="Government">🏛️ Government</option>
+            <option value="Literature in English">🎭 Literature in English</option>
+          </select>
+        </div>
+
+        <!-- Topic Drill Filter (Optional) -->
+        <div class="form-group" id="cbtTopicGroup">
+          <label class="form-label" style="font-weight: 700;">Focus Topic (Optional Single-Topic Drill)</label>
+          <select id="setupTopicSelect" class="form-input">
+            <option value="">-- All Topics in Subject --</option>
+          </select>
+        </div>
+
+        <!-- Number of Questions -->
+        <div class="form-group" id="cbtLimitGroup">
+          <label class="form-label" style="font-weight: 700;">Number of Questions</label>
+          <select id="setupLimitSelect" class="form-input">
+            <option value="10">10 Questions (Speed Warmup)</option>
+            <option value="20" selected>20 Questions (Standard Drill)</option>
+            <option value="40">40 Questions (Full Subject Drill)</option>
+            <option value="60">60 Questions (Use of English Quota)</option>
+            <option value="80">All Available Questions</option>
+          </select>
+        </div>
+
+        <!-- Full JAMB Info Box -->
+        <div id="fullJambNoticeBox" style="display: none; background: rgba(56, 189, 248, 0.1); border: 1px solid var(--accent-cyan); padding: 0.85rem; border-radius: var(--radius-sm); font-size: 0.82rem; color: #bae6fd;">
+          🏆 <strong>Official JAMB 4-Subject Simulation:</strong><br>
+          • 180 Questions (60 English + 40 × 3 Electives: Math, Physics, Chemistry / Biology)<br>
+          • 120 Minutes (2 Hours) official countdown timer<br>
+          • Anti-Cheat tab-switch detection active
+        </div>
+
+        <!-- Randomize Checkbox -->
+        <div style="display: flex; align-items: center; gap: 0.5rem;" id="cbtRandomGroup">
+          <input type="checkbox" id="setupRandomCheck" checked style="accent-color: var(--accent-cyan); width: 18px; height: 18px;">
+          <label for="setupRandomCheck" style="font-size: 0.85rem; color: var(--text-main); cursor: pointer;">
+            🔀 Randomize Question Order
+          </label>
+        </div>
+
+        <button class="btn-pill btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem; font-weight: 700;" onclick="startCustomCbtSession()">
+          🚀 Launch Exam Session
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Topic Masterclass Lesson Reader -->
+  <div class="modal-overlay" id="lessonModal">
+    <div class="modal-box" style="max-width: 680px; max-height: 85vh; display: flex; flex-direction: column;">
+      <div class="modal-header">
+        <div>
+          <span class="subject-badge" id="lessonSubjectBadge">Physics</span>
+          <span style="font-size: 0.75rem; color: var(--accent-cyan); margin-left: 0.5rem;" id="lessonTopicBadge">Gas Laws & Thermodynamics</span>
+        </div>
+        <button class="modal-close" onclick="closeModal('lessonModal')">&times;</button>
+      </div>
+
+      <div style="overflow-y: auto; padding: 0.5rem 0; flex: 1; display: flex; flex-direction: column; gap: 1rem;" id="lessonModalBody">
+        <h3 style="font-size: 1.25rem; font-weight: 800; color: #ffffff; margin: 0;" id="lessonModalTitle">Topic Title</h3>
+        
+        <!-- Key Rule / Formula Card -->
+        <div style="background: rgba(56, 189, 248, 0.1); border-left: 4px solid var(--accent-cyan); padding: 0.85rem; border-radius: 4px;">
+          <div style="font-size: 0.75rem; color: var(--accent-cyan); font-weight: 700; text-transform: uppercase;">Key Rule & Formula</div>
+          <div style="font-size: 0.95rem; font-weight: 600; color: #ffffff; margin-top: 0.2rem; font-family: monospace;" id="lessonKeyRule">P1V1/T1 = P2V2/T2</div>
+        </div>
+
+        <!-- Masterclass Deep Dive -->
+        <div>
+          <div style="font-size: 0.8rem; color: var(--text-dim); font-weight: 700; text-transform: uppercase; margin-bottom: 0.3rem;">Examiner Deep Dive</div>
+          <p style="font-size: 0.9rem; line-height: 1.6; color: #cbd5e1; white-space: pre-wrap; margin: 0;" id="lessonContentText"></p>
+        </div>
+
+        <!-- Common Traps -->
+        <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); padding: 0.85rem; border-radius: var(--radius-sm);">
+          <div style="font-size: 0.8rem; color: #f87171; font-weight: 700;">⚠️ Classic JAMB Trap to Avoid:</div>
+          <p style="font-size: 0.85rem; color: #fca5a5; margin: 0.3rem 0 0;" id="lessonTrapsText"></p>
+        </div>
+
+        <!-- Secret Examiner Tip -->
+        <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.85rem; border-radius: var(--radius-sm);">
+          <div style="font-size: 0.8rem; color: #34d399; font-weight: 700;">💡 Top 1% Scholar Tip:</div>
+          <p style="font-size: 0.85rem; color: #a7f3d0; margin: 0.3rem 0 0;" id="lessonTipText"></p>
+        </div>
+      </div>
+
+      <div style="padding-top: 1rem; border-top: 1px solid var(--border-subtle); display: flex; gap: 0.75rem; justify-content: flex-end; align-items: center; margin-top: 0.5rem;">
+        <button class="btn-pill btn-primary" id="lessonPracticeBtn" onclick="practiceCurrentTopicQuestions()">
+          ⚡ Practice 5 Questions on This Topic
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Founder Support & Sponsorship Story -->
+  <div class="modal-overlay" id="supportModal">
+    <div class="modal-box" style="max-width: 540px;">
+      <div class="modal-header">
+        <h3 style="font-size: 1.15rem; font-weight: 800; color: #fbbf24;">💛 Support Manifest Subeno's Vision</h3>
+        <button class="modal-close" onclick="closeModal('supportModal')">&times;</button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <!-- Bio Card -->
+        <div style="background: var(--bg-card); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+          <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+            <div style="font-size: 2rem;">👨‍💻</div>
+            <div>
+              <strong style="font-size: 1.05rem; color: #ffffff;">Manifest Subeno</strong>
+              <div style="font-size: 0.75rem; color: var(--accent-cyan);">Founder, Mani & Creator of PassMaster AI</div>
+              <div style="font-size: 0.75rem; color: var(--text-dim);">SS3 Scholar, Good Shepherd Catholic College, Oyede</div>
+            </div>
+          </div>
+          <p style="font-size: 0.85rem; line-height: 1.5; color: #cbd5e1; margin: 0;" id="supportBioDisplay">
+            Manifest Subeno is an SS3 student at Good Shepherd Catholic College, Oyede, coding sovereign educational software on an Android phone using Termux. Building PassMaster AI to help thousands of Nigerian candidates master concepts and hit 280+ in JAMB. Your support provides computer hardware, internet, and server infrastructure.
+          </p>
+        </div>
+
+        <!-- Bank Details -->
+        <div>
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; margin-bottom: 0.4rem;">
+            Direct Settlement Bank Account
+          </div>
+          <div style="background: #0f172a; padding: 1rem; border-radius: var(--radius-sm); border: 1px dashed #fbbf24;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.3rem;">
+              <span style="color: var(--text-dim);">Bank:</span>
+              <strong style="color: #ffffff;">First Bank of Nigeria</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 0.3rem;">
+              <span style="color: var(--text-dim);">Account Number:</span>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <strong style="color: #fbbf24; font-family: monospace; font-size: 1.15rem;" id="supportAccNum">3050550518</strong>
+                <button class="btn-pill" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" onclick="copySupportAccount()">📋 Copy</button>
+              </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+              <span style="color: var(--text-dim);">Account Name:</span>
+              <strong style="color: #ffffff;">Manifest Subeno</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- WhatsApp & Connect -->
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <a href="https://wa.me/2348091977795?text=Hello%20Manifest,%20I%20am%20reaching%20out%20to%20support%20PassMaster%20AI!" target="_blank" class="btn-pill" style="justify-content: center; padding: 0.75rem; background: #25d366; color: #000; font-weight: 800; text-decoration: none; display: flex; align-items: center; gap: 0.5rem;">
+            <span>💬</span> Chat with Manifest on WhatsApp (+234 809 197 7795)
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Candidate Profile & Account Settings -->
+  <div class="modal-overlay" id="profileModal">
+    <div class="modal-box" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 style="font-size: 1.15rem; font-weight: 800;">👤 Candidate Profile & Settings</h3>
+        <button class="modal-close" onclick="closeModal('profileModal')">&times;</button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <div style="display: flex; align-items: center; gap: 1rem; background: var(--bg-card); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+          <div class="user-avatar-circle" style="width: 48px; height: 48px; font-size: 1.25rem;" id="profileAvatarInitial">O</div>
+          <div>
+            <strong style="font-size: 1.1rem; color: #ffffff;" id="profileNameDisplay">Olive Tobi</strong>
+            <div style="font-size: 0.8rem; color: var(--text-dim);" id="profileEmailDisplay">tobi585olive@gmail.com</div>
+            <div style="font-size: 0.75rem; color: var(--accent-cyan);" id="profilePhoneDisplay">08012345678</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div style="background: var(--bg-card); padding: 0.75rem; border-radius: var(--radius-sm); text-align: center;">
+            <div style="font-size: 0.75rem; color: var(--text-dim);">Target Goal</div>
+            <strong style="color: #ffffff; font-size: 0.85rem;" id="profileTargetDisplay">Medicine (UNILAG)</strong>
+          </div>
+          <div style="background: var(--bg-card); padding: 0.75rem; border-radius: var(--radius-sm); text-align: center;">
+            <div style="font-size: 0.75rem; color: var(--text-dim);">Subscription Plan</div>
+            <strong style="color: var(--accent-emerald); font-size: 0.85rem;" id="profilePlanDisplay">Free Tier</strong>
+          </div>
+        </div>
+
+        <div id="profileDaysLeftBox" style="background: rgba(56, 189, 248, 0.1); border: 1px solid var(--accent-cyan); padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.82rem; text-align: center; color: #bae6fd;">
+          ⏳ Plan Status: <strong id="profileDaysLeftText">0 days remaining</strong>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn-pill" style="flex: 1; justify-content: center;" onclick="handleLogout()">
+            ⏻ Sign Out
+          </button>
+          <button class="btn-pill btn-primary" style="flex: 1; justify-content: center;" onclick="closeModal('profileModal'); switchView('pricing');">
+            ⚡ Upgrade Plan
+          </button>
+        </div>
+
+        <!-- Danger Zone: Account Deletion -->
+        <div style="border-top: 1px solid rgba(239, 68, 68, 0.3); padding-top: 1rem; margin-top: 0.5rem;">
+          <div style="font-size: 0.75rem; color: var(--accent-rose); font-weight: 700; text-transform: uppercase;">⚠️ Danger Zone</div>
+          <p style="font-size: 0.78rem; color: var(--text-dim); margin: 0.3rem 0 0.6rem;">
+            Permanently delete your candidate profile, mock history, and practice streaks. <strong>Notice:</strong> An email or phone number deleted more than 2 times will be automatically banned from registering again.
+          </p>
+          <button class="btn-pill" style="background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #fca5a5; width: 100%; justify-content: center; font-size: 0.8rem; font-weight: 700;" onclick="handleDeleteAccount()">
+            🗑️ Delete My Account Permanently
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mani Sovereign Brand Footer -->
+  <footer class="app-footer" style="margin-top: 3rem; padding: 2.5rem 1rem; border-top: 1px solid var(--border-subtle); text-align: center; color: var(--text-muted); font-size: 0.85rem; background: #070b14;">
+    <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 0.85rem; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span style="font-size: 1.3rem; font-weight: 900; color: var(--accent-cyan); letter-spacing: -0.5px;">Mani</span>
+        <span style="color: var(--text-dim);">|</span>
+        <span style="font-weight: 700; color: #ffffff;">PassMaster AI v2.0</span>
+      </div>
+      <p style="margin: 0; color: var(--text-dim); max-width: 620px; line-height: 1.5;">
+        Engineered with ❤️ and uncompromising dedication by <strong>Manifest Subeno</strong>, SS3 student at <strong>Good Shepherd Catholic College, Oyede</strong>. Built entirely on an Android phone using Termux to empower Nigerian scholars to shatter the 280+ JAMB barrier.
+      </p>
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; margin-top: 0.5rem;">
+        <button class="btn-pill" style="font-size: 0.75rem; padding: 0.35rem 0.85rem; border-color: rgba(251,191,36,0.4); color: #fbbf24;" onclick="openSupportModal()">
+          💛 Sponsor / Support Manifest
+        </button>
+        <a href="https://wa.me/2348091977795?text=Hello%20Manifest,%20I%20love%20PassMaster%20AI!" target="_blank" class="btn-pill" style="font-size: 0.75rem; padding: 0.35rem 0.85rem; text-decoration: none; color: inherit;">
+          💬 WhatsApp Manifest (+234 809 197 7795)
+        </a>
+        <a href="/producer" class="btn-pill" style="font-size: 0.75rem; padding: 0.35rem 0.85rem; text-decoration: none; color: inherit;">
+          🔐 Producer Console
+        </a>
+      </div>
+      <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.5rem;">
+        © 2026 Mani () Technologies. All Rights Reserved. First Bank Settlement: 3050550518 (Manifest Subeno).
+      </div>
+    </div>
+  </footer>
+
+<script src="/static/js/app.js?v=1788778076"></script>
 </body>
 </html>

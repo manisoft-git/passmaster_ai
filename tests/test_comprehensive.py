@@ -502,6 +502,155 @@ for t_name, t_fn in [
 if orig_producer_settings:
     db.update_producer_settings(orig_producer_settings)
 
+# --- SECTION 12: TOPIC LESSONS, 180-Q MOCK, ANTI-CHEAT & REVISED PRICING ---
+print("\n🚀 SECTION 12: Topic Masterclasses, 180-Q Mock, Anti-Cheat & Revised Pricing")
+
+def test_revised_plan_pricing():
+    for plan, expected_price in [("weekly", 1000), ("monthly", 2800), ("season", 6500)]:
+        res = client.post("/api/payments/checkout", json={"plan_id": plan})
+        assert res.status_code == 200
+        assert res.json["amount_ngn"] == expected_price
+
+def test_demo_pin_retirement():
+    # Attempting to use old demo PINs must fail
+    for retired_pin in ["PASS-2025-DEMO-WEEK", "UNILAG-MED-2025"]:
+        res = client.post("/api/payments/redeem-voucher", json={"pin_code": retired_pin})
+        assert res.status_code == 400
+        assert "Invalid" in res.json["error"]
+
+def test_topic_lessons_list():
+    res = client.get("/api/lessons")
+    assert res.status_code == 200
+    lessons = res.json["lessons"]
+    assert len(lessons) >= 32
+    eng_first = next(l for l in lessons if l["subject"] == "Use of English")
+    assert eng_first["is_locked"] is False
+
+def test_topic_lesson_free_preview():
+    res = client.get("/api/lessons/Physics/Mechanics")
+    assert res.status_code == 200
+    assert "lesson" in res.json
+    assert res.json["lesson"]["key_rule_or_formula"] is not None
+
+def test_topic_lesson_paywall():
+    with client.session_transaction() as sess:
+        sess.clear()
+    res = client.get("/api/lessons/Physics/Thermal%20Physics%20%26%20Waves")
+    assert res.status_code == 403
+    assert "subscription" in res.json["error"].lower()
+
+def test_full_jamb_mock_generation():
+    res = client.get("/api/questions?mode=full_jamb")
+    assert res.status_code == 200
+    assert res.json["mode"] == "full_jamb"
+    assert res.json["count"] == 180
+    eng_qs = [q for q in res.json["questions"] if q["subject"] == "Use of English"]
+    assert len(eng_qs) == 60
+
+def test_anti_cheat_share_card():
+    res = client.post("/api/diagnostics/share-card", json={
+        "name": "Audit Student",
+        "course": "Engineering",
+        "university": "FUTA",
+        "cheat_count": 3
+    })
+    assert res.status_code == 200
+    card = res.json["card_text"]
+    assert "3 Tab-Switch Warning(s)" in card
+    assert "2026/2027" in card
+
+def test_founder_support_bio():
+    res = client.get("/api/support/bio")
+    assert res.status_code == 200
+    assert "Manifest Subeno" in res.json["bio"]
+    assert "3050550518" in res.json["account_number"]
+    assert "First Bank" in res.json["bank_name"]
+
+def test_account_deletion_and_anti_abuse_ban():
+    ts = int(time.time() * 1000)
+    abuse_email = f"abuse_cand_{ts}@student.ng"
+    abuse_phone = f"081{ts % 100000000:08d}"
+    
+    # 1st cycle: Register and Delete
+    r1 = client.post("/api/auth/register", json={
+        "name": "Abuse Tester", "email": abuse_email, "phone": abuse_phone, "password": "pwd"
+    })
+    assert r1.status_code == 200
+    res_del1 = client.post("/api/auth/delete-account")
+    assert res_del1.status_code == 200
+
+    # 2nd cycle: Register and Delete
+    r2 = client.post("/api/auth/register", json={
+        "name": "Abuse Tester", "email": abuse_email, "phone": abuse_phone, "password": "pwd"
+    })
+    assert r2.status_code == 200
+    res_del2 = client.post("/api/auth/delete-account")
+    assert res_del2.status_code == 200
+
+    # 3rd cycle: Register and Delete
+    r3 = client.post("/api/auth/register", json={
+        "name": "Abuse Tester", "email": abuse_email, "phone": abuse_phone, "password": "pwd"
+    })
+    assert r3.status_code == 200
+    res_del3 = client.post("/api/auth/delete-account")
+    assert res_del3.status_code == 200
+
+    # 4th cycle: Registration attempt must be rejected with 403 Over-usage Ban
+    res_reg_blocked = client.post("/api/auth/register", json={
+        "name": "Abuse Tester", "email": abuse_email, "phone": abuse_phone, "password": "pwd"
+    })
+    assert res_reg_blocked.status_code == 403
+    assert "banned" in res_reg_blocked.json["error"].lower()
+
+def test_producer_user_lock_and_strip():
+    with client.session_transaction() as sess:
+        sess['producer_unlocked'] = True
+    ts = int(time.time() * 1000) + 77
+    lock_email = f"lock_cand_{ts}@student.ng"
+    lock_phone = f"089{ts % 100000000:08d}"
+    reg_res = client.post("/api/auth/register", json={
+        "name": "Lock Target", "email": lock_email, "phone": lock_phone, "password": "pwd"
+    })
+    assert reg_res.status_code == 200, f"Register failed: {reg_res.json}"
+    u_id = reg_res.json["user"]["id"]
+
+    # Producer locks user
+    lock_res = client.post("/api/producer/users/toggle-lock", json={"user_id": u_id, "is_locked": 1})
+    assert lock_res.status_code == 200
+    assert lock_res.json["is_locked"] == 1
+
+    # Login as locked user fails
+    login_res = client.post("/api/auth/login", json={"identifier": lock_email, "password": "pwd"})
+    assert login_res.status_code == 403
+    assert "locked" in login_res.json["error"].lower()
+
+    # Unlock user
+    unlock_res = client.post("/api/producer/users/toggle-lock", json={"user_id": u_id, "is_locked": 0})
+    assert unlock_res.status_code == 200
+    assert unlock_res.json["is_locked"] == 0
+
+    # Grant pass then strip privileges
+    client.post("/api/producer/users/grant-pass", json={"user_id": u_id, "plan": "monthly", "days": 30})
+    strip_res = client.post("/api/producer/users/strip-privileges", json={"user_id": u_id})
+    assert strip_res.status_code == 200
+    user = db.get_user_by_id(u_id)
+    assert user["plan"] == "free"
+
+for t_name, t_fn in [
+    ("Revised Pass Pricing (₦1,000 / ₦2,800 / ₦6,500)", test_revised_plan_pricing),
+    ("Retired Demo PINs Strict Rejection", test_demo_pin_retirement),
+    ("Topic Lessons Catalog API (32 Topics)", test_topic_lessons_list),
+    ("Topic Lesson Free Preview (Lesson 0)", test_topic_lesson_free_preview),
+    ("Topic Lesson Subscription Paywall (Lesson > 0)", test_topic_lesson_paywall),
+    ("Full JAMB 180-Question Mock Exam Generator", test_full_jamb_mock_generation),
+    ("Anti-Cheat Scorecard Tab-Switch Warning Stamp", test_anti_cheat_share_card),
+    ("Founder Support & Settlement Bio Endpoint", test_founder_support_bio),
+    ("Candidate Account Deletion & Anti-Abuse 3-Strike Ban", test_account_deletion_and_anti_abuse_ban),
+    ("Producer Student Lock, Unlock & Privilege Strip Engine", test_producer_user_lock_and_strip)
+]:
+    tests_total += 1
+    if run_test(t_name, t_fn): tests_passed += 1
+
 # --- FINAL AUDIT SUMMARY ---
 print("\n=======================================================")
 print(f"📊 AUDIT RESULTS: {tests_passed} / {tests_total} TESTS PASSED ({(tests_passed/tests_total)*100:.1f}%)")

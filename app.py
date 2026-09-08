@@ -245,18 +245,39 @@ def load_lessons_db():
 def get_lessons():
     subject = request.args.get('subject')
     data = load_lessons_db()
-    if subject and subject.lower() != 'all':
-        matched = {k: v for k, v in data.items() if k.lower() == subject.lower()}
-        return jsonify({"status": "success", "lessons": matched})
-    return jsonify({"status": "success", "lessons": data})
+
+    user_id = session.get('user_id')
+    user = db.get_user_by_id(user_id) if user_id else None
+    is_sub = bool(user and user.get('is_subscribed'))
+
+    lessons_list = []
+    for subj, topic_list in data.items():
+        if subject and subject.lower() != 'all' and subj.lower() != subject.lower():
+            continue
+        for idx, l in enumerate(topic_list):
+            is_locked = (idx > 0 and not is_sub)
+            lessons_list.append({
+                "id": l["id"],
+                "subject": subj,
+                "topic": l["topic"],
+                "title": l["title"],
+                "jamb_weight": l.get("jamb_weight", ""),
+                "summary": l.get("overview", "")[:180] + "...",
+                "is_locked": is_locked,
+                "is_preview": (idx == 0)
+            })
+
+    return jsonify({"status": "success", "lessons": lessons_list, "by_subject": data})
 
 @app.route('/api/lessons/<subject>/<topic>', methods=['GET'])
 def get_single_lesson(subject, topic):
     data = load_lessons_db()
     subj_lessons = None
+    subj_key = subject
     for k, v in data.items():
         if k.lower() == subject.lower():
             subj_lessons = v
+            subj_key = k
             break
     
     if not subj_lessons:
@@ -282,24 +303,35 @@ def get_single_lesson(subject, topic):
     # Subsequent lessons require an active Pass.
     if lesson_idx > 0 and not is_sub:
         return jsonify({
-            "status": "locked",
+            "error": "This Topic Masterclass requires an active subscription pass.",
             "requires_pass": True,
             "lesson": {
                 "id": target_lesson["id"],
-                "subject": subject,
+                "subject": subj_key,
                 "topic": target_lesson["topic"],
                 "title": target_lesson["title"],
-                "jamb_weight": target_lesson["jamb_weight"],
-                "overview": target_lesson["overview"],
-                "is_locked": True,
-                "lock_message": "🔒 Full Topic Masterclass Locked. Upgrade to a Weekly Drill Pass (₦1,000) or Season Pass (₦6,500) to access all 32 syllabus lessons."
+                "is_locked": True
             }
-        })
+        }), 403
+
+    lesson_obj = dict(target_lesson)
+    lesson_obj["subject"] = subj_key
+    lesson_obj["key_rule_or_formula"] = target_lesson.get("golden_rule") or "Master core syllabus principles."
+    
+    key_concepts_text = ""
+    if "key_concepts" in target_lesson:
+        key_concepts_text = "\n\n" + "\n\n".join([
+            f"📌 {c.get('concept', '')}:\n{c.get('explanation', '')}\n• " + "\n• ".join(c.get('examples', []))
+            for c in target_lesson["key_concepts"]
+        ])
+    lesson_obj["content"] = target_lesson.get("overview", "") + key_concepts_text
+    lesson_obj["common_traps"] = "\n".join(target_lesson.get("fatal_traps", []))
+    lesson_obj["secret_tip"] = target_lesson.get("golden_rule", "")
 
     return jsonify({
         "status": "success",
         "requires_pass": False,
-        "lesson": target_lesson
+        "lesson": lesson_obj
     })
 
 # ----------------- DEVELOPER SUPPORT BIO API -----------------
@@ -383,6 +415,7 @@ def share_card():
     target_course = data.get('course', 'Medicine & Surgery')
     target_uni = data.get('university', 'UNILAG')
     history = data.get('history', {})
+    cheat_count = int(data.get('cheat_count', 0))
 
     user_id = session.get('user_id')
     if user_id:
@@ -397,7 +430,7 @@ def share_card():
     score_data = diagnostics.calculate_predicted_score(history)
     leaks = diagnostics.get_leaky_bucket_analysis(history)
     card_text = diagnostics.generate_whatsapp_status_card(
-        candidate_name, target_course, target_uni, score_data, leaks
+        candidate_name, target_course, target_uni, score_data, leaks, cheat_count=cheat_count
     )
 
     return jsonify({"status": "success", "card_text": card_text})

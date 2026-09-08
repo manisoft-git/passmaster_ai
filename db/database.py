@@ -630,7 +630,7 @@ def can_register(email, phone):
     """, (e_clean, p_clean))
     row = cursor.fetchone()
     del_count = row["count"] if row else 0
-    if del_count >= 2:
+    if del_count > 2:
         now = time.time()
         cursor.execute("INSERT OR REPLACE INTO banned_identifiers (identifier, reason, is_active, banned_at) VALUES (?, ?, 1, ?)",
                        (e_clean, "Account deleted >2 times (recycled abuse)", now))
@@ -662,10 +662,10 @@ def delete_user_account(user_id):
     INSERT INTO account_deletions (email, phone, name, deleted_at) VALUES (?, ?, ?, ?)
     """, (e_clean, p_clean, name, now))
 
-    # Check if this email or phone is now deleted >= 2 times
+    # Check if this email or phone is now deleted > 2 times
     cursor.execute("SELECT COUNT(*) as count FROM account_deletions WHERE LOWER(email) = ? OR phone = ?", (e_clean, p_clean))
     count = cursor.fetchone()["count"]
-    if count >= 2:
+    if count > 2:
         cursor.execute("INSERT OR REPLACE INTO banned_identifiers (identifier, reason, is_active, banned_at) VALUES (?, ?, 1, ?)",
                        (e_clean, "Recycled deletion limit reached (>2 times)", now))
         cursor.execute("INSERT OR REPLACE INTO banned_identifiers (identifier, reason, is_active, banned_at) VALUES (?, ?, 1, ?)",

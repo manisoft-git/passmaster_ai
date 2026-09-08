@@ -441,6 +441,12 @@
       <button class="tab-btn" onclick="switchTab('studentsTab', this)">
         <span>👥</span> Student Roster & Pass Grants
       </button>
+      <button class="tab-btn" onclick="switchTab('bansTab', this)">
+        <span>🛡️</span> Abuse & Ban Manager
+        {% if kpis.banned_identifiers_count > 0 %}
+        <span class="tab-badge" style="background: var(--prod-danger); color: #fff;">{{ kpis.banned_identifiers_count }}</span>
+        {% endif %}
+      </button>
     </div>
 
     <!-- ================= TAB 1: PAYMENT ORDERS ================= -->
@@ -568,6 +574,12 @@
               <label>Producer Console Key (Change access key)</label>
               <input type="text" id="consolePass" name="producer_console_pass" class="form-input mono" value="{{ settings.producer_console_pass }}" required>
             </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>Founder Story & Support Bio (Shown on Public Support Modal)</label>
+              <textarea id="supportBio" name="producer_support_bio" class="form-input" rows="4" style="resize: vertical; line-height: 1.5;">{{ settings.producer_support_bio }}</textarea>
+              <small style="color: #64748b;">This bio appears on the student and visitor 'Support Mani$oft' modal explaining your SS3 journey building on Termux and your goal to acquire a laptop.</small>
+            </div>
           </div>
 
           <button type="submit" class="btn-save">
@@ -683,36 +695,105 @@
               <tr>
                 <th>Student</th>
                 <th>Phone</th>
-                <th>Target Course & Uni</th>
+                <th>Status</th>
                 <th>Current Plan</th>
-                <th>Streak</th>
                 <th>Questions</th>
-                <th>Action</th>
+                <th>Producer Controls</th>
               </tr>
             </thead>
             <tbody>
               {% for u in users %}
-              <tr>
+              <tr id="user-row-{{ u.id }}">
                 <td>
                   <strong>{{ u.name }}</strong><br>
                   <small style="color: #94a3b8;">{{ u.email }}</small>
                 </td>
                 <td class="mono">{{ u.phone }}</td>
-                <td>{{ u.target_course }} ({{ u.target_uni }})</td>
+                <td>
+                  {% if u.is_locked %}
+                    <span class="status-badge" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444;">🔒 Locked</span>
+                  {% else %}
+                    <span class="status-badge status-confirmed">Active</span>
+                  {% endif %}
+                </td>
                 <td>
                   <span class="status-badge {% if u.plan != 'free' %}status-confirmed{% else %}status-pending{% endif %}">
                     {{ u.plan|upper }}
                   </span>
                 </td>
-                <td>🔥 {{ u.streak_count or 1 }}d</td>
                 <td>{{ u.correct_attempts or 0 }} / {{ u.total_attempts or 0 }}</td>
                 <td>
-                  <button class="btn-action-sm btn-confirm" onclick="grantManualPass({{ u.id }}, 'monthly', 30, '{{ u.name }}')">
-                    +30d Pass
-                  </button>
+                  <div style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
+                    <button class="btn-action-sm btn-confirm" onclick="grantManualPass({{ u.id }}, 'monthly', 30, '{{ u.name }}')" title="Grant 30-Day Monthly Pass">
+                      👑 +30d
+                    </button>
+                    <button class="btn-action-sm {% if u.is_locked %}btn-confirm{% else %}btn-lock{% endif %}" onclick="toggleLockUser({{ u.id }}, {{ 1 if u.is_locked else 0 }}, '{{ u.name }}')" title="Lock/Unlock Account">
+                      {% if u.is_locked %}🔓 Unlock{% else %}🔒 Lock{% endif %}
+                    </button>
+                    <button class="btn-action-sm btn-pin" onclick="stripPrivileges({{ u.id }}, '{{ u.name }}')" title="Demote to Free Tier">
+                      ⚡ Strip
+                    </button>
+                    <button class="btn-action-sm btn-lock" onclick="deleteUserAccount({{ u.id }}, '{{ u.name }}')" title="Permanently Delete Account">
+                      🗑️
+                    </button>
+                  </div>
                 </td>
               </tr>
               {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= TAB 5: ABUSE & BAN MANAGER ================= -->
+    <div id="bansTab" class="panel-view">
+      <div class="content-box">
+        <div class="box-header">
+          <div class="box-title">
+            <span>🛡️</span> Over-Usage & Recycled Account Ban Manager
+          </div>
+          <span style="font-size: 0.8rem; color: #94a3b8;">
+            Emails & Phone numbers deleted >2 times are automatically banned to protect system resources.
+          </span>
+        </div>
+        <div class="table-wrapper">
+          <table class="prod-table">
+            <thead>
+              <tr>
+                <th>Identifier (Email / Phone)</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if bans %}
+                {% for b in bans %}
+                <tr>
+                  <td class="mono" style="font-weight: 700; color: #38bdf8;">{{ b.identifier }}</td>
+                  <td>{{ b.reason }}</td>
+                  <td>
+                    {% if b.is_active %}
+                      <span class="status-badge" style="background: rgba(239,68,68,0.2); color: #ef4444;">Banned</span>
+                    {% else %}
+                      <span class="status-badge status-confirmed">Allowed</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <button class="btn-action-sm {% if b.is_active %}btn-confirm{% else %}btn-lock{% endif %}" onclick="toggleBan('{{ b.identifier }}', {{ 1 if b.is_active else 0 }})">
+                      {% if b.is_active %}✓ Allow / Unban{% else %}🚫 Ban / Disallow{% endif %}
+                    </button>
+                  </td>
+                </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="4" style="text-align: center; color: #94a3b8; padding: 2rem;">
+                    No accounts currently flagged for over-usage bans. When an account is recycled and deleted >2 times, it appears here automatically.
+                  </td>
+                </tr>
+              {% endif %}
             </tbody>
           </table>
         </div>
@@ -882,6 +963,88 @@
         if (d.status === "success") {
           showToast("🎉 Granted " + days + " days pass to " + userName);
           setTimeout(() => location.reload(), 1000);
+        }
+      } catch (err) {
+        alert("Error: " + err);
+      }
+    }
+
+    async function toggleLockUser(userId, isCurrentlyLocked, userName) {
+      const action = isCurrentlyLocked ? "Unlock" : "Lock";
+      if (!confirm(action + " student account for " + userName + "?")) return;
+      try {
+        const res = await fetch("/api/producer/users/toggle-lock", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: userId, is_locked: isCurrentlyLocked ? 0 : 1 })
+        });
+        const d = await res.json();
+        if (d.success) {
+          showToast("Account " + action + "ed for " + userName);
+          setTimeout(() => location.reload(), 800);
+        } else {
+          alert(d.error || "Action failed");
+        }
+      } catch (err) {
+        alert("Error: " + err);
+      }
+    }
+
+    async function stripPrivileges(userId, userName) {
+      if (!confirm("Strip paid privileges and demote " + userName + " to Free tier?")) return;
+      try {
+        const res = await fetch("/api/producer/users/strip-privileges", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: userId })
+        });
+        const d = await res.json();
+        if (d.success) {
+          showToast("Privileges revoked for " + userName);
+          setTimeout(() => location.reload(), 800);
+        } else {
+          alert(d.error || "Action failed");
+        }
+      } catch (err) {
+        alert("Error: " + err);
+      }
+    }
+
+    async function deleteUserAccount(userId, userName) {
+      if (!confirm("PERMANENTLY DELETE student account for " + userName + "? This removes all attempts and streaks.")) return;
+      try {
+        const res = await fetch("/api/producer/users/delete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: userId })
+        });
+        const d = await res.json();
+        if (d.success) {
+          showToast("Deleted student " + userName);
+          setTimeout(() => location.reload(), 800);
+        } else {
+          alert(d.error || "Deletion failed");
+        }
+      } catch (err) {
+        alert("Error: " + err);
+      }
+    }
+
+    async function toggleBan(identifier, isCurrentlyBanned) {
+      const action = isCurrentlyBanned ? "Unban & Allow" : "Ban & Disallow";
+      if (!confirm(action + " registration for '" + identifier + "'?")) return;
+      try {
+        const res = await fetch("/api/producer/bans/toggle", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ identifier, is_active: isCurrentlyBanned ? 0 : 1 })
+        });
+        const d = await res.json();
+        if (d.success) {
+          showToast("Updated status for " + identifier);
+          setTimeout(() => location.reload(), 800);
+        } else {
+          alert(d.error || "Action failed");
         }
       } catch (err) {
         alert("Error: " + err);

@@ -143,7 +143,7 @@ class DiagnosticEngine:
         leaks.sort(key=lambda x: x["estimated_mark_loss"], reverse=True)
         return leaks
 
-    def generate_whatsapp_status_card(self, candidate_name, target_course, target_uni, predicted_data, leaks):
+    def generate_whatsapp_status_card(self, candidate_name, target_course, target_uni, predicted_data, leaks, cheat_count=0):
         """
         Generates a viral text format optimized for sharing to WhatsApp Status / Groups.
         """
@@ -152,18 +152,26 @@ class DiagnosticEngine:
 
         top_leaks_str = ""
         if leaks:
-            top_leaks_str = f"⚠️ Leaky Topics to fix: {leaks[0]['subtopic']} (-{leaks[0]['estimated_mark_loss']} marks)"
+            top_leaks_str = f"⚠️ Leaky Topics to fix: {leaks[0]['subtopic']} (-{leaks[0]['estimated_mark_loss']} marks)\n"
+
+        integrity_str = (
+            f"🛡️ Anti-Cheat Integrity: ⚠️ {cheat_count} Tab-Switch Warning(s) Logged\n"
+            if cheat_count > 0
+            else "🛡️ Anti-Cheat Integrity: ✅ 100% Clean Session (Zero Tab Switches)\n"
+        )
 
         card_text = (
-            f"🎯 *MY OFFICIAL JAMB 2025/2026 READINESS SCORE*\n"
+            f"🎯 *MY OFFICIAL JAMB 2026/2027 READINESS SCORE*\n"
             f"👤 Candidate: {candidate_name}\n"
             f"🎓 Target: {target_course} at {target_uni}\n"
             f"━━━━━━━━━━━━━━━━━━━━━\n"
             f"{status_emoji} *Predicted Score: {score} / 400*\n"
             f"📊 Status: {predicted_data['readiness_level']}\n"
-            f"{top_leaks_str}\n"
+            f"{top_leaks_str}"
+            f"{integrity_str}"
             f"━━━━━━━━━━━━━━━━━━━━━\n"
             f"💡 Tested with *PassMaster AI* — Socratic Exam Coach.\n"
             f"👉 Test your own score for FREE: passmaster.ng/diagnostic"
         )
         return card_text
+
