@@ -54,14 +54,14 @@
           "Logarithms & Indices",
           "Quadratic Equations",
           "Matrices & Determinants",
-          "Polynomials"
+          "Polynomials & Progressions"
         ]
       },
       {
         "name": "Calculus",
         "weight_pct": 25,
         "subtopics": [
-          "Differentiation (Chain Rule)",
+          "Differentiation (Chain/Product/Quotient Rule)",
           "Integration by Substitution",
           "Maxima and Minima",
           "Rate of Change"
@@ -72,7 +72,7 @@
         "weight_pct": 25,
         "subtopics": [
           "Circle Theorems",
-          "Trigonometric Identities",
+          "Trigonometric Identities & Rules",
           "Coordinate Geometry",
           "Bearings & Distances"
         ]
@@ -82,9 +82,9 @@
         "weight_pct": 25,
         "subtopics": [
           "Independent vs Dependent Events",
-          "Standard Deviation",
+          "Standard Deviation & Variance",
           "Permutations & Combinations",
-          "Histograms"
+          "Frequency Distributions"
         ]
       }
     ]
@@ -96,40 +96,40 @@
         "name": "Mechanics",
         "weight_pct": 30,
         "subtopics": [
-          "Gravitational Fields & Inverse Square Law",
-          "Projectiles",
-          "Work, Energy & Power",
-          "Circular Motion"
+          "Gravitational Fields & Kepler Laws",
+          "Projectiles & Circular Motion",
+          "Work, Energy, Power & Friction",
+          "Equilibrium & Moments"
         ]
       },
       {
-        "name": "Thermal Physics",
+        "name": "Thermal Physics & Waves",
         "weight_pct": 25,
         "subtopics": [
           "Gas Laws & Absolute Temperature",
-          "Heat Capacity & Latent Heat",
-          "Thermodynamics",
-          "Thermal Expansion"
-        ]
-      },
-      {
-        "name": "Waves & Optics",
-        "weight_pct": 25,
-        "subtopics": [
-          "Refraction & Critical Angle",
-          "Sound Resonance",
-          "Interference & Diffraction",
-          "Lens Formulas"
+          "Specific Heat & Latent Heat",
+          "Wave Properties & Optics",
+          "Sound Resonance & Doppler Effect"
         ]
       },
       {
         "name": "Electricity & Magnetism",
+        "weight_pct": 25,
+        "subtopics": [
+          "Ohms Law & Internal Resistance",
+          "Capacitor & Resistor Networks",
+          "Faradays Induction & Transformers",
+          "Alternating Current (RLC)"
+        ]
+      },
+      {
+        "name": "Modern & Atomic Physics",
         "weight_pct": 20,
         "subtopics": [
-          "Ohms Law & Resistivity",
-          "Capacitance",
-          "Electromagnetic Induction",
-          "Alternating Current"
+          "Photoelectric Effect & Photons",
+          "Radioactivity & Half-Life",
+          "De Broglie Wavelength & Atomic Models",
+          "Nuclear Fission & Binding Energy"
         ]
       }
     ]
@@ -138,43 +138,43 @@
     "weight_in_jamb": 40,
     "topics": [
       {
-        "name": "Physical Chemistry",
+        "name": "Physical & General Chemistry",
         "weight_pct": 30,
         "subtopics": [
-          "Chemical Equilibrium & Le Chateliers Principle",
-          "Rates of Reactions",
-          "Thermochemistry",
-          "Electrochemistry"
+          "Mole Concept & Stoichiometry",
+          "Chemical Equilibrium & Le Chatelier",
+          "Thermochemistry & Enthalpy",
+          "Reaction Kinetics & Catalysis"
         ]
       },
       {
         "name": "Inorganic Chemistry",
         "weight_pct": 25,
         "subtopics": [
-          "Faradays Laws of Electrolysis",
-          "Periodic Table Trends",
-          "Acids, Bases & Salts",
-          "Extraction of Metals"
+          "Periodic Trends & Diagonal Relationship",
+          "Extraction of Metals (Fe, Al)",
+          "Acids, Bases & Qualitative Salt Analysis",
+          "Halogens & Transition Metal Complexes"
         ]
       },
       {
         "name": "Organic Chemistry",
         "weight_pct": 25,
         "subtopics": [
-          "Hydrocarbons & IUPAC",
-          "Alcohols & Alkanoic Acids",
-          "Polymers & Carbohydrates",
-          "Isomerism"
+          "Hydrocarbons (Alkanes, Alkenes, Alkynes)",
+          "Alkanols, Alkanoic Acids & Esters",
+          "Isomerism (Structural & Geometric)",
+          "Polymers, Fats & Saponification"
         ]
       },
       {
-        "name": "Environmental & Applied Chemistry",
+        "name": "Environmental & Industrial Chemistry",
         "weight_pct": 20,
         "subtopics": [
-          "Water Pollution & Hardness",
-          "Solubility Curves",
-          "Gas Preparations",
-          "Industrial Processes"
+          "Electrolysis & Faradays Laws",
+          "Water Hardness & Purification",
+          "Industrial Processes (Contact & Haber)",
+          "Atmospheric Pollution & Acid Rain"
         ]
       }
     ]
@@ -183,43 +183,43 @@
     "weight_in_jamb": 40,
     "topics": [
       {
-        "name": "Genetics & Heredity",
-        "weight_pct": 30,
-        "subtopics": [
-          "Sex-Linked Inheritance",
-          "Mendelian Ratios",
-          "DNA & Chromosomes",
-          "Variation & Mutation"
-        ]
-      },
-      {
-        "name": "Ecology",
+        "name": "Cellular Biology & Life Processes",
         "weight_pct": 25,
         "subtopics": [
-          "Trophic Levels & Food Chains",
-          "Biomes of West Africa",
-          "Ecological Succession",
-          "Nutrient Cycles"
-        ]
-      },
-      {
-        "name": "Physiology & Systems",
-        "weight_pct": 25,
-        "subtopics": [
-          "Circulation & Blood Groups",
-          "Excretion & Kidneys",
-          "Nervous System & Hormones",
-          "Photosynthesis"
-        ]
-      },
-      {
-        "name": "Cell Biology & Organization",
-        "weight_pct": 20,
-        "subtopics": [
+          "Cell Organelles & Microscopy",
+          "Enzyme Specificity & Denaturation",
           "Mitosis vs Meiosis",
-          "Cell Organelles",
-          "Osmosis & Plasmolysis",
-          "Classification of Living Things"
+          "Active Transport, Osmosis & Diffusion"
+        ]
+      },
+      {
+        "name": "Human Physiology & Systems",
+        "weight_pct": 25,
+        "subtopics": [
+          "Cardiovascular Circulation & Blood",
+          "Digestive Enzymes & Absorption",
+          "Excretory System & Osmoregulation",
+          "Nervous & Endocrine Coordination"
+        ]
+      },
+      {
+        "name": "Genetics & Evolution",
+        "weight_pct": 25,
+        "subtopics": [
+          "Mendelian Genetics & Punnett Squares",
+          "Sex Linkage & Blood Group Inheritance",
+          "DNA Structure & Replication",
+          "Darwinian Evolution & Adaptation"
+        ]
+      },
+      {
+        "name": "Ecology & Environment",
+        "weight_pct": 25,
+        "subtopics": [
+          "Trophic Levels, Energy Flow & Food Webs",
+          "Biomes of Nigeria & West Africa",
+          "Nutrient Cycles (Nitrogen, Carbon)",
+          "Ecological Succession & Xerophytic Adaptations"
         ]
       }
     ]
@@ -228,43 +228,43 @@
     "weight_in_jamb": 40,
     "topics": [
       {
-        "name": "Price Theory & Elasticity",
+        "name": "Basic Economic Principles & Methodology",
         "weight_pct": 25,
         "subtopics": [
-          "Price Elasticity of Demand",
-          "Cross & Income Elasticity",
-          "Price Ceiling & Floors",
-          "Market Equilibrium"
+          "Scarcity, Choice, Opportunity Cost & PPC",
+          "Economic Systems (Free Market, Command, Mixed)",
+          "Factors of Production & Factor Rewards",
+          "Division of Labor & Specialization"
         ]
       },
       {
-        "name": "National Income & Macroeconomics",
+        "name": "Microeconomics & Price Mechanism",
         "weight_pct": 25,
         "subtopics": [
-          "GDP, GNP & Net National Income",
-          "The Multiplier Concept",
-          "Inflation Causes & Control",
-          "Fiscal Policy Instruments"
+          "Law of Demand & Supply / Equilibrium",
+          "Elasticity (Price, Income, Cross)",
+          "Price Controls (Ceilings & Floors)",
+          "Theory of Production & Market Structures"
         ]
       },
       {
-        "name": "Money, Banking & Monetary Policy",
+        "name": "Macroeconomics & National Income",
         "weight_pct": 25,
         "subtopics": [
-          "Central Bank Monetary Tools",
-          "Commercial Bank Credit Multiplier",
-          "Inflation vs Deflation",
-          "Foreign Exchange & Devaluation"
+          "National Income Concepts (GDP, GNP, NNI)",
+          "Circular Flow of Income & The Multiplier",
+          "Inflation Causes, Types & Control",
+          "Fiscal Policy & Public Expenditure"
         ]
       },
       {
-        "name": "Production & Market Structures",
+        "name": "Money, Banking & Public Finance",
         "weight_pct": 25,
         "subtopics": [
-          "Law of Diminishing Returns",
-          "Cost Concepts (MC, AC, TC)",
-          "Monopoly vs Perfect Competition",
-          "Economies of Scale"
+          "Functions & Characteristics of Money",
+          "Central Banking & Monetary Policy Instruments",
+          "Commercial Banks & Credit Creation",
+          "Taxation, Public Debt & Government Budgets"
         ]
       }
     ]
@@ -273,43 +273,43 @@
     "weight_in_jamb": 40,
     "topics": [
       {
-        "name": "Basic Concepts in Political Science",
+        "name": "Elements of Government & Political Theory",
         "weight_pct": 25,
         "subtopics": [
           "Sovereignty & Rule of Law",
-          "Separation of Powers",
-          "Political Ideologies (Socialism, Capitalism)",
-          "Citizenship, Rights & Duties"
+          "Separation of Powers & Checks/Balances",
+          "Forms of Government & Electoral Systems",
+          "Citizenship, Political Parties & Pressure Groups"
         ]
       },
       {
-        "name": "Constitutional Development in Nigeria",
-        "weight_pct": 30,
-        "subtopics": [
-          "1999 Constitution Provisions",
-          "Richards, Macpherson & Lyttelton Constitutions",
-          "Federalism in Nigeria",
-          "Indirect Rule in Northern vs Southern Nigeria"
-        ]
-      },
-      {
-        "name": "Organs of Government & Electoral Process",
+        "name": "Colonial Administration in Nigeria & West Africa",
         "weight_pct": 25,
         "subtopics": [
-          "Legislative Process & Presidential Veto",
-          "Judicial Independence & Judicial Review",
-          "Electoral Systems (PR vs Simple Majority)",
-          "Civil Service Principles & Bureaucracy"
+          "Chartered Company Rule (Royal Niger Co)",
+          "British Indirect Rule in Nigeria",
+          "French Colonial Policy of Assimilation",
+          "Nationalist Movements (NNDP, NYM, NCNC)"
         ]
       },
       {
-        "name": "International Relations & Organizations",
-        "weight_pct": 20,
+        "name": "Nigerian Constitutional Development",
+        "weight_pct": 25,
         "subtopics": [
+          "Pre-Independence Constitutions (1922-1954)",
+          "1960 Independence & 1963 Republic Constitutions",
+          "1979 Executive Presidential Constitution",
+          "1999 Constitution of the Fourth Republic"
+        ]
+      },
+      {
+        "name": "Federalism, Military Rule & Foreign Policy",
+        "weight_pct": 25,
+        "subtopics": [
+          "Revenue Allocation Principles in Nigeria",
+          "Military Regimes (1966-1999) & Ouster Clauses",
           "Nigeria Foreign Policy (Afrocentricism)",
-          "ECOWAS & African Union",
-          "United Nations Structure & Security Council",
-          "Commonwealth of Nations"
+          "ECOWAS, AU & Non-Aligned Movement"
         ]
       }
     ]
@@ -319,42 +319,42 @@
     "topics": [
       {
         "name": "Literary Appreciation & Devices",
-        "weight_pct": 30,
+        "weight_pct": 25,
         "subtopics": [
-          "Dramatic Irony & Catharsis",
           "Figures of Speech (Metaphor, Paradox, Oxymoron)",
-          "Metre, Rhyme & Stanzaic Forms",
-          "Tone, Mood & Atmosphere"
+          "Irony (Dramatic, Situational, Verbal)",
+          "Literary Diction, Tone, Mood & Atmosphere",
+          "Figures of Association (Metonymy, Synecdoche)"
         ]
       },
       {
-        "name": "African Prose & Drama",
+        "name": "Drama & Theatrical Techniques",
         "weight_pct": 25,
         "subtopics": [
-          "Themes of Cultural Conflict & Colonial Heritage",
-          "Characterization & Tragic Flaw",
-          "Folkloric & Oral Tradition Elements",
-          "Feminism & Gender Dynamics"
+          "Classical Tragedy Conventions (Catharsis, Hamartia)",
+          "Dramatic Devices (Soliloquy, Aside, Monologue)",
+          "Wole Soyinka (The Lion and the Jewel)",
+          "Femi Osofisan (Women of Owu)"
         ]
       },
       {
-        "name": "Non-African Prose & Drama",
+        "name": "Poetry & Versification",
         "weight_pct": 25,
         "subtopics": [
-          "Shakespearean Dramatic Conventions",
-          "Soliloquy vs Monologue vs Aside",
-          "Satire & Allegory",
-          "Gothic & Romantic Movements"
+          "Metrical Forms & Iambic Pentameter",
+          "Sonnet Structures (Shakespearean vs Petrarchan)",
+          "Poetic Forms (Elegy, Ode, Ballad, Epic)",
+          "Sound Devices & Rhyme Schemes"
         ]
       },
       {
-        "name": "Poetry Analysis",
-        "weight_pct": 20,
+        "name": "Prose & Fictional Techniques",
+        "weight_pct": 25,
         "subtopics": [
-          "Sonnets (Shakespearean vs Italian)",
-          "Odes & Elegies",
-          "Diction, Enjambment & Imagery",
-          "Tone & Point of View"
+          "Narrative Point of View (Omniscient vs Limited)",
+          "Chinua Achebe (Things Fall Apart)",
+          "Buchi Emecheta (The Joys of Motherhood)",
+          "Characterization, Conflict & Foreshadowing"
         ]
       }
     ]

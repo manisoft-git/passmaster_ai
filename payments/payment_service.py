@@ -11,9 +11,9 @@ class PaymentService:
         self.active_passes = {}
         self.vouchers = {}
         self.pricing = {
-            "weekly": {"name": "Weekly Drill Pass", "amount_ngn": 1000, "days": 7},
-            "monthly": {"name": "Monthly Master Pass", "amount_ngn": 2800, "days": 30},
-            "season": {"name": "Full Season Guarantee Pass", "amount_ngn": 6500, "days": 120}
+            "weekly": {"name": "Weekly Drill Pass", "amount_ngn": 1500, "days": 7},
+            "monthly": {"name": "Monthly Master Pass", "amount_ngn": 3500, "days": 30},
+            "season": {"name": "Full Season Guarantee Pass", "amount_ngn": 8500, "days": 120}
         }
 
     def initiate_payment(self, email, phone, plan_id):

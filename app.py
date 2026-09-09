@@ -215,7 +215,34 @@ def get_questions():
         questions = [q for q in questions if q['subject'].lower() == subject.lower()]
 
     if topic and topic.lower() != 'all':
-        questions = [q for q in questions if q.get('topic', '').lower() == topic.lower()]
+        def _norm(s):
+            return s.lower().replace('&', 'and').replace(',', ' ').replace('-', ' ').replace('/', ' ').split()
+        
+        target_norm = _norm(topic)
+        target_str = " ".join(target_norm)
+        
+        matched_questions = []
+        for q in questions:
+            q_topic = q.get('topic', '')
+            q_subtopic = q.get('subtopic', '')
+            # Exact or direct lower match
+            if q_topic.lower() == topic.lower() or q_subtopic.lower() == topic.lower():
+                matched_questions.append(q)
+                continue
+            # Normalized substring or word set match
+            q_top_norm = _norm(q_topic)
+            q_sub_norm = _norm(q_subtopic)
+            q_top_str = " ".join(q_top_norm)
+            if target_str in q_top_str or q_top_str in target_str:
+                matched_questions.append(q)
+                continue
+            if set(target_norm).issubset(set(q_top_norm)) or set(target_norm).issubset(set(q_sub_norm)):
+                matched_questions.append(q)
+                continue
+        
+        questions = matched_questions if matched_questions else [
+            q for q in questions if q.get('topic', '').lower() == topic.lower()
+        ]
 
     if is_random:
         questions = [dict(q) for q in questions]
@@ -261,13 +288,17 @@ def get_lessons():
                 "subject": subj,
                 "topic": l["topic"],
                 "title": l["title"],
+                "category": l.get("category", "Core JAMB Syllabus Masterclass"),
                 "jamb_weight": l.get("jamb_weight", ""),
                 "summary": l.get("overview", "")[:180] + "...",
+                "prerequisites": l.get("prerequisites", []),
+                "prepares_for": l.get("prepares_for", []),
+                "cbt_drill_topic": l.get("cbt_drill_topic", l["topic"]),
                 "is_locked": is_locked,
                 "is_preview": (idx == 0)
             })
 
-    return jsonify({"status": "success", "lessons": lessons_list, "by_subject": data})
+    return jsonify({"status": "success", "count": len(lessons_list), "lessons": lessons_list, "by_subject": data})
 
 @app.route('/api/lessons/<subject>/<topic>', methods=['GET'])
 def get_single_lesson(subject, topic):
@@ -324,9 +355,23 @@ def get_single_lesson(subject, topic):
             f"📌 {c.get('concept', '')}:\n{c.get('explanation', '')}\n• " + "\n• ".join(c.get('examples', []))
             for c in target_lesson["key_concepts"]
         ])
-    lesson_obj["content"] = target_lesson.get("overview", "") + key_concepts_text
+    worked_ex_text = ""
+    if "worked_examples" in target_lesson and target_lesson["worked_examples"]:
+        worked_ex_text = "\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n📝 AUTHENTIC JAMB WORKED EXAMPLE:\n" + "\n\n".join([
+            f"❓ {we.get('question', '')}\n" +
+            "\n".join(we.get('options', [])) +
+            f"\n\n💡 Step-by-Step Solution & Trap Breakdown:\n{we.get('solution', '')}"
+            for we in target_lesson["worked_examples"]
+        ])
+    lesson_obj["content"] = target_lesson.get("overview", "") + key_concepts_text + worked_ex_text
     lesson_obj["common_traps"] = "\n".join(target_lesson.get("fatal_traps", []))
     lesson_obj["secret_tip"] = target_lesson.get("golden_rule", "")
+    lesson_obj["worked_examples"] = target_lesson.get("worked_examples", [])
+    lesson_obj["prerequisites"] = target_lesson.get("prerequisites", [])
+    lesson_obj["from_scratch_guide"] = target_lesson.get("from_scratch_guide", "")
+    lesson_obj["prepares_for"] = target_lesson.get("prepares_for", [])
+    lesson_obj["category"] = target_lesson.get("category", "Core JAMB Syllabus Masterclass")
+    lesson_obj["cbt_drill_topic"] = target_lesson.get("cbt_drill_topic", target_lesson.get("topic"))
 
     return jsonify({
         "status": "success",
@@ -525,11 +570,11 @@ def submit_transfer():
         phone = data.get('phone', '08000000000')
 
     pricing = {
-        "weekly": {"name": "Weekly Drill Pass", "amount": 700},
-        "monthly": {"name": "Monthly Master Pass", "amount": 2200},
-        "season": {"name": "Full Season Guarantee Pass", "amount": 5000}
+        "weekly": {"name": "Weekly Drill Pass", "amount": 1500},
+        "monthly": {"name": "Monthly Master Pass", "amount": 3500},
+        "season": {"name": "Full Season Guarantee Pass", "amount": 8500}
     }
-    plan_meta = pricing.get(plan_id, {"name": "Monthly Master Pass", "amount": 2200})
+    plan_meta = pricing.get(plan_id, {"name": "Monthly Master Pass", "amount": 3500})
 
     db.create_payment_order(
         reference=ref,

@@ -18,6 +18,8 @@ let antiCheatSwitchCount = 0;
 let syllabusData = null;
 let loadedLessons = [];
 let activeLessonData = null;
+let currentActiveSubject = 'all';
+let currentActiveTopic = 'all';
 
 // Calculator state
 let calcCurrent = "0";
@@ -393,6 +395,7 @@ async function loadQuestions() {
       allQuestions = data.questions;
       filteredQuestions = [...allQuestions];
       currentIndex = 0;
+      renderCbtTopicBar(currentActiveSubject);
       renderCurrentQuestion();
       renderPaletteGrid();
     }
@@ -402,16 +405,111 @@ async function loadQuestions() {
 }
 
 function filterBySubject(subject, pillElem) {
+  currentActiveSubject = subject;
+  currentActiveTopic = "all";
+
   document.querySelectorAll(".subject-filter-bar .filter-pill").forEach(p => p.classList.remove("active"));
   if (pillElem) pillElem.classList.add("active");
 
-  if (subject === "all") {
-    filteredQuestions = [...allQuestions];
-  } else {
-    filteredQuestions = allQuestions.filter(q => q.subject.toLowerCase() === subject.toLowerCase());
+  renderCbtTopicBar(subject);
+  applyFilters();
+}
+
+function renderCbtTopicBar(subject) {
+  const container = document.getElementById("cbtTopicPills");
+  const countIndicator = document.getElementById("cbtTopicCountIndicator");
+  const activeLabel = document.getElementById("activeTopicLabel");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  const pool = (subject && subject !== "all")
+    ? allQuestions.filter(q => q.subject.toLowerCase() === subject.toLowerCase())
+    : allQuestions;
+
+  const topicCounts = {};
+  pool.forEach(q => {
+    if (q.topic) {
+      topicCounts[q.topic] = (topicCounts[q.topic] || 0) + 1;
+    }
+  });
+
+  // Render "All Topics" pill
+  const allPill = document.createElement("button");
+  allPill.className = `topic-pill ${currentActiveTopic === "all" ? "active" : ""}`;
+  allPill.innerHTML = `<span>🎯 All Topics</span> <span class="count-badge">${pool.length}</span>`;
+  allPill.onclick = () => filterByTopic("all", allPill);
+  container.appendChild(allPill);
+
+  // Render pills for each topic in alphabetical order
+  Object.keys(topicCounts).sort().forEach(topic => {
+    const pill = document.createElement("button");
+    const isActive = (currentActiveTopic.toLowerCase() === topic.toLowerCase());
+    pill.className = `topic-pill ${isActive ? "active" : ""}`;
+    pill.innerHTML = `<span>🔬 ${topic}</span> <span class="count-badge">${topicCounts[topic]}</span>`;
+    pill.onclick = () => filterByTopic(topic, pill);
+    container.appendChild(pill);
+  });
+
+  if (activeLabel) {
+    activeLabel.textContent = currentActiveTopic === "all" ? "All Topics" : currentActiveTopic;
+  }
+  if (countIndicator) {
+    const activeSubjDisplay = (subject && subject !== "all") ? subject : "All Subjects";
+    countIndicator.textContent = `${pool.length} total in ${activeSubjDisplay}`;
+  }
+}
+
+function filterByTopic(topicName, pillElem) {
+  currentActiveTopic = topicName;
+
+  const container = document.getElementById("cbtTopicPills");
+  if (container) {
+    container.querySelectorAll(".topic-pill").forEach(p => p.classList.remove("active"));
+  }
+  if (pillElem) pillElem.classList.add("active");
+
+  const activeLabel = document.getElementById("activeTopicLabel");
+  if (activeLabel) {
+    activeLabel.textContent = topicName === "all" ? "All Topics" : topicName;
   }
 
+  applyFilters();
+}
+
+function resetTopicFocus() {
+  currentActiveTopic = "all";
+  renderCbtTopicBar(currentActiveSubject);
+  applyFilters();
+}
+
+function applyFilters() {
+  let pool = allQuestions;
+
+  if (currentActiveSubject && currentActiveSubject !== "all") {
+    pool = pool.filter(q => q.subject.toLowerCase() === currentActiveSubject.toLowerCase());
+  }
+
+  if (currentActiveTopic && currentActiveTopic !== "all") {
+    const norm = s => s.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]/g, ' ').trim();
+    const targetNorm = norm(currentActiveTopic);
+    pool = pool.filter(q => {
+      if (!q.topic) return false;
+      if (q.topic.toLowerCase() === currentActiveTopic.toLowerCase()) return true;
+      const qNorm = norm(q.topic);
+      return qNorm.includes(targetNorm) || targetNorm.includes(qNorm);
+    });
+  }
+
+  filteredQuestions = pool;
   currentIndex = 0;
+
+  const countIndicator = document.getElementById("cbtTopicCountIndicator");
+  if (countIndicator) {
+    const topicDesc = currentActiveTopic === "all" ? "all topics" : currentActiveTopic;
+    countIndicator.textContent = `${filteredQuestions.length} question${filteredQuestions.length === 1 ? '' : 's'} available (${topicDesc})`;
+  }
+
   renderCurrentQuestion();
   renderPaletteGrid();
 }
@@ -629,18 +727,40 @@ function setCbtSetupMode(mode) {
 }
 
 function onSetupSubjectChanged() {
-  const subj = document.getElementById("setupSubjectSelect").value;
+  const subjSelect = document.getElementById("setupSubjectSelect");
   const topicSelect = document.getElementById("setupTopicSelect");
   if (!topicSelect) return;
   topicSelect.innerHTML = '<option value="">-- All Topics in Subject --</option>';
 
-  if (subj !== 'all' && syllabusData && syllabusData[subj]) {
-    syllabusData[subj].topics.forEach(t => {
-      const opt = document.createElement("option");
-      opt.value = t.name;
-      opt.textContent = `${t.name} (${t.weight_pct}% weight)`;
-      topicSelect.appendChild(opt);
-    });
+  const subj = subjSelect ? subjSelect.value : "all";
+  if (subj !== 'all') {
+    // Populate topics directly from loaded question bank
+    const topicMap = {};
+    if (allQuestions && allQuestions.length > 0) {
+      allQuestions
+        .filter(q => q.subject.toLowerCase() === subj.toLowerCase())
+        .forEach(q => {
+          if (q.topic) {
+            topicMap[q.topic] = (topicMap[q.topic] || 0) + 1;
+          }
+        });
+    }
+
+    if (Object.keys(topicMap).length > 0) {
+      Object.keys(topicMap).sort().forEach(topName => {
+        const opt = document.createElement("option");
+        opt.value = topName;
+        opt.textContent = `${topName} (${topicMap[topName]} questions)`;
+        topicSelect.appendChild(opt);
+      });
+    } else if (syllabusData && syllabusData[subj]) {
+      syllabusData[subj].topics.forEach(t => {
+        const opt = document.createElement("option");
+        opt.value = t.name;
+        opt.textContent = `${t.name} (${t.weight_pct}% weight)`;
+        topicSelect.appendChild(opt);
+      });
+    }
   }
 }
 
@@ -690,6 +810,15 @@ Anti-cheat monitoring is active!`);
       const res = await fetch(url);
       const data = await res.json();
       if (data.status === 'success' && data.questions.length > 0) {
+        currentActiveSubject = (subj && subj !== 'all') ? subj : 'all';
+        currentActiveTopic = topic ? topic : 'all';
+
+        // Update subject filter pills
+        document.querySelectorAll(".subject-filter-bar .filter-pill").forEach(p => {
+          p.classList.toggle("active", p.textContent.toLowerCase().includes(currentActiveSubject.toLowerCase()) || (currentActiveSubject === 'all' && p.textContent.includes('All')));
+        });
+
+        renderCbtTopicBar(currentActiveSubject);
         filteredQuestions = data.questions;
         currentIndex = 0;
         switchView('cbt');

@@ -178,6 +178,23 @@
         </div>
       </div>
 
+      <!-- Interactive Topic Focus Selection Bar -->
+      <div id="cbtTopicBarContainer" class="topic-focus-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px;">🎯 Topic Focus:</span>
+            <span id="activeTopicLabel" style="font-size: 0.8rem; background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 0.15rem 0.55rem; border-radius: var(--radius-full); font-weight: 600; border: 1px solid rgba(59, 130, 246, 0.3);">All Topics</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <span id="cbtTopicCountIndicator" style="font-size: 0.75rem; color: var(--text-muted);">Showing all questions</span>
+            <button class="btn-pill" style="font-size: 0.7rem; padding: 0.2rem 0.55rem; background: transparent; border: 1px solid var(--border-subtle);" onclick="resetTopicFocus()">Reset Filter</button>
+          </div>
+        </div>
+        <div class="topic-focus-pills" id="cbtTopicPills">
+          <!-- Dynamically populated topic focus chips -->
+        </div>
+      </div>
+
       <!-- Anti-Cheat Tab-Switch Detection Banner -->
       <div id="cbtAntiCheatBanner" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #fca5a5; padding: 0.65rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1rem; font-size: 0.85rem; align-items: center; justify-content: space-between;">
         <span>🛡️ <strong>Anti-Cheat Active:</strong> Tab switches detected: <span id="cbtCheatCountDisplay" style="font-weight: 800; color: #ffffff;">0</span>. Tab switches are logged to your official scorecard!</span>
@@ -395,7 +412,7 @@ Reply with a number:
 1️⃣ *Practice Questions* (English, Math, Physics, Chem, Bio)
 2️⃣ *Check My Predicted Score* (out of 400)
 3️⃣ *Leaky Bucket Diagnostic* (Find marks you are losing)
-4️⃣ *Activate Full AI Pass* (from ₦700/week)
+4️⃣ *Activate Full AI Pass* (from ₦1,500/week)
 
 💡 *Or type a subject directly:* `ENG`, `MATH`, `PHY`, `CHM`, `BIO`
           </div>
@@ -434,11 +451,12 @@ Reply with a number:
           <div>
             <h3 style="font-size: 1.2rem; font-weight: 700;">Weekly Drill Pass</h3>
             <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">For quick pre-mock revision</p>
-            <div class="price-amount">₦1,000 <span>/ 7 days</span></div>
+            <div class="price-amount">₦1,500 <span>/ 7 days</span></div>
             <ul class="pricing-features">
               <li class="check">✓ 7 Days Unlimited Socratic AI Coaching</li>
+              <li class="check">✓ Full Access to 32 Topic Masterclasses</li>
+              <li class="check">✓ Topic-Focus CBT Drills</li>
               <li class="check">✓ WhatsApp Bot & Web App Access</li>
-              <li class="check">✓ All 5 Core JAMB Subjects</li>
               <li class="check">✓ Leaky Bucket Diagnostic</li>
             </ul>
           </div>
@@ -451,10 +469,11 @@ Reply with a number:
           <div>
             <h3 style="font-size: 1.2rem; font-weight: 700;">Monthly Master Pass</h3>
             <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">Complete confidence builder</p>
-            <div class="price-amount">₦2,800 <span>/ 30 days</span></div>
+            <div class="price-amount">₦3,500 <span>/ 30 days</span></div>
             <ul class="pricing-features">
               <li class="check">✓ Everything in Weekly Pass</li>
-              <li class="check">✓ Unlimited Full-Length CBT Mocks</li>
+              <li class="check">✓ Unlimited Full-Length 180-Q CBT Mocks</li>
+              <li class="check">✓ Interactive Topic-Focus CBT Simulator</li>
               <li class="check">✓ Live Predicted JAMB Score Tracker</li>
               <li class="check">✓ Priority AI Coach Explanations</li>
               <li class="check">✓ Weekly WhatsApp Progress Report to Parents</li>
@@ -468,12 +487,13 @@ Reply with a number:
           <div>
             <h3 style="font-size: 1.2rem; font-weight: 700;">Full Season Guarantee</h3>
             <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">Until JAMB 2026/2027 Exam Day</p>
-            <div class="price-amount">₦6,500 <span>/ full season</span></div>
+            <div class="price-amount">₦8,500 <span>/ full season</span></div>
             <ul class="pricing-features">
-              <li class="check">✓ Unlimited Access until Exam Day</li>
-              <li class="check">✓ Post-UTME Coaching Included</li>
-              <li class="check">✓ 250+ Score Guarantee (or Full Refund)</li>
-              <li class="check">✓ Exclusive Masterclass Webinars</li>
+              <li class="check">✓ Unlimited Access until Exam Day (120 Days)</li>
+              <li class="check">✓ Full 280+ JAMB Score Guarantee</li>
+              <li class="check">✓ Post-UTME Coaching & All Past Questions</li>
+              <li class="check">✓ National Leaderboard & Mistake Vault</li>
+              <li class="check">✓ Offline Voucher PIN Scratch-Card Generation</li>
             </ul>
           </div>
           <button class="btn-pill btn-primary" style="width: 100%; justify-content: center;" onclick="openPaymentModal('season')">Get Season Guarantee</button>
@@ -755,7 +775,7 @@ Reply with a number:
             <option value="20" selected>20 Questions (Standard Drill)</option>
             <option value="40">40 Questions (Full Subject Drill)</option>
             <option value="60">60 Questions (Use of English Quota)</option>
-            <option value="80">All Available Questions</option>
+            <option value="300">All Available Questions</option>
           </select>
         </div>
 

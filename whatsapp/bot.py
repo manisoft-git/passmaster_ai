@@ -104,9 +104,9 @@ class WhatsAppBot:
         if msg_upper in ["4", "BUY", "PLANS", "PRICING"]:
             return (
                 "💳 *PASSMASTER AI SUBSCRIPTION PLANS*\n\n"
-                "1. *Weekly Drill Pass* — ₦700 (7 days unlimited coaching)\n"
-                "2. *Monthly Master Pass* — ₦2,200 (30 days + full mock exams)\n"
-                "3. *Full Season Pass* — ₦5,000 (valid until JAMB day)\n\n"
+                "1. *Weekly Drill Pass* — ₦1,500 (7 days unlimited coaching)\n"
+                "2. *Monthly Master Pass* — ₦3,500 (30 days + full mock exams)\n"
+                "3. *Full Season Pass* — ₦8,500 (valid until JAMB day)\n\n"
                 "To activate instantly, reply:\n"
                 "`PAY WEEKLY` or `PAY MONTHLY`\n"
                 "Or redeem a voucher PIN: `PIN <YOUR-CODE>`"

@@ -506,7 +506,7 @@ if orig_producer_settings:
 print("\n🚀 SECTION 12: Topic Masterclasses, 180-Q Mock, Anti-Cheat & Revised Pricing")
 
 def test_revised_plan_pricing():
-    for plan, expected_price in [("weekly", 1000), ("monthly", 2800), ("season", 6500)]:
+    for plan, expected_price in [("weekly", 1500), ("monthly", 3500), ("season", 8500)]:
         res = client.post("/api/payments/checkout", json={"plan_id": plan})
         assert res.status_code == 200
         assert res.json["amount_ngn"] == expected_price
@@ -636,8 +636,86 @@ def test_producer_user_lock_and_strip():
     user = db.get_user_by_id(u_id)
     assert user["plan"] == "free"
 
+def test_expanded_280_question_bank():
+    res = client.get("/api/questions")
+    assert res.status_code == 200
+    qs = res.json["questions"]
+    assert len(qs) >= 280, f"Expected at least 280 questions, found {len(qs)}"
+    
+    by_subj = {}
+    for q in qs:
+        s = q["subject"]
+        by_subj[s] = by_subj.get(s, 0) + 1
+        assert "id" in q
+        assert "question" in q and len(q["question"]) > 10
+        assert "options" in q and len(q["options"]) == 4
+        assert "correct_option" in q and q["correct_option"] in ["A", "B", "C", "D"]
+        assert "traps" in q and len(q["traps"]) >= 3
+        assert "socratic_prompt" in q
+    
+    for req_subj in [
+        "Use of English", "Mathematics", "Physics", "Chemistry",
+        "Biology", "Economics", "Government", "Literature in English"
+    ]:
+        assert req_subj in by_subj, f"Missing subject {req_subj}"
+        assert by_subj[req_subj] >= 35, f"Subject {req_subj} has only {by_subj[req_subj]} questions (expected >= 35)"
+
+def test_topic_focus_query_filtering():
+    import json
+    with open("data/syllabus.json", "r", encoding="utf-8") as f:
+        syllabus = json.load(f)
+    
+    for subj, info in syllabus.items():
+        for topic_obj in info.get("topics", []):
+            top_name = topic_obj["name"]
+            res = client.get(f"/api/questions?subject={subj}&topic={top_name}")
+            assert res.status_code == 200, f"Failed for {subj} -> {top_name}"
+            data = res.json
+            count = data.get("count", 0)
+            assert count >= 5, f"{subj} -> {top_name} only returned {count} questions (expected >= 5)"
+            for q in data.get("questions", []):
+                assert q["subject"].lower() == subj.lower()
+
+def test_deep_lessons_exhaustiveness():
+    import json
+    with open("data/lessons.json", "r", encoding="utf-8") as f:
+        lessons_data = json.load(f)
+    
+    total_lessons = sum(len(topics) for topics in lessons_data.values())
+    assert total_lessons >= 32, f"Expected 32 lessons, found {total_lessons}"
+    
+    forbidden_placeholders = [
+        "A. Distractor 1", "Core axiom...", "distractor 1", "distractor 2",
+        "distractor 3", "Option A: distractor", "Option B: distractor"
+    ]
+    
+    for subj, topics in lessons_data.items():
+        assert len(topics) >= 4, f"Subject {subj} should have at least 4 topics, found {len(topics)}"
+        for topic in topics:
+            overview = topic.get("overview", "")
+            assert len(overview) > 150, f"Overview too short in {subj} -> {topic['topic']}"
+            assert len(topic.get("worked_examples", [])) >= 1
+            for we in topic.get("worked_examples", []):
+                assert "question" in we and len(we["question"]) > 10
+                assert "solution" in we and len(we["solution"]) > 20
+            assert topic.get("golden_rule") is not None
+            
+            content_str = json.dumps(topic)
+            for placeholder in forbidden_placeholders:
+                assert placeholder.lower() not in content_str.lower(), f"Found placeholder '{placeholder}' in {subj} -> {topic['topic']}"
+
+def test_cbt_topic_focus_ui_elements():
+    res = client.get("/")
+    assert res.status_code == 200
+    html = res.data.decode("utf-8")
+    assert "cbtTopicBarContainer" in html
+    assert "cbtTopicPills" in html
+    assert "activeTopicLabel" in html
+    assert "cbtTopicCountIndicator" in html
+    assert "resetTopicFocus()" in html
+
 for t_name, t_fn in [
-    ("Revised Pass Pricing (₦1,000 / ₦2,800 / ₦6,500)", test_revised_plan_pricing),
+    ("Revised Pass Pricing (₦1,500 / ₦3,500 / ₦8,500)", test_revised_plan_pricing),
     ("Retired Demo PINs Strict Rejection", test_demo_pin_retirement),
     ("Topic Lessons Catalog API (32 Topics)", test_topic_lessons_list),
     ("Topic Lesson Free Preview (Lesson 0)", test_topic_lesson_free_preview),
@@ -646,7 +724,11 @@ for t_name, t_fn in [
     ("Anti-Cheat Scorecard Tab-Switch Warning Stamp", test_anti_cheat_share_card),
     ("Founder Support & Settlement Bio Endpoint", test_founder_support_bio),
     ("Candidate Account Deletion & Anti-Abuse 3-Strike Ban", test_account_deletion_and_anti_abuse_ban),
-    ("Producer Student Lock, Unlock & Privilege Strip Engine", test_producer_user_lock_and_strip)
+    ("Producer Student Lock, Unlock & Privilege Strip Engine", test_producer_user_lock_and_strip),
+    ("Comprehensive 280+ Question Bank Quality Audit", test_expanded_280_question_bank),
+    ("Topic Focus Query Filtering Across 32 Syllabus Topics", test_topic_focus_query_filtering),
+    ("Deep Topic Lessons Exhaustiveness & Zero Placeholders", test_deep_lessons_exhaustiveness),
+    ("Mock CBT Topic Focus Interactive Bar & UI Elements", test_cbt_topic_focus_ui_elements)
 ]:
     tests_total += 1
     if run_test(t_name, t_fn): tests_passed += 1

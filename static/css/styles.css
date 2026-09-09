@@ -1043,3 +1043,66 @@ body {
   body { background: #ffffff !important; color: #000000 !important; }
   .card { border: 1px solid #000 !important; box-shadow: none !important; background: transparent !important; }
 }
+
+/* Topic Focus Navigation Bar */
+.topic-focus-container {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+.topic-focus-pills {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  scrollbar-width: thin;
+}
+.topic-focus-pills::-webkit-scrollbar {
+  height: 4px;
+}
+.topic-focus-pills::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 4px;
+}
+.topic-pill {
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.topic-pill:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-main);
+  border-color: var(--accent-blue);
+  transform: translateY(-1px);
+}
+.topic-pill.active {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.25), rgba(59, 130, 246, 0.35));
+  border-color: #3b82f6;
+  color: #60a5fa;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+}
+.topic-pill .count-badge {
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.7rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  color: var(--text-muted);
+}
+.topic-pill.active .count-badge {
+  background: rgba(59, 130, 246, 0.4);
+  color: #ffffff;
+}
+

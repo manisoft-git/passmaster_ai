@@ -35,9 +35,9 @@ print('Testing questions:', client.get('/api/questions').status_code)
 ---
 
 ## 💰 Monetization & Pricing Tiers
-- **Weekly Drill Pass (₦700)**: 7 days unlimited AI coaching & micro-drills.
-- **Monthly Master Pass (₦2,200)**: 30 days + full CBT mocks + WhatsApp bot.
-- **Full Season Guarantee (₦5,000)**: Valid until JAMB day + 250+ score guarantee.
+- **Weekly Drill Pass (₦1,500)**: 7 days unlimited AI coaching & micro-drills + full access to all 32 deep masterclasses.
+- **Monthly Master Pass (₦3,500)**: 30 days + full CBT mocks + topic-focus CBT drills + WhatsApp bot.
+- **Full Season Guarantee (₦8,500)**: Valid until JAMB day + 280+ score guarantee + parent portal + offline voucher PINs.
 
 ---
 
