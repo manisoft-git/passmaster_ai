@@ -283,13 +283,15 @@ def get_questions():
                     s_pool.extend([dict(x) for x in s_pool])
                 mock_questions.extend(s_pool[:target_count])
         
-        return jsonify({
+        resp = jsonify({
             "status": "success",
             "mode": "full_jamb",
             "count": len(mock_questions),
             "duration_minutes": 120,
             "questions": mock_questions
         })
+        resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        return resp
 
     if mode in ['jamb_standard', 'fast_mock', 'cbt_standard'] or request.args.get('questions_per_subject', type=int) is not None:
         # Standard JAMB Simulation: 20 random questions per subject (default 80 Qs for 4 subjects)
@@ -309,7 +311,7 @@ def get_questions():
                 mock_questions.extend(s_pool[:q_per_subj])
 
         calc_duration = int(len(mock_questions) * 1.0)
-        return jsonify({
+        resp = jsonify({
             "status": "success",
             "mode": "jamb_standard",
             "questions_per_subject": q_per_subj,
@@ -317,6 +319,8 @@ def get_questions():
             "duration_minutes": max(20, calc_duration),
             "questions": mock_questions
         })
+        resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        return resp
 
     if subject and subject.lower() != 'all':
         questions = [q for q in questions if q['subject'].lower() == subject.lower()]
@@ -351,14 +355,17 @@ def get_questions():
             q for q in questions if q.get('topic', '').lower() == topic.lower()
         ]
 
-    if is_random:
+    # Always shuffle if random is requested or default random for drills
+    if is_random or request.args.get('random') is None:
         questions = [dict(q) for q in questions]
         random.shuffle(questions)
 
     if limit and limit > 0:
         questions = questions[:limit]
 
-    return jsonify({"status": "success", "count": len(questions), "questions": questions})
+    resp = jsonify({"status": "success", "count": len(questions), "questions": questions})
+    resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    return resp
 
 @app.route('/api/syllabus', methods=['GET'])
 def get_syllabus():

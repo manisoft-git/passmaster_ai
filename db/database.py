@@ -138,24 +138,7 @@ def init_db():
     # Purge any demo vouchers so ONLY real producer vouchers work
     cursor.execute("DELETE FROM vouchers WHERE code IN ('PASS-2025-DEMO-WEEK', 'PASS-2025-VIP-MONTH', 'PASS-2025-FULL-SEASON', 'JAMB-2025-SCHOLAR', 'UNILAG-MED-2025')")
 
-    # Seed top leaderboard dummy users if table has few users
-    cursor.execute("SELECT COUNT(*) as count FROM users")
-    count = cursor.fetchone()["count"]
-    if count < 5:
-        dummy_users = [
-            ("Amina Bello", "amina@kaduna.ng", "08021112233", "Medicine & Surgery", "ABU Zaria", 310, 1420),
-            ("Favour Adeyemi", "favour@student.ng", "08012345678", "Medicine & Surgery", "UNILAG", 295, 1180),
-            ("Emeka Chukwu", "emeka@enugu.ng", "08034445566", "Software Engineering", "UNN", 285, 950),
-            ("Tunde Bakare", "tunde@ibadan.ng", "08047778899", "Law", "UI", 278, 840),
-            ("Zainab Umar", "zainab@abuja.ng", "08059990011", "Pharmacy", "BUK", 265, 720)
-        ]
-        pwd_hash = generate_password_hash("password123")
-        for name, email, phone, course, uni, score, xp in dummy_users:
-            cursor.execute("""
-            INSERT OR IGNORE INTO users (name, email, phone, password_hash, target_course, target_uni, target_score, plan, plan_expires_at, xp, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, 'monthly', ?, ?, ?)
-            """, (name, email, phone, pwd_hash, course, uni, score, time.time() + (60 * 86400), xp, time.time()))
-
+    # Production ready: No dummy/mock users seeded - leaderboard is strictly populated by real students
     conn.commit()
     conn.close()
 

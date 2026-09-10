@@ -21,6 +21,15 @@ let activeLessonData = null;
 let currentActiveSubject = 'all';
 let currentActiveTopic = 'all';
 
+function escapeHtml(str) {
+  if (!str) return "";
+  return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+function escapeAttr(str) {
+  if (!str) return "";
+  return String(str).replace(/'/g, "\\'").replace(/"/g, "&quot;");
+}
+
 // Calculator state
 let calcCurrent = "0";
 let calcPrev = null;
@@ -580,7 +589,7 @@ async function loadQuestions() {
     const prefs = getCandidatePreferences();
     const qPerSubj = prefs.questions_per_subject || 20;
     const subjects = prefs.subjects || ["Use of English", "Mathematics", "Physics", "Chemistry"];
-    const url = `/api/questions?mode=jamb_standard&questions_per_subject=${qPerSubj}&subjects=${encodeURIComponent(subjects.join(','))}`;
+    const url = `/api/questions?mode=jamb_standard&questions_per_subject=${qPerSubj}&subjects=${encodeURIComponent(subjects.join(','))}&_t=${Date.now()}`;
 
     const res = await fetch(url);
     const data = await res.json();
@@ -595,6 +604,121 @@ async function loadQuestions() {
     }
   } catch (err) {
     console.error("Failed to load standard CBT questions:", err);
+  }
+}
+
+async function startNewRandomExam() {
+  try {
+    const prefs = getCandidatePreferences();
+    const qPerSubj = prefs.questions_per_subject || 20;
+    const subjects = prefs.subjects || ["Use of English", "Mathematics", "Physics", "Chemistry"];
+    const url = `/api/questions?mode=jamb_standard&questions_per_subject=${qPerSubj}&subjects=${encodeURIComponent(subjects.join(','))}&random=true&_t=${Date.now()}`;
+
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.status === "success" && data.questions.length > 0) {
+      allQuestions = data.questions;
+      filteredQuestions = [...allQuestions];
+      currentIndex = 0;
+      currentActiveSubject = 'all';
+      currentActiveTopic = 'all';
+
+      document.querySelectorAll(".subject-filter-bar .filter-pill").forEach(p => {
+        p.classList.toggle("active", p.textContent.includes("All"));
+      });
+
+      renderCbtSubjectTabs();
+      renderCbtTopicBar("all");
+      renderCurrentQuestion();
+      renderPaletteGrid();
+
+      alert(`🔀 New Random Exam Loaded!
+
+${data.questions.length} Questions randomized across your selected subjects (${subjects.join(', ')}).
+All questions are shuffled per candidate session. Good luck!`);
+    }
+  } catch (err) {
+    alert("Error loading new randomized exam: " + err);
+  }
+}
+
+async function drillLeakTopic(subject, topic) {
+  try {
+    closeModal("lessonModal");
+    const url = `/api/questions?subject=${encodeURIComponent(subject)}&topic=${encodeURIComponent(topic)}&limit=5&random=true&_t=${Date.now()}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    let qList = data.questions || [];
+
+    if (!qList.length) {
+      const fbRes = await fetch(`/api/questions?subject=${encodeURIComponent(subject)}&limit=5&random=true&_t=${Date.now()}`);
+      const fbData = await fbRes.json();
+      qList = fbData.questions || [];
+    }
+
+    if (qList.length > 0) {
+      allQuestions = qList;
+      filteredQuestions = [...qList];
+      currentIndex = 0;
+      currentActiveSubject = subject;
+      currentActiveTopic = topic;
+
+      document.querySelectorAll(".subject-filter-bar .filter-pill").forEach(p => {
+        p.classList.toggle("active", p.textContent.toLowerCase().includes(subject.toLowerCase()));
+      });
+
+      switchView("cbt");
+      renderCbtTopicBar(subject);
+      renderCurrentQuestion();
+      renderPaletteGrid();
+
+      alert(`🎯 Leak Plugging Drill Active!
+
+Topic: ${subject} — ${topic}
+Questions Loaded: ${qList.length}
+
+Answer these questions to plug this leak in your diagnostic score!`);
+    } else {
+      alert("No questions found for this topic.");
+    }
+  } catch (err) {
+    alert("Error launching topic drill: " + err);
+  }
+}
+
+async function drillWeakestLeak() {
+  try {
+    const res = await fetch("/api/diagnostics/score", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ history: sessionHistory })
+    });
+    const data = await res.json();
+    const leaks = data.leaky_bucket || [];
+    if (leaks.length > 0) {
+      const weakest = leaks[0];
+      drillLeakTopic(weakest.subject, weakest.topic);
+    } else {
+      alert("🎯 No mark leaks diagnosed yet!\n\nAnswer a few questions in CBT mode first so the Bayesian diagnostic engine can detect your cognitive leak points.");
+    }
+  } catch (err) {
+    alert("Error finding weakest leak: " + err);
+  }
+}
+
+async function drillAllMistakes() {
+  try {
+    const res = await fetch("/api/mistake-vault");
+    const data = await res.json();
+    const vault = data.vault || [];
+    if (vault.length > 0) {
+      const m = vault[Math.floor(Math.random() * vault.length)];
+      drillLeakTopic(m.subject, m.topic);
+    } else {
+      alert("🎉 Clean Sheet!\n\nYou haven't made any mistakes logged in the vault yet. Practice in CBT mode to record any cognitive errors!");
+    }
+  } catch (err) {
+    alert("Error launching mistake drill: " + err);
   }
 }
 
@@ -1348,8 +1472,13 @@ async function loadMistakeVault() {
         <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--accent-rose); padding: 0.5rem 0.75rem; border-radius: 4px; font-size: 0.8rem; color: #fca5a5; margin-bottom: 0.5rem;">
           <strong>Why you fell into this trap:</strong> ${m.why_it_is_wrong}
         </div>
-        <div style="font-size: 0.8rem; color: var(--accent-cyan);">
+        <div style="font-size: 0.8rem; color: var(--accent-cyan); margin-bottom: 0.5rem;">
           💡 <strong>Correct Rule:</strong> ${m.explanation}
+        </div>
+        <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
+          <button class="btn-pill btn-primary" style="font-size: 0.72rem; padding: 0.25rem 0.7rem;" onclick="drillLeakTopic('${escapeAttr(m.subject)}', '${escapeAttr(m.topic)}')">
+            🎯 Master Mistake: Drill 5 Qs
+          </button>
         </div>
       `;
       container.appendChild(card);
@@ -1368,6 +1497,12 @@ async function loadLeaderboard() {
     if (!tbody || !data.leaderboard) return;
 
     tbody.innerHTML = "";
+    if (data.leaderboard.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.9rem;">
+        🏆 <strong>The National Leaderboard is Live!</strong><br>No candidates ranked yet. Practice CBT questions and earn XP to claim the #1 spot on the Merit List!
+      </td></tr>`;
+      return;
+    }
     data.leaderboard.forEach(r => {
       const tr = document.createElement("tr");
       let rankBadge = `<span class="rank-badge">${r.rank}</span>`;
@@ -1508,6 +1643,11 @@ function createLeakCard(leak, showConcept = false) {
       <h4>${leak.subject}: ${leak.subtopic}</h4>
       <p>Topic: ${leak.topic}</p>
       ${showConcept ? `<p style="color: var(--accent-cyan); font-size: 0.75rem; margin-top: 0.3rem;">💡 Rule: ${leak.pedagogical_concept}</p>` : ""}
+      <div style="margin-top: 0.5rem;">
+        <button class="btn-pill btn-primary" style="font-size: 0.72rem; padding: 0.25rem 0.65rem;" onclick="drillLeakTopic('${escapeAttr(leak.subject)}', '${escapeAttr(leak.topic)}')">
+          ⚡ Plug Leak: Drill Questions
+        </button>
+      </div>
     </div>
     <div class="leak-stat">
       <div class="mark-loss">-${leak.estimated_mark_loss} marks</div>
@@ -1661,6 +1801,12 @@ function openModal(id) {
 function closeModal(id) {
   const modal = document.getElementById(id);
   if (modal) modal.classList.remove("active");
+  if (id === "lessonModal") {
+    if (simulatedVideoPlaying) {
+      toggleSimulatedVideoPlayback();
+    }
+    stopLectureSpeech();
+  }
 }
 
 let currentCheckoutRef = null;
@@ -2403,6 +2549,49 @@ function renderTopicVideo(videoMeta, topicTitle) {
   }
 }
 
+let lectureVoiceEnabled = true;
+
+function getLectureNarrationText(chapterIndex) {
+  if (!activeLessonData) return "Welcome to this JAMB Masterclass.";
+  const title = activeLessonData.title || activeLessonData.topic || "";
+  const golden = activeLessonData.golden_rule || "";
+  const scratch = activeLessonData.from_scratch_guide || activeLessonData.overview || "";
+  const traps = activeLessonData.fatal_traps || "";
+
+  if (chapterIndex === 0) {
+    return `Welcome to Coach Kalu's Masterclass on ${title}. Let us break this down from first principles. ${scratch.slice(0, 280)}.`;
+  } else if (chapterIndex === 1) {
+    return `Now, let us examine the core laws and mathematical axioms for ${title}. Pay close attention to the golden rule: ${golden.slice(0, 240)}.`;
+  } else if (chapterIndex === 2) {
+    return `In this section, we solve authentic JAMB past examination questions step-by-step. Notice the traps examiners set.`;
+  } else {
+    return `Finally, let us dissect the fatal cognitive traps and speed shortcuts. ${traps.slice(0, 240)}. With this rule mastered, you are guaranteed full marks in JAMB.`;
+  }
+}
+
+function startLectureSpeech() {
+  if (!window.speechSynthesis || !lectureVoiceEnabled) return;
+  window.speechSynthesis.cancel();
+
+  const activeChapterPill = document.querySelector(".video-chapter-pill.active");
+  const allPills = Array.from(document.querySelectorAll(".video-chapter-pill"));
+  const chIdx = activeChapterPill ? allPills.indexOf(activeChapterPill) : 0;
+
+  const scriptText = getLectureNarrationText(chIdx >= 0 ? chIdx : 0);
+  const utter = new SpeechSynthesisUtterance(scriptText);
+  utter.rate = simulatedVideoSpeed || 1.0;
+  utter.pitch = 1.0;
+  utter.lang = "en-GB";
+
+  window.speechSynthesis.speak(utter);
+}
+
+function stopLectureSpeech() {
+  if (window.speechSynthesis) {
+    window.speechSynthesis.cancel();
+  }
+}
+
 function toggleSimulatedVideoPlayback() {
   const playBtn = document.getElementById("lessonVideoPlayBtn");
   const status = document.getElementById("lessonVideoStatus");
@@ -2412,8 +2601,9 @@ function toggleSimulatedVideoPlayback() {
 
   if (simulatedVideoPlaying) {
     if (playBtn) playBtn.textContent = "⏸";
-    if (status) status.textContent = "Streaming Live Lecture (Audio & Visuals)";
+    if (status) status.textContent = "🎙️ Streaming Live Synthesized Lecture (Audio & Visuals)";
     if (waveform) waveform.style.display = "flex";
+    startLectureSpeech();
 
     simulatedVideoTimer = setInterval(() => {
       simulatedVideoSeconds += (1 * simulatedVideoSpeed);
@@ -2425,6 +2615,7 @@ function toggleSimulatedVideoPlayback() {
     }, 1000);
   } else {
     clearInterval(simulatedVideoTimer);
+    stopLectureSpeech();
     if (playBtn) playBtn.textContent = "▶";
     if (status) status.textContent = "Paused";
     if (waveform) waveform.style.display = "none";
@@ -2456,7 +2647,9 @@ function seekToChapter(timeStr, pillElem) {
   document.querySelectorAll(".video-chapter-pill").forEach(p => p.classList.remove("active"));
   if (pillElem) pillElem.classList.add("active");
 
-  if (!simulatedVideoPlaying) {
+  if (simulatedVideoPlaying) {
+    startLectureSpeech();
+  } else {
     toggleSimulatedVideoPlayback();
   }
 }
@@ -2468,31 +2661,163 @@ function seekSimulatedVideo(event) {
   const pct = Math.max(0, Math.min(1, clickX / rect.width));
   simulatedVideoSeconds = Math.floor(pct * simulatedVideoDuration);
   updateVideoProgressDisplay();
+  if (simulatedVideoPlaying) {
+    startLectureSpeech();
+  }
 }
 
 function setVideoSpeed(spd, elem) {
   simulatedVideoSpeed = parseFloat(spd) || 1.0;
   document.querySelectorAll(".video-speed-pill").forEach(b => b.classList.remove("active"));
   if (elem) elem.classList.add("active");
+  if (simulatedVideoPlaying) {
+    startLectureSpeech();
+  }
 }
 
+// ----------------- IN-MODAL TOPIC PRACTICE QUIZ -----------------
+let inModalQuizQuestions = [];
+let inModalQuizScore = 0;
+let inModalQuizAnswered = new Set();
+
+async function loadInModalTopicQuiz() {
+  const container = document.getElementById("lessonQuizContainer");
+  const badge = document.getElementById("lessonQuizScoreBadge");
+  if (!container || !activeLessonData) return;
+
+  container.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--text-muted);"><span style="font-size: 1.5rem;">⏳</span><br>Loading authentic practice questions for <strong>${escapeHtml(activeLessonData.topic)}</strong>...</div>`;
+  inModalQuizScore = 0;
+  inModalQuizAnswered.clear();
+
+  try {
+    const subj = activeLessonData.subject;
+    const topic = activeLessonData.topic;
+    const url = `/api/questions?subject=${encodeURIComponent(subj)}&topic=${encodeURIComponent(topic)}&limit=5&random=true&_t=${Date.now()}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    let qList = data.questions || [];
+
+    if (!qList.length) {
+      const fbRes = await fetch(`/api/questions?subject=${encodeURIComponent(subj)}&limit=5&random=true&_t=${Date.now()}`);
+      const fbData = await fbRes.json();
+      qList = fbData.questions || [];
+    }
+
+    inModalQuizQuestions = qList;
+    if (badge) badge.textContent = `Score: 0 / ${qList.length}`;
+
+    if (!qList.length) {
+      container.innerHTML = `<div style="padding: 1.5rem; text-align: center; color: var(--text-muted);">No practice questions available for this specific topic yet. Use the CBT Simulator to practice full subject questions!</div>`;
+      return;
+    }
+
+    container.innerHTML = "";
+    qList.forEach((q, idx) => {
+      const card = document.createElement("div");
+      card.style.cssText = "background: rgba(15, 23, 42, 0.85); border: 1px solid var(--border-subtle); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 0.75rem;";
+      card.id = `quizCard_${idx}`;
+
+      const optionsHtml = Object.entries(q.options || {}).map(([optKey, optVal]) => `
+        <button class="cbt-option-btn quiz-opt-btn" id="quizOpt_${idx}_${optKey}" style="text-align: left; padding: 0.6rem 0.9rem; margin-bottom: 0.4rem; width: 100%; border-radius: var(--radius-sm); font-size: 0.85rem; display: flex; align-items: flex-start; gap: 0.5rem; background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.08); color: #e2e8f0; cursor: pointer;" onclick="answerInModalQuiz(${idx}, '${optKey}', '${escapeAttr(q.correct_option)}')">
+          <strong style="color: var(--accent-cyan);">[${optKey}]</strong> <span>${escapeHtml(optVal)}</span>
+        </button>
+      `).join("");
+
+      card.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+          <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700; text-transform: uppercase;">Question ${idx + 1} of ${qList.length} • ${q.subject} (${q.year || 'JAMB'})</span>
+          <span style="font-size: 0.72rem; color: var(--accent-amber); font-weight: 600;">+10 XP</span>
+        </div>
+        <div style="font-size: 0.92rem; font-weight: 600; color: #ffffff; line-height: 1.5; margin-bottom: 0.85rem;">
+          ${escapeHtml(q.question)}
+        </div>
+        <div class="quiz-options-list" id="quizOptionsList_${idx}">
+          ${optionsHtml}
+        </div>
+        <div id="quizFeedback_${idx}" style="display: none; margin-top: 0.75rem; padding: 0.75rem; border-radius: 6px; font-size: 0.83rem; line-height: 1.5;"></div>
+      `;
+      container.appendChild(card);
+    });
+
+  } catch (err) {
+    container.innerHTML = `<div style="color: var(--accent-rose); padding: 1rem;">Error loading quiz questions: ${err}</div>`;
+  }
+}
+
+function answerInModalQuiz(qIdx, selectedOpt, correctOpt) {
+  if (inModalQuizAnswered.has(qIdx)) return;
+  inModalQuizAnswered.add(qIdx);
+
+  const q = inModalQuizQuestions[qIdx];
+  const fbDiv = document.getElementById(`quizFeedback_${qIdx}`);
+  const badge = document.getElementById(`lessonQuizScoreBadge`);
+  const isCorrect = selectedOpt.toUpperCase() === correctOpt.toUpperCase();
+
+  // Highlight options
+  ['A', 'B', 'C', 'D'].forEach(k => {
+    const btn = document.getElementById(`quizOpt_${qIdx}_${k}`);
+    if (!btn) return;
+    btn.disabled = true;
+    if (k === correctOpt.toUpperCase()) {
+      btn.style.borderColor = "var(--accent-emerald)";
+      btn.style.background = "rgba(16, 185, 129, 0.2)";
+      btn.style.color = "#34d399";
+    } else if (k === selectedOpt.toUpperCase() && !isCorrect) {
+      btn.style.borderColor = "var(--accent-rose)";
+      btn.style.background = "rgba(239, 68, 68, 0.2)";
+      btn.style.color = "#f87171";
+    }
+  });
+
+  if (isCorrect) {
+    inModalQuizScore++;
+    if (fbDiv) {
+      fbDiv.style.display = "block";
+      fbDiv.style.background = "rgba(16, 185, 129, 0.15)";
+      fbDiv.style.border = "1px solid rgba(16, 185, 129, 0.4)";
+      fbDiv.style.color = "#a7f3d0";
+      fbDiv.innerHTML = `🎉 <strong>100% Correct!</strong> You avoided the trap.<br><span style="margin-top: 0.3rem; display: block; color: #e2e8f0;">💡 <em>${escapeHtml(q.pedagogical_concept)}</em></span>`;
+    }
+  } else {
+    const trap = (q.traps && q.traps[selectedOpt.toUpperCase()]) ? q.traps[selectedOpt.toUpperCase()] : "Violates the core rule for this topic.";
+    if (fbDiv) {
+      fbDiv.style.display = "block";
+      fbDiv.style.background = "rgba(239, 68, 68, 0.12)";
+      fbDiv.style.border = "1px solid rgba(239, 68, 68, 0.35)";
+      fbDiv.style.color = "#fca5a5";
+      fbDiv.innerHTML = `⚠️ <strong>Option ${selectedOpt} is Incorrect!</strong><br><strong>The Trap:</strong> ${escapeHtml(trap)}<br><span style="margin-top: 0.4rem; display: block; color: #6ee7b7;">✅ <strong>Correct Answer is Option ${correctOpt}:</strong> ${escapeHtml(q.pedagogical_concept)}</span>`;
+    }
+  }
+
+  if (badge) {
+    badge.textContent = `Score: ${inModalQuizScore} / ${inModalQuizQuestions.length}`;
+  }
+}
 
 // ----------------- LESSON TABS, WORKED EXAMPLES & PREREQUISITES -----------------
 function switchLessonModalTab(tabKey) {
   document.querySelectorAll(".lesson-tab-btn").forEach(b => b.classList.remove("active"));
   const btn = document.getElementById(
     tabKey === 'text' ? 'lessonTabBtnText' :
-    tabKey === 'visual' ? 'lessonTabBtnVisual' : 'lessonTabBtnPrereq'
+    tabKey === 'visual' ? 'lessonTabBtnVisual' :
+    tabKey === 'prereq' ? 'lessonTabBtnPrereq' : 'lessonTabBtnQuiz'
   );
   if (btn) btn.classList.add("active");
 
   const paneText = document.getElementById("lessonTabPaneText");
   const paneVisual = document.getElementById("lessonTabPaneVisual");
   const panePrereq = document.getElementById("lessonTabPanePrereq");
+  const paneQuiz = document.getElementById("lessonTabPaneQuiz");
 
   if (paneText) paneText.style.display = (tabKey === 'text' ? 'flex' : 'none');
   if (paneVisual) paneVisual.style.display = (tabKey === 'visual' ? 'flex' : 'none');
   if (panePrereq) panePrereq.style.display = (tabKey === 'prereq' ? 'flex' : 'none');
+  if (paneQuiz) {
+    paneQuiz.style.display = (tabKey === 'quiz' ? 'flex' : 'none');
+    if (tabKey === 'quiz') {
+      loadInModalTopicQuiz();
+    }
+  }
 }
 
 function renderWorkedExamples(examples) {
