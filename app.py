@@ -505,6 +505,78 @@ def get_single_lesson(subject, topic):
         "lesson": lesson_obj
     })
 
+# ----------------- JAMB NOVEL & FORMULAS API -----------------
+NOVEL_PATH = os.path.join(os.path.dirname(__file__), "data", "novel_companion.json")
+FORMULAS_PATH = os.path.join(os.path.dirname(__file__), "data", "formulas.json")
+
+def load_novel_companion():
+    try:
+        with open(NOVEL_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"Error reading novel companion: {e}")
+        return {}
+
+def load_formulas():
+    try:
+        with open(FORMULAS_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"Error reading formulas: {e}")
+        return []
+
+@app.route('/api/novel', methods=['GET'])
+def get_novel_companion():
+    data = load_novel_companion()
+    chapter = request.args.get('chapter', type=int)
+    if chapter:
+        chapters = data.get("chapters", [])
+        matched = next((c for c in chapters if c["chapter_number"] == chapter), None)
+        if not matched:
+            return jsonify({"error": f"Chapter {chapter} not found."}), 404
+        return jsonify({"status": "success", "novel_title": data.get("novel_title"), "chapter": matched})
+    return jsonify({"status": "success", "companion": data})
+
+@app.route('/api/novel/drill', methods=['GET'])
+def get_novel_drill():
+    limit = request.args.get('limit', default=10, type=int)
+    data = load_novel_companion()
+    novel_qs = list(data.get("questions", []))
+    for q in tutor.questions.values():
+        if "the life changer" in str(q.get("subtopic", "")).lower() or "the life changer" in str(q.get("question", "")).lower():
+            if not any(x["id"] == q["id"] for x in novel_qs):
+                novel_qs.append(dict(q))
+    random.shuffle(novel_qs)
+    selected = novel_qs[:limit]
+    return jsonify({
+        "status": "success",
+        "count": len(selected),
+        "questions": selected,
+        "mode": "novel_drill",
+        "title": "JAMB Prescribed Novel Drill: The Life Changer"
+    })
+
+@app.route('/api/formulas', methods=['GET'])
+def get_formulas():
+    formulas = load_formulas()
+    subject = request.args.get('subject')
+    search = request.args.get('search', '').strip().lower()
+    
+    filtered = formulas
+    if subject and subject.lower() != 'all':
+        filtered = [f for f in filtered if f.get('subject', '').lower() == subject.lower()]
+        
+    if search:
+        filtered = [
+            f for f in filtered
+            if search in f.get('title', '').lower()
+            or search in f.get('formula', '').lower()
+            or search in f.get('topic', '').lower()
+            or search in f.get('mnemonic', '').lower()
+        ]
+        
+    return jsonify({"status": "success", "count": len(filtered), "formulas": filtered})
+
 # ----------------- DEVELOPER SUPPORT BIO API -----------------
 @app.route('/api/support/bio', methods=['GET'])
 def get_support_bio():
@@ -605,6 +677,32 @@ def share_card():
     )
 
     return jsonify({"status": "success", "card_text": card_text})
+
+@app.route('/api/diagnostics/admission-chance', methods=['POST'])
+def calculate_admission_chance():
+    data = request.get_json() or {}
+    university = data.get('university', 'UNILAG')
+    course = data.get('course', 'Medicine & Surgery')
+    jamb_score = data.get('jamb_score', 280)
+    olevel_grades = data.get('olevel_grades', {})
+    post_utme = data.get('post_utme_score')
+
+    user_id = session.get('user_id')
+    if user_id:
+        user = db.get_user_by_id(user_id)
+        if user and not data.get('course'):
+            course = user['target_course']
+        if user and not data.get('university'):
+            university = user['target_uni']
+
+    res = diagnostics.calculate_admission_chances(
+        university=university,
+        course=course,
+        jamb_score=jamb_score,
+        olevel_grades=olevel_grades,
+        post_utme_score=post_utme
+    )
+    return jsonify({"status": "success", "data": res})
 
 # ----------------- WHATSAPP BOT API & WEBHOOK -----------------
 @app.route('/api/whatsapp/message', methods=['POST'])

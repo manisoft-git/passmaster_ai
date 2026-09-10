@@ -37,6 +37,11 @@
           </button>
         </div>
 
+        <button class="btn-pill" onclick="openCramSheetModal()" title="1-Page Printable Cram Sheet & Mark Leak Blueprint">
+          <span>🖨️</span>
+          <span class="hide-mobile">Cram Sheet</span>
+        </button>
+
         <button class="btn-pill" onclick="openShareModal()">
           <span>📤</span>
           <span class="hide-mobile">Share Scorecard</span>
@@ -69,8 +74,17 @@
       <button class="tab-btn" id="tab-cbt" onclick="switchView('cbt')">
         <span>⚡</span> JAMB CBT Exam
       </button>
+      <button class="tab-btn" id="tab-novel" onclick="switchView('novel')">
+        <span>📖</span> JAMB Novel
+      </button>
+      <button class="tab-btn" id="tab-formulas" onclick="switchView('formulas')">
+        <span>⚡</span> Formula Deck
+      </button>
+      <button class="tab-btn" id="tab-aggregate" onclick="switchView('aggregate')">
+        <span>🎓</span> Admission Chances
+      </button>
       <button class="tab-btn" id="tab-lessons" onclick="switchView('lessons')">
-        <span>📖</span> Topic Lessons
+        <span>📚</span> Topic Lessons
       </button>
       <button class="tab-btn" id="tab-vault" onclick="switchView('vault')">
         <span>📓</span> Mistake Vault
@@ -118,9 +132,10 @@
             <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.75rem; text-align: center;">
               You are losing an estimated <strong>48 marks</strong> in 2 avoidable trap topics.
             </p>
-            <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+            <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
               <button class="btn-pill btn-primary" onclick="switchView('cbt')">Start CBT Practice</button>
               <button class="btn-pill" onclick="switchView('leaks')">View Mark Leaks</button>
+              <button class="btn-pill" onclick="openCramSheetModal()">🖨️ Cram Sheet</button>
             </div>
           </div>
         </div>
@@ -229,7 +244,12 @@
             <!-- Dynamically populated subject tabs with progress counters -->
           </div>
 
-          <div style="font-size: 0.8rem; color: var(--text-dim);" id="cbtTopicBadge">Topic: Concord & Grammar</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.4rem;">
+            <div style="font-size: 0.8rem; color: var(--text-dim);" id="cbtTopicBadge">Topic: Concord & Grammar</div>
+            <button class="btn-audio-speak" id="btnSpeakQuestion" onclick="speakCurrentQuestion()" title="Listen to Question & Options">
+              <span>🔊</span> <span>Listen (Coach Voice)</span>
+            </button>
+          </div>
 
           <div class="cbt-question-text" id="cbtQuestionText">
             Loading question...
@@ -310,6 +330,279 @@
 
       <div id="lessonsCardsContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
         <!-- Dynamically populated lesson cards -->
+      </div>
+    </section>
+
+    <!-- NOVEL COMPANION VIEW: The Life Changer -->
+    <section id="view-novel" class="view-section">
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <div class="card-title-row">
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <span style="font-size: 1.6rem;">📖</span>
+            <div>
+              <h2 class="card-title" style="margin: 0;" id="novelCompanionTitle">JAMB Prescribed Novel: The Life Changer</h2>
+              <span style="font-size: 0.8rem; color: var(--accent-cyan); font-weight: 600;">By Khadija Abubakar Jalli • Compulsory for UTME Use of English (10-15 Marks)</span>
+            </div>
+          </div>
+          <button class="btn-pill btn-primary" onclick="launchNovelDrillCbt()">
+            <span>⚡</span> Launch Novel CBT Drill
+          </button>
+        </div>
+
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.5rem; line-height: 1.5;">
+          Every JAMB candidate faces mandatory questions on this novel. Don't lose easy marks! Study all 9 chapters, memorize character profiles, discover hidden cognitive traps, and take our authentic interactive drill.
+        </p>
+
+        <!-- Sub-tabs for Novel view -->
+        <div style="display: flex; gap: 0.5rem; margin-top: 1rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.75rem; flex-wrap: wrap;">
+          <button class="filter-pill active" id="btnNovelTabChapters" onclick="switchNovelSubTab('chapters')">📚 9 Chapters Breakdown</button>
+          <button class="filter-pill" id="btnNovelTabCharacters" onclick="switchNovelSubTab('characters')">👥 Character Vault</button>
+          <button class="filter-pill" id="btnNovelTabThemes" onclick="switchNovelSubTab('themes')">🎭 Core Themes & Motifs</button>
+          <button class="filter-pill" id="btnNovelTabQuestions" onclick="switchNovelSubTab('questions')">❓ High-Yield Past Questions</button>
+        </div>
+
+        <!-- Novel Tab Content 1: Chapters -->
+        <div id="novelSubSectionChapters" style="margin-top: 1.25rem;">
+          <div id="novelChaptersContainer">
+            <!-- Dynamically populated chapter cards -->
+          </div>
+        </div>
+
+        <!-- Novel Tab Content 2: Characters -->
+        <div id="novelSubSectionCharacters" style="display: none; margin-top: 1.25rem;">
+          <div class="novel-character-grid" id="novelCharactersContainer">
+            <!-- Dynamically populated character cards -->
+          </div>
+        </div>
+
+        <!-- Novel Tab Content 3: Themes -->
+        <div id="novelSubSectionThemes" style="display: none; margin-top: 1.25rem;">
+          <div id="novelThemesContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+            <!-- Dynamically populated themes -->
+          </div>
+        </div>
+
+        <!-- Novel Tab Content 4: High-Yield Questions -->
+        <div id="novelSubSectionQuestions" style="display: none; margin-top: 1.25rem;">
+          <div id="novelQuestionsContainer">
+            <!-- Dynamically populated sample questions -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FORMULA FLASHCARDS DECK VIEW -->
+    <section id="view-formulas" class="view-section">
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <div class="card-title-row">
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <span style="font-size: 1.6rem;">⚡</span>
+            <div>
+              <h2 class="card-title" style="margin: 0;">Smart Formula & Golden Mnemonics Deck</h2>
+              <span style="font-size: 0.8rem; color: var(--accent-emerald); font-weight: 600;">Physics • Chemistry • Mathematics • Economics • Biology</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span id="formulaMasteredCounter" style="font-size: 0.8rem; background: rgba(16,185,129,0.15); color: #34d399; padding: 0.25rem 0.65rem; border-radius: var(--radius-full); font-weight: 700; border: 1px solid rgba(16,185,129,0.3);">Mastered: 0</span>
+          </div>
+        </div>
+
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.5rem; line-height: 1.5;">
+          Tap any card to <strong>flip it 🔄</strong> and reveal the underlying variables, the fatal cognitive trap examiners set, and the golden mnemonic trick for instant recall under exam pressure.
+        </p>
+
+        <!-- Search Bar & Filters -->
+        <div style="display: flex; gap: 0.75rem; margin-top: 1rem; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+          <div style="flex: 1; min-width: 240px; position: relative;">
+            <input type="text" id="formulaSearchInput" class="form-control" placeholder="🔍 Search formulas, e.g. projectile, Snell, gas, quadratic, redox..." oninput="filterFormulasLive()" style="padding-left: 2rem; font-size: 0.85rem;">
+            <span style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); font-size: 0.85rem; opacity: 0.6;">🔍</span>
+          </div>
+          <div class="subject-filter-bar" style="margin-bottom: 0;">
+            <button class="filter-pill active" onclick="filterFormulasBySubject('all', this)">All</button>
+            <button class="filter-pill" onclick="filterFormulasBySubject('Physics', this)">⚡ Physics</button>
+            <button class="filter-pill" onclick="filterFormulasBySubject('Chemistry', this)">🧪 Chem</button>
+            <button class="filter-pill" onclick="filterFormulasBySubject('Mathematics', this)">📐 Math</button>
+            <button class="filter-pill" onclick="filterFormulasBySubject('Economics', this)">📊 Econ</button>
+            <button class="filter-pill" onclick="filterFormulasBySubject('Biology', this)">🧬 Bio</button>
+          </div>
+        </div>
+
+        <div class="flashcards-grid" id="flashcardsGrid">
+          <!-- Dynamically populated flashcards -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ADMISSION CHANCES & AGGREGATE CALCULATOR VIEW -->
+    <section id="view-aggregate" class="view-section">
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <div class="card-title-row">
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <span style="font-size: 1.6rem;">🎓</span>
+            <div>
+              <h2 class="card-title" style="margin: 0;">JAMB + Post-UTME Aggregate & Admission Predictor</h2>
+              <span style="font-size: 0.8rem; color: var(--accent-cyan); font-weight: 600;">Official UNILAG, UI, OAU, UNN, FUTA, UNIBEN, LASU Algorithms</span>
+            </div>
+          </div>
+          <button class="btn-pill" onclick="shareAdmissionCardWhatsApp()" style="background: #25d366; color: #000; font-weight: 700;">
+            <span>💬</span> Share Result on WhatsApp
+          </button>
+        </div>
+
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.5rem; line-height: 1.5;">
+          Calculate your official composite aggregate score based on your UTME score, 5 O'Level grades, and target institution's verified screening model. Coach Kalu calculates your exact distance from the merit cut-off!
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-top: 1.25rem;">
+          
+          <!-- Column 1: Inputs -->
+          <div style="background: var(--bg-surface); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 1rem;">
+            <strong style="color: #ffffff; font-size: 1rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.5rem;">
+              📝 Candidate Scores & Target Faculty
+            </strong>
+
+            <div>
+              <label style="font-size: 0.75rem; color: var(--text-dim); display: block; margin-bottom: 0.25rem;">Target University</label>
+              <select id="aggUniversitySelect" class="form-control" onchange="recalculateAdmissionChances()" style="font-size: 0.85rem;">
+                <option value="UNILAG" selected>University of Lagos (UNILAG)</option>
+                <option value="UI">University of Ibadan (UI)</option>
+                <option value="OAU">Obafemi Awolowo University (OAU)</option>
+                <option value="UNN">University of Nigeria, Nsukka (UNN)</option>
+                <option value="FUTA">Federal University of Technology, Akure (FUTA)</option>
+                <option value="UNIBEN">University of Benin (UNIBEN)</option>
+                <option value="LASU">Lagos State University (LASU)</option>
+                <option value="ABU">Ahmadu Bello University (ABU, Zaria)</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="font-size: 0.75rem; color: var(--text-dim); display: block; margin-bottom: 0.25rem;">Target Course / Degree</label>
+              <select id="aggCourseSelect" class="form-control" onchange="recalculateAdmissionChances()" style="font-size: 0.85rem;">
+                <option value="Medicine & Surgery" selected>Medicine & Surgery</option>
+                <option value="Nursing Science">Nursing Science</option>
+                <option value="Pharmacy">Pharmacy</option>
+                <option value="Law">Law</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Software Engineering">Software Engineering</option>
+                <option value="Mechanical Engineering">Mechanical Engineering</option>
+                <option value="Electrical & Electronics Engineering">Electrical & Electronics Engineering</option>
+                <option value="Civil Engineering">Civil Engineering</option>
+                <option value="Accounting">Accounting</option>
+                <option value="Economics">Economics</option>
+                <option value="Mass Communication">Mass Communication</option>
+                <option value="Dentistry">Dentistry</option>
+                <option value="Medical Laboratory Science">Medical Laboratory Science</option>
+                <option value="Biochemistry">Biochemistry</option>
+                <option value="Microbiology">Microbiology</option>
+                <option value="Business Administration">Business Administration</option>
+                <option value="Political Science">Political Science</option>
+              </select>
+            </div>
+
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                <label style="font-size: 0.75rem; color: var(--text-dim);">JAMB UTME Score (out of 400)</label>
+                <strong id="aggJambDisplay" style="color: var(--accent-cyan); font-family: monospace; font-size: 0.95rem;">280</strong>
+              </div>
+              <input type="range" id="aggJambSlider" min="150" max="380" value="280" style="width: 100%; accent-color: var(--accent-cyan);" oninput="document.getElementById('aggJambDisplay').innerText = this.value; recalculateAdmissionChances();">
+            </div>
+
+            <div>
+              <label style="font-size: 0.75rem; color: var(--text-dim); display: block; margin-bottom: 0.35rem;">WAEC / NECO O'Level 5 Required Core Subjects</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem;">
+                <div>
+                  <small style="font-size: 0.68rem; color: var(--text-muted);">1. English</small>
+                  <select id="aggGrade1" class="form-control" onchange="recalculateAdmissionChances()" style="font-size: 0.78rem;">
+                    <option value="A1" selected>A1</option><option value="B2">B2</option><option value="B3">B3</option><option value="C4">C4</option><option value="C5">C5</option><option value="C6">C6</option>
+                  </select>
+                </div>
+                <div>
+                  <small style="font-size: 0.68rem; color: var(--text-muted);">2. Mathematics</small>
+                  <select id="aggGrade2" class="form-control" onchange="recalculateAdmissionChances()" style="font-size: 0.78rem;">
+                    <option value="A1">A1</option><option value="B2" selected>B2</option><option value="B3">B3</option><option value="C4">C4</option><option value="C5">C5</option><option value="C6">C6</option>
+                  </select>
+                </div>
+                <div>
+                  <small style="font-size: 0.68rem; color: var(--text-muted);">3. Core Subject A</small>
+                  <select id="aggGrade3" class="form-control" onchange="recalculateAdmissionChances()" style="font-size: 0.78rem;">
+                    <option value="A1" selected>A1</option><option value="B2">B2</option><option value="B3">B3</option><option value="C4">C4</option><option value="C5">C5</option><option value="C6">C6</option>
+                  </select>
+                </div>
+                <div>
+                  <small style="font-size: 0.68rem; color: var(--text-muted);">4. Core Subject B</small>
+                  <select id="aggGrade4" class="form-control" onchange="recalculateAdmissionChances()" style="font-size: 0.78rem;">
+                    <option value="A1">A1</option><option value="B2">B2</option><option value="B3" selected>B3</option><option value="C4">C4</option><option value="C5">C5</option><option value="C6">C6</option>
+                  </select>
+                </div>
+                <div style="grid-column: span 2;">
+                  <small style="font-size: 0.68rem; color: var(--text-muted);">5. Core Subject C</small>
+                  <select id="aggGrade5" class="form-control" onchange="recalculateAdmissionChances()" style="font-size: 0.78rem;">
+                    <option value="A1">A1</option><option value="B2" selected>B2</option><option value="B3">B3</option><option value="C4">C4</option><option value="C5">C5</option><option value="C6">C6</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn-pill btn-primary" style="justify-content: center; padding: 0.7rem; font-weight: 700;" onclick="recalculateAdmissionChances()">
+              🔄 Re-Calculate Aggregate & Chances
+            </button>
+          </div>
+
+          <!-- Column 2: Results & Gauge -->
+          <div style="background: var(--bg-surface); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 1rem; justify-content: space-between;">
+            <div>
+              <strong style="color: #ffffff; font-size: 1rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.5rem; display: block;">
+                📊 Admission Probability & Gap Analysis
+              </strong>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 1rem;">
+                <div class="aggregate-stat-card">
+                  <div style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">Your Aggregate</div>
+                  <div style="font-size: 1.85rem; font-weight: 900; color: #38bdf8;" id="aggScoreDisplay">78.2%</div>
+                  <small style="font-size: 0.7rem; color: var(--text-muted);" id="aggFormulaSubtitle">Scaled to 100%</small>
+                </div>
+                <div class="aggregate-stat-card">
+                  <div style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">Historical Merit Cut-Off</div>
+                  <div style="font-size: 1.85rem; font-weight: 900; color: #fbbf24;" id="aggCutoffDisplay">81.5%</div>
+                  <small style="font-size: 0.7rem; color: var(--text-muted);" id="aggCatchmentSubtitle">Catchment: 79.0%</small>
+                </div>
+              </div>
+
+              <!-- Probability Bar -->
+              <div style="margin-top: 1.25rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                  <span style="font-size: 0.8rem; font-weight: 700; color: #ffffff;" id="aggStatusLabel">Competitive Range</span>
+                  <span style="font-size: 0.8rem; font-weight: 800; color: #10b981;" id="aggProbabilityLabel">78% Probability</span>
+                </div>
+                <div class="prob-meter-bar">
+                  <div class="prob-meter-fill" id="aggMeterFill" style="width: 78%; background: #3b82f6;"></div>
+                </div>
+              </div>
+
+              <!-- Coach Kalu's Tactical Verdict -->
+              <div style="margin-top: 1.25rem; background: rgba(0,0,0,0.3); border-radius: var(--radius-sm); padding: 1rem; border-left: 4px solid var(--accent-cyan);">
+                <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.4rem;">
+                  <span style="font-size: 1.1rem;">🧠</span>
+                  <strong style="color: #ffffff; font-size: 0.88rem;">Coach Kalu's Strategic Analysis:</strong>
+                </div>
+                <p id="aggCoachAdvice" style="margin: 0; font-size: 0.84rem; color: #cbd5e1; line-height: 1.45;">
+                  Calculating your chances...
+                </p>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button class="btn-pill btn-primary" style="flex: 1; justify-content: center;" onclick="switchView('cbt')">
+                ⚡ Drill to Boost Score
+              </button>
+              <button class="btn-pill" style="flex: 1; justify-content: center; background: #25d366; color: #000; font-weight: 700;" onclick="shareAdmissionCardWhatsApp()">
+                💬 Share on WhatsApp
+              </button>
+            </div>
+          </div>
+
+        </div>
       </div>
     </section>
 
@@ -1022,6 +1315,29 @@ Reply with a number:
             ⚡ Practice Questions on This Topic
           </button>
         </div>
+      </div>
+    </div>
+  <!-- MODAL: 1-Page Printable JAMB Diagnostic Cram Sheet -->
+  <div class="modal-overlay" id="cramSheetModal">
+    <div class="modal-box" style="max-width: 720px; width: 95%; max-height: 90vh; display: flex; flex-direction: column;">
+      <div class="modal-header">
+        <h3 style="font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem; color: #ffffff;">
+          <span>🖨️</span> Official JAMB 1-Page Diagnostic Cram Sheet
+        </h3>
+        <button class="modal-close" onclick="closeModal('cramSheetModal')">&times;</button>
+      </div>
+
+      <div style="overflow-y: auto; flex: 1; padding: 0.75rem 0;" id="cramSheetContent">
+        <!-- Dynamically populated printable cram sheet -->
+      </div>
+
+      <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem; border-top: 1px solid var(--border-subtle); padding-top: 0.75rem;">
+        <button class="btn-pill btn-primary" style="flex: 1; justify-content: center; font-weight: 700;" onclick="printCramSheet()">
+          🖨️ Print / Save as PDF
+        </button>
+        <button class="btn-pill" style="flex: 1; justify-content: center;" onclick="closeModal('cramSheetModal')">
+          ✕ Close
+        </button>
       </div>
     </div>
   </div>

@@ -819,6 +819,95 @@ for t_name, t_fn in [
     tests_total += 1
     if run_test(t_name, t_fn): tests_passed += 1
 
+# 🌟 SECTION 13: Feature Suite 2.0 (JAMB Novel, Formula Deck, Admission Predictor & Cram Sheet)
+print("\n🌟 SECTION 13: Feature Suite 2.0 (Novel Companion, Formula Deck, Admission Chances & Cram Sheet)")
+
+def test_novel_companion_api():
+    res = client.get("/api/novel")
+    assert res.status_code == 200
+    data = res.json
+    assert data["status"] == "success"
+    companion = data["companion"]
+    assert companion["novel_title"] == "The Life Changer"
+    assert companion["author"] == "Khadija Abubakar Jalli"
+    assert len(companion["chapters"]) == 9
+    assert len(companion["characters"]) >= 8
+    assert len(companion["major_themes"]) >= 4
+
+    # Test single chapter retrieval
+    res_ch1 = client.get("/api/novel?chapter=1")
+    assert res_ch1.status_code == 200
+    assert res_ch1.json["chapter"]["chapter_number"] == 1
+    assert "Omar" in res_ch1.json["chapter"]["key_characters"]
+
+def test_novel_drill_cbt_api():
+    res = client.get("/api/novel/drill?limit=5")
+    assert res.status_code == 200
+    data = res.json
+    assert data["status"] == "success"
+    assert len(data["questions"]) <= 5
+    for q in data["questions"]:
+        assert "question" in q
+        assert "options" in q
+        assert "correct_option" in q
+
+def test_formula_deck_api():
+    res = client.get("/api/formulas")
+    assert res.status_code == 200
+    data = res.json
+    assert data["status"] == "success"
+    assert data["count"] >= 12
+
+    # Test subject filtering
+    res_phy = client.get("/api/formulas?subject=Physics")
+    assert res_phy.status_code == 200
+    for f in res_phy.json["formulas"]:
+        assert f["subject"] == "Physics"
+
+    # Test search query
+    res_search = client.get("/api/formulas?search=projectile")
+    assert res_search.status_code == 200
+    assert res_search.json["count"] >= 1
+
+def test_admission_chances_calculator_engine():
+    res = client.post("/api/diagnostics/admission-chance", json={
+        "university": "UNILAG",
+        "course": "Medicine & Surgery",
+        "jamb_score": 310,
+        "olevel_grades": ["A1", "A1", "A1", "A1", "A1"]
+    })
+    assert res.status_code == 200
+    data = res.json["data"]
+    assert data["university"] == "UNILAG"
+    assert data["course"] == "Medicine & Surgery"
+    assert data["aggregate_score"] >= 80.0
+    assert data["probability_pct"] >= 75
+    assert "Coach Kalu" in data["coach_advice"] or "merit" in data["coach_advice"].lower()
+    assert "whatsapp_share_text" in data
+
+def test_feature_suite_2_ui_dom_elements():
+    res = client.get("/")
+    assert res.status_code == 200
+    html = res.data.decode("utf-8")
+    assert "view-novel" in html
+    assert "view-formulas" in html
+    assert "view-aggregate" in html
+    assert "cramSheetModal" in html
+    assert "btnSpeakQuestion" in html
+    assert "tab-novel" in html
+    assert "tab-formulas" in html
+    assert "tab-aggregate" in html
+
+for t_name, t_fn in [
+    ("JAMB Prescribed Novel 'The Life Changer' Companion API (9 Chapters & Characters)", test_novel_companion_api),
+    ("Novel Dedicated CBT Drill Generator API", test_novel_drill_cbt_api),
+    ("Smart Formula Deck API & Multi-Subject Filtering", test_formula_deck_api),
+    ("University Aggregate & Admission Probability Engine (UNILAG/UI/FUTA)", test_admission_chances_calculator_engine),
+    ("Feature Suite 2.0 UI DOM Elements (Novel, Formulas, Aggregate & Cram Sheet)", test_feature_suite_2_ui_dom_elements)
+]:
+    tests_total += 1
+    if run_test(t_name, t_fn): tests_passed += 1
+
 # --- POST-TEST CLEANUP: Keep Production Database Pristine ---
 try:
     with db.get_db_connection() as c_conn:

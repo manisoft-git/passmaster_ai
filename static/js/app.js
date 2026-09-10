@@ -96,6 +96,8 @@ document.addEventListener("DOMContentLoaded", () => {
   loadLeaderboard();
   loadMistakeVault();
   loadTopicLessons();
+  loadNovelCompanion();
+  loadFormulas();
 
   // Anti-cheat tab switch monitoring
   window.addEventListener("visibilitychange", handleAntiCheatEvent);
@@ -580,6 +582,15 @@ function switchView(viewName) {
   }
   if (viewName === "lessons") {
     loadTopicLessons();
+  }
+  if (viewName === "novel") {
+    loadNovelCompanion();
+  }
+  if (viewName === "formulas") {
+    loadFormulas();
+  }
+  if (viewName === "aggregate") {
+    recalculateAdmissionChances();
   }
 }
 
@@ -2903,3 +2914,607 @@ function renderPrerequisites(prereqs, preparesFor, subject) {
     }
   }
 }
+
+// ========================================================
+// 📖 JAMB NOVEL COMPANION: The Life Changer
+// ========================================================
+let novelCompanionData = null;
+
+async function loadNovelCompanion() {
+  try {
+    if (!novelCompanionData) {
+      const res = await fetch("/api/novel");
+      const data = await res.json();
+      if (data.status === "success") {
+        novelCompanionData = data.companion;
+      }
+    }
+    if (novelCompanionData) {
+      renderNovelChapters();
+      renderNovelCharacters();
+      renderNovelThemes();
+      renderNovelQuestions();
+    }
+  } catch (err) {
+    console.error("Error loading novel companion:", err);
+  }
+}
+
+function switchNovelSubTab(tabName) {
+  const tabs = ["chapters", "characters", "themes", "questions"];
+  tabs.forEach(t => {
+    const btn = document.getElementById("btnNovelTab" + t.charAt(0).toUpperCase() + t.slice(1));
+    const sec = document.getElementById("novelSubSection" + t.charAt(0).toUpperCase() + t.slice(1));
+    if (btn) btn.classList.toggle("active", t === tabName);
+    if (sec) sec.style.display = (t === tabName) ? "block" : "none";
+  });
+}
+
+function renderNovelChapters() {
+  const container = document.getElementById("novelChaptersContainer");
+  if (!container || !novelCompanionData || !novelCompanionData.chapters) return;
+
+  container.innerHTML = "";
+  novelCompanionData.chapters.forEach(ch => {
+    const card = document.createElement("div");
+    card.className = "novel-chapter-card";
+    card.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 0.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.6rem;">
+          <span style="font-size: 0.8rem; background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-weight: 700;">
+            Chapter ${ch.chapter_number}
+          </span>
+          <strong style="color: #ffffff; font-size: 1rem;">${escapeHtml(ch.title)}</strong>
+        </div>
+        <button class="btn-pill" style="font-size: 0.72rem; padding: 0.25rem 0.65rem;" onclick="launchNovelDrillCbt(5)">
+          ⚡ Drill This Chapter
+        </button>
+      </div>
+
+      <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.5; margin-bottom: 0.75rem;">
+        ${escapeHtml(ch.summary)}
+      </p>
+
+      <div style="background: rgba(0,0,0,0.25); border-radius: var(--radius-sm); padding: 0.75rem; display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.8rem;">
+        <div>
+          <span style="color: var(--text-dim); font-weight: 600;">Key Characters:</span>
+          <span style="color: var(--accent-cyan);">${ch.key_characters.map(c => escapeHtml(c)).join(", ")}</span>
+        </div>
+        <div style="color: #fbbf24;">
+          <strong>⚠️ Exam Pitfall to Avoid:</strong> ${escapeHtml(ch.traps_to_avoid)}
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function renderNovelCharacters() {
+  const container = document.getElementById("novelCharactersContainer");
+  if (!container || !novelCompanionData || !novelCompanionData.characters) return;
+
+  container.innerHTML = "";
+  novelCompanionData.characters.forEach(c => {
+    const card = document.createElement("div");
+    card.className = "novel-character-card";
+    const initial = c.name ? c.name.charAt(0) : "C";
+    card.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 0.65rem;">
+        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #06b6d4, #3b82f6); color: #ffffff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem;">
+          ${initial}
+        </div>
+        <div>
+          <strong style="color: #ffffff; font-size: 0.95rem;">${escapeHtml(c.name)}</strong>
+          <div style="font-size: 0.75rem; color: var(--accent-cyan); font-weight: 600;">${escapeHtml(c.role)}</div>
+        </div>
+      </div>
+
+      <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.45;">
+        <div><strong>Traits:</strong> ${escapeHtml(c.traits)}</div>
+        <div style="margin-top: 0.25rem;"><strong>Significance:</strong> ${escapeHtml(c.significance)}</div>
+      </div>
+
+      <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid #ef4444; padding: 0.5rem 0.65rem; border-radius: 4px; font-size: 0.76rem; color: #fca5a5; margin-top: auto;">
+        <strong>JAMB Trick:</strong> ${escapeHtml(c.jamb_trap)}
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function renderNovelThemes() {
+  const container = document.getElementById("novelThemesContainer");
+  if (!container || !novelCompanionData || !novelCompanionData.major_themes) return;
+
+  container.innerHTML = "";
+  novelCompanionData.major_themes.forEach(t => {
+    const card = document.createElement("div");
+    card.style.cssText = "background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.15rem; display: flex; flex-direction: column; gap: 0.5rem;";
+    card.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span style="font-size: 1.2rem;">🎭</span>
+        <strong style="color: #ffffff; font-size: 0.95rem;">${escapeHtml(t.theme)}</strong>
+      </div>
+      <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.45; margin: 0;">
+        ${escapeHtml(t.description)}
+      </p>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function renderNovelQuestions() {
+  const container = document.getElementById("novelQuestionsContainer");
+  if (!container || !novelCompanionData || !novelCompanionData.questions) return;
+
+  container.innerHTML = "";
+  novelCompanionData.questions.forEach((q, idx) => {
+    const card = document.createElement("div");
+    card.style.cssText = "background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.15rem; margin-bottom: 1rem;";
+
+    const opts = Object.entries(q.options).map(([optKey, optVal]) => `
+      <div style="font-size: 0.84rem; padding: 0.35rem 0.6rem; border-radius: var(--radius-sm); margin-bottom: 0.25rem; background: rgba(0,0,0,0.2);">
+        <strong style="color: var(--accent-cyan);">${optKey}.</strong> ${escapeHtml(optVal)}
+      </div>
+    `).join("");
+
+    const trapExplanation = q.traps[q.correct_option] || q.pedagogical_concept;
+
+    card.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.4rem;">
+        <span style="font-size: 0.75rem; color: var(--accent-cyan); font-weight: 700;">Question ${idx + 1} (${q.subtopic})</span>
+        <span style="font-size: 0.75rem; color: var(--text-dim);">${q.year} Past Exam</span>
+      </div>
+
+      <div style="font-size: 0.92rem; font-weight: 600; color: #ffffff; margin-bottom: 0.75rem; line-height: 1.45;">
+        ${escapeHtml(q.question)}
+      </div>
+
+      <div style="margin-bottom: 0.75rem;">
+        ${opts}
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 0.6rem;">
+        <button class="btn-pill" style="font-size: 0.75rem; padding: 0.3rem 0.75rem;" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none';">
+          💡 Reveal Socratic Breakdown
+        </button>
+        <div style="display: none; flex: 1; margin-left: 0.75rem; background: rgba(16, 185, 129, 0.1); border-left: 3px solid #10b981; padding: 0.5rem 0.75rem; border-radius: 4px; font-size: 0.8rem; color: #a7f3d0;">
+          <strong>Correct Answer: Option ${q.correct_option}</strong><br>
+          ${escapeHtml(q.pedagogical_concept)}
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+async function launchNovelDrillCbt(limit = 15) {
+  try {
+    const res = await fetch(`/api/novel/drill?limit=${limit}`);
+    const data = await res.json();
+    if (data.status === "success" && data.questions && data.questions.length > 0) {
+      filteredQuestions = data.questions;
+      currentIndex = 0;
+      switchView("cbt");
+      renderQuestion();
+      renderPalette();
+    }
+  } catch (err) {
+    console.error("Error launching novel drill:", err);
+  }
+}
+
+// ========================================================
+// ⚡ SMART FORMULA & MNEMONICS DECK
+// ========================================================
+let allFormulasData = [];
+let currentFormulaSubjectFilter = "all";
+let masteredFormulaIds = new Set(JSON.parse(localStorage.getItem("pm_mastered_formulas") || "[]"));
+
+async function loadFormulas() {
+  try {
+    if (allFormulasData.length === 0) {
+      const res = await fetch("/api/formulas");
+      const data = await res.json();
+      if (data.status === "success") {
+        allFormulasData = data.formulas || [];
+      }
+    }
+    renderFormulas(allFormulasData);
+  } catch (err) {
+    console.error("Error loading formulas:", err);
+  }
+}
+
+function renderFormulas(formulasList) {
+  const grid = document.getElementById("flashcardsGrid");
+  const counter = document.getElementById("formulaMasteredCounter");
+  if (!grid) return;
+
+  if (counter) {
+    counter.innerText = `Mastered: ${masteredFormulaIds.size} / ${allFormulasData.length}`;
+  }
+
+  grid.innerHTML = "";
+  if (!formulasList || formulasList.length === 0) {
+    grid.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; color: var(--text-dim);">No formulas match your search.</div>`;
+    return;
+  }
+
+  formulasList.forEach(f => {
+    const isMastered = masteredFormulaIds.has(f.id);
+    const container = document.createElement("div");
+    container.className = "flashcard-container";
+    container.id = "card-" + f.id;
+
+    let badgeColor = "#38bdf8";
+    if (f.subject === "Chemistry") badgeColor = "#34d399";
+    if (f.subject === "Mathematics") badgeColor = "#fbbf24";
+    if (f.subject === "Economics") badgeColor = "#a78bfa";
+    if (f.subject === "Biology") badgeColor = "#f43f5e";
+
+    container.innerHTML = `
+      <div class="flashcard-inner" onclick="flipFormulaCard(this.parentElement)">
+        <!-- Front -->
+        <div class="flashcard-front">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span class="flashcard-badge" style="background: rgba(255,255,255,0.08); color: ${badgeColor}; border: 1px solid ${badgeColor};">
+                ${escapeHtml(f.subject)} • ${escapeHtml(f.topic)}
+              </span>
+              ${isMastered ? '<span style="font-size: 0.72rem; color: #34d399; font-weight: 700;">⭐ Mastered</span>' : ''}
+            </div>
+            <strong style="color: #ffffff; font-size: 1.05rem; display: block; margin-top: 0.5rem;">${escapeHtml(f.title)}</strong>
+          </div>
+
+          <div class="flashcard-formula-box">
+            ${escapeHtml(f.formula)}
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: var(--text-dim); border-top: 1px solid var(--border-subtle); padding-top: 0.6rem;">
+            <span>🔄 Tap card to flip</span>
+            <span style="color: var(--accent-cyan);">Reveal Traps & Mnemonics</span>
+          </div>
+        </div>
+
+        <!-- Back -->
+        <div class="flashcard-back" onclick="event.stopPropagation();">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <strong style="color: #ffffff; font-size: 0.95rem;">${escapeHtml(f.title)}</strong>
+              <button class="btn-pill" style="font-size: 0.7rem; padding: 0.2rem 0.5rem;" onclick="flipFormulaCard(document.getElementById('card-${f.id}'))">
+                🔄 Flip Back
+              </button>
+            </div>
+
+            <div style="font-size: 0.78rem; color: #94a3b8; margin-bottom: 0.5rem;">
+              <strong>Variables:</strong> ${escapeHtml(f.variables)}
+            </div>
+
+            <div style="background: rgba(239, 68, 68, 0.12); border-left: 3px solid #ef4444; padding: 0.45rem 0.6rem; border-radius: 4px; font-size: 0.76rem; color: #fca5a5; margin-bottom: 0.5rem;">
+              <strong>⚠️ Golden JAMB Trap:</strong> ${escapeHtml(f.golden_trap)}
+            </div>
+
+            <div style="background: rgba(245, 158, 11, 0.12); border-left: 3px solid #f59e0b; padding: 0.45rem 0.6rem; border-radius: 4px; font-size: 0.76rem; color: #fde68a; margin-bottom: 0.5rem;">
+              <strong>💡 Mnemonic Memory Hook:</strong> ${escapeHtml(f.mnemonic)}
+            </div>
+
+            <div style="font-size: 0.75rem; color: #cbd5e1; background: rgba(0,0,0,0.3); padding: 0.45rem 0.6rem; border-radius: 4px;">
+              <strong>Worked Concept:</strong> ${escapeHtml(f.worked_example)}
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.4rem; margin-top: 0.6rem; border-top: 1px solid var(--border-subtle); padding-top: 0.5rem;">
+            <button class="btn-pill" style="flex: 1; justify-content: center; font-size: 0.72rem; padding: 0.35rem;" onclick="toggleMasteredFormula('${f.id}')">
+              ${isMastered ? '⭐ Mastered' : '☆ Mark Mastered'}
+            </button>
+            <button class="btn-pill btn-primary" style="flex: 1; justify-content: center; font-size: 0.72rem; padding: 0.35rem;" onclick="practiceFormulaTopic('${f.subject}', '${f.topic}')">
+              ⚡ Practice in CBT
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    grid.appendChild(container);
+  });
+}
+
+function flipFormulaCard(cardEl) {
+  if (cardEl) {
+    cardEl.classList.toggle("is-flipped");
+  }
+}
+
+function toggleMasteredFormula(id) {
+  if (masteredFormulaIds.has(id)) {
+    masteredFormulaIds.delete(id);
+  } else {
+    masteredFormulaIds.add(id);
+  }
+  localStorage.setItem("pm_mastered_formulas", JSON.stringify(Array.from(masteredFormulaIds)));
+  filterFormulasLive();
+}
+
+function filterFormulasBySubject(subj, btn) {
+  currentFormulaSubjectFilter = subj;
+  document.querySelectorAll("#view-formulas .filter-pill").forEach(p => p.classList.remove("active"));
+  if (btn) btn.classList.add("active");
+  filterFormulasLive();
+}
+
+function filterFormulasLive() {
+  const searchInput = document.getElementById("formulaSearchInput");
+  const query = searchInput ? searchInput.value.trim().toLowerCase() : "";
+
+  let filtered = allFormulasData;
+  if (currentFormulaSubjectFilter !== "all") {
+    filtered = filtered.filter(f => f.subject.toLowerCase() === currentFormulaSubjectFilter.toLowerCase());
+  }
+  if (query) {
+    filtered = filtered.filter(f =>
+      f.title.toLowerCase().includes(query) ||
+      f.formula.toLowerCase().includes(query) ||
+      f.topic.toLowerCase().includes(query) ||
+      f.mnemonic.toLowerCase().includes(query)
+    );
+  }
+  renderFormulas(filtered);
+}
+
+function practiceFormulaTopic(subject, topic) {
+  filterBySubject(subject);
+  switchView("cbt");
+}
+
+// ========================================================
+// 🎓 JAMB + POST-UTME ADMISSION AGGREGATE CALCULATOR
+// ========================================================
+let cachedAdmissionResult = null;
+
+async function recalculateAdmissionChances() {
+  const uni = document.getElementById("aggUniversitySelect")?.value || "UNILAG";
+  const course = document.getElementById("aggCourseSelect")?.value || "Medicine & Surgery";
+  const jambScore = parseInt(document.getElementById("aggJambSlider")?.value || "280");
+
+  const g1 = document.getElementById("aggGrade1")?.value || "A1";
+  const g2 = document.getElementById("aggGrade2")?.value || "B2";
+  const g3 = document.getElementById("aggGrade3")?.value || "A1";
+  const g4 = document.getElementById("aggGrade4")?.value || "B3";
+  const g5 = document.getElementById("aggGrade5")?.value || "B2";
+
+  const olevelGrades = [g1, g2, g3, g4, g5];
+
+  try {
+    const res = await fetch("/api/diagnostics/admission-chance", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        university: uni,
+        course: course,
+        jamb_score: jambScore,
+        olevel_grades: olevelGrades
+      })
+    });
+    const data = await res.json();
+    if (data.status === "success" && data.data) {
+      cachedAdmissionResult = data.data;
+      updateAdmissionChancesUI(data.data);
+    }
+  } catch (err) {
+    console.error("Error calculating admission chances:", err);
+  }
+}
+
+function updateAdmissionChancesUI(res) {
+  const scoreDisplay = document.getElementById("aggScoreDisplay");
+  const cutoffDisplay = document.getElementById("aggCutoffDisplay");
+  const formulaSub = document.getElementById("aggFormulaSubtitle");
+  const catchmentSub = document.getElementById("aggCatchmentSubtitle");
+  const statusLabel = document.getElementById("aggStatusLabel");
+  const probLabel = document.getElementById("aggProbabilityLabel");
+  const meterFill = document.getElementById("aggMeterFill");
+  const advicePara = document.getElementById("aggCoachAdvice");
+
+  if (scoreDisplay) scoreDisplay.innerText = res.aggregate_score + "%";
+  if (cutoffDisplay) cutoffDisplay.innerText = res.target_cutoff + "%";
+  if (formulaSub) formulaSub.innerText = res.formula_used;
+  if (catchmentSub) catchmentSub.innerText = `Catchment Cut-off: ${res.catchment_cutoff}%`;
+  if (statusLabel) {
+    statusLabel.innerText = res.status;
+    statusLabel.style.color = res.status_color;
+  }
+  if (probLabel) {
+    probLabel.innerText = `${res.probability_pct}% Probability`;
+    probLabel.style.color = res.status_color;
+  }
+  if (meterFill) {
+    meterFill.style.width = `${res.probability_pct}%`;
+    meterFill.style.background = res.status_color;
+  }
+  if (advicePara) advicePara.innerText = res.coach_advice;
+}
+
+function shareAdmissionCardWhatsApp() {
+  if (!cachedAdmissionResult) return;
+  const text = encodeURIComponent(cachedAdmissionResult.whatsapp_share_text);
+  window.open(`https://wa.me/?text=${text}`, "_blank");
+}
+
+// ========================================================
+// 🔊 COACH KALU AUDIO SPEECH ENGINE
+// ========================================================
+let activeSpeechUtterance = null;
+
+function speakText(text) {
+  if (!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+
+  if (!text) return;
+
+  const cleanText = text.replace(/[*_#`]/g, "").replace(/\n+/g, " ");
+  const utterance = new SpeechSynthesisUtterance(cleanText);
+  utterance.rate = 0.95;
+  utterance.pitch = 1.0;
+
+  // Attempt to select English voice
+  const voices = window.speechSynthesis.getVoices();
+  const englishVoice = voices.find(v => v.lang.includes("en-NG") || v.lang.includes("en-GB") || v.lang.includes("en-US"));
+  if (englishVoice) utterance.voice = englishVoice;
+
+  activeSpeechUtterance = utterance;
+  window.speechSynthesis.speak(utterance);
+}
+
+function stopSpeech() {
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.cancel();
+  }
+}
+
+function speakCurrentQuestion() {
+  if (!filteredQuestions || filteredQuestions.length === 0) return;
+  const q = filteredQuestions[currentIndex];
+  if (!q) return;
+
+  let optsText = "";
+  if (q.options) {
+    optsText = `Option A: ${q.options.A || ""}. Option B: ${q.options.B || ""}. Option C: ${q.options.C || ""}. Option D: ${q.options.D || ""}.`;
+  }
+  const fullText = `Subject: ${q.subject}. Topic: ${q.topic}. Question: ${q.question}. ${optsText}`;
+  speakText(fullText);
+}
+
+function speakSocraticFeedback() {
+  const container = document.getElementById("socraticDialogueContainer");
+  if (!container) return;
+  const text = container.innerText;
+  if (text) {
+    speakText("Coach Kalu says: " + text);
+  }
+}
+
+// ========================================================
+// 🖨️ 1-PAGE PRINTABLE JAMB DIAGNOSTIC CRAM SHEET
+// ========================================================
+async function openCramSheetModal() {
+  const content = document.getElementById("cramSheetContent");
+  if (!content) return;
+
+  const name = currentUser ? currentUser.name : candidateName;
+  const course = currentUser ? currentUser.target_course : targetCourse;
+  const uni = currentUser ? currentUser.target_uni : targetUni;
+  const score = document.getElementById("predictedScoreDisplay")?.innerText || "280";
+
+  // Top leaky topics
+  let leaksHtml = "";
+  try {
+    const res = await fetch("/api/diagnostics/score", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ history: sessionHistory })
+    });
+    const data = await res.json();
+    if (data.leaky_bucket && data.leaky_bucket.length > 0) {
+      leaksHtml = data.leaky_bucket.slice(0, 3).map((l, idx) => `
+        <div style="border-bottom: 1px dashed #cbd5e1; padding: 0.4rem 0; font-size: 0.85rem;">
+          <strong>#${idx + 1}. ${escapeHtml(l.subject)} — ${escapeHtml(l.subtopic)}</strong>
+          <div style="color: #b91c1c; font-weight: 700; font-size: 0.78rem;">Mark Leak: -${l.estimated_mark_loss} marks | Accuracy: ${l.accuracy_pct}%</div>
+          <div style="font-size: 0.78rem; color: #475569;">Fix: ${escapeHtml(l.pedagogical_concept)}</div>
+        </div>
+      `).join("");
+    }
+  } catch (e) {
+    console.log("Cram sheet leak fetch notice:", e);
+  }
+
+  if (!leaksHtml) {
+    leaksHtml = `
+      <div style="padding: 0.4rem 0; font-size: 0.85rem;">
+        <strong>1. Use of English — Concord & Proximity</strong><br>
+        <span style="color: #475569; font-size: 0.78rem;">Rule: Compound subjects joined by 'as well as' agree with the first subject.</span>
+      </div>
+      <div style="padding: 0.4rem 0; font-size: 0.85rem;">
+        <strong>2. Physics — Maximum Height of Projectile</strong><br>
+        <span style="color: #475569; font-size: 0.78rem;">Formula: H = (u² · sin²θ)/(2g). Always square sin(θ), not the angle!</span>
+      </div>
+      <div style="padding: 0.4rem 0; font-size: 0.85rem;">
+        <strong>3. Chemistry — Ideal Gas Temperature in Kelvin</strong><br>
+        <span style="color: #475569; font-size: 0.78rem;">Rule: Absolute temperature in PV=nRT MUST be in Kelvin: T(K) = °C + 273.</span>
+      </div>
+    `;
+  }
+
+  // Essential Golden Formulas
+  let formulasSample = "";
+  if (allFormulasData && allFormulasData.length > 0) {
+    formulasSample = allFormulasData.slice(0, 5).map(f => `
+      <div style="background: #f1f5f9; padding: 0.4rem 0.6rem; border-radius: 4px; margin-bottom: 0.35rem; font-size: 0.82rem; color: #0f172a;">
+        <strong>${escapeHtml(f.title)} (${escapeHtml(f.subject)}):</strong>
+        <span style="font-family: monospace; font-weight: 800; color: #0369a1; margin-left: 0.3rem;">${escapeHtml(f.formula)}</span>
+        <div style="font-size: 0.74rem; color: #b45309;">💡 Mnemonic: ${escapeHtml(f.mnemonic)}</div>
+      </div>
+    `).join("");
+  }
+
+  content.innerHTML = `
+    <div class="cram-sheet-print-container" style="padding: 1rem; border: 2px solid #0f172a; border-radius: 8px; background: #ffffff; color: #0f172a; font-family: -apple-system, BlinkMacSystemFont, sans-serif;">
+      <!-- Header -->
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0f172a; padding-bottom: 0.75rem; margin-bottom: 0.75rem;">
+        <div>
+          <h2 style="margin: 0; font-size: 1.35rem; font-weight: 900; letter-spacing: -0.5px;">🎯 PASSMASTER AI — JAMB 2026 CRAM SHEET</h2>
+          <div style="font-size: 0.78rem; color: #64748b; font-weight: 600;">OFFICIAL SOCRATIC EXAM BLUEPRINT & DIAGNOSTIC LEAK SUMMARY</div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 1.4rem; font-weight: 900; color: #0369a1;">${score} / 400</div>
+          <small style="font-size: 0.7rem; color: #64748b; font-weight: 700;">PREDICTED JAMB SCORE</small>
+        </div>
+      </div>
+
+      <!-- Candidate Metadata -->
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; background: #f8fafc; padding: 0.5rem 0.75rem; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 0.82rem; margin-bottom: 0.75rem;">
+        <div><strong>Candidate:</strong> ${escapeHtml(name)}</div>
+        <div><strong>Target University:</strong> ${escapeHtml(uni)}</div>
+        <div><strong>Target Course:</strong> ${escapeHtml(course)}</div>
+      </div>
+
+      <!-- Section 1: Critical Leaky Topics -->
+      <div style="margin-bottom: 0.85rem;">
+        <h3 style="margin: 0 0 0.35rem 0; font-size: 0.95rem; font-weight: 800; color: #b91c1c; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.2rem;">
+          🚨 TOP 3 CRITICAL MARK LEAKS TO SEAL TONIGHT
+        </h3>
+        ${leaksHtml}
+      </div>
+
+      <!-- Section 2: Essential Golden Formulas -->
+      <div style="margin-bottom: 0.85rem;">
+        <h3 style="margin: 0 0 0.35rem 0; font-size: 0.95rem; font-weight: 800; color: #0369a1; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.2rem;">
+          ⚡ HIGH-YIELD FORMULAS & MNEMONIC HOOKS
+        </h3>
+        ${formulasSample}
+      </div>
+
+      <!-- Section 3: JAMB Test-Day Time Heuristics -->
+      <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0.65rem 0.85rem; font-size: 0.8rem; margin-bottom: 0.5rem;">
+        <strong style="color: #0f172a;">⏱️ Official JAMB 120-Minute Strategy:</strong>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; margin-top: 0.3rem; color: #334155;">
+          <div>• <strong>English (60 Qs):</strong> Max 40 mins (40s / question)</div>
+          <div>• <strong>Subject 2 (40 Qs):</strong> 25 mins (37s / question)</div>
+          <div>• <strong>Subject 3 (40 Qs):</strong> 25 mins (37s / question)</div>
+          <div>• <strong>Subject 4 (40 Qs):</strong> 20 mins + 10 mins Review</div>
+        </div>
+      </div>
+
+      <!-- Footer Sign-off -->
+      <div style="text-align: center; font-size: 0.72rem; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 0.5rem;">
+        Engineered by <strong>Manifest Subeno</strong>, Founder of MANISOFT Technologies. Study hard, eliminate cognitive traps, and claim your 280+!
+      </div>
+    </div>
+  `;
+
+  openModal("cramSheetModal");
+}
+
+function printCramSheet() {
+  window.print();
+}
+
