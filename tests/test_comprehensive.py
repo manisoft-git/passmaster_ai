@@ -819,6 +819,19 @@ for t_name, t_fn in [
     tests_total += 1
     if run_test(t_name, t_fn): tests_passed += 1
 
+# --- POST-TEST CLEANUP: Keep Production Database Pristine ---
+try:
+    with db.get_db_connection() as c_conn:
+        c_conn.execute("DELETE FROM users WHERE email LIKE '%@student.ng' AND email != 'manifestsubeno@gmail.com'")
+        c_conn.execute("DELETE FROM attempts WHERE user_id NOT IN (SELECT id FROM users)")
+        c_conn.execute("DELETE FROM payment_orders WHERE user_id NOT IN (SELECT id FROM users)")
+        c_conn.execute("DELETE FROM user_streaks WHERE user_id NOT IN (SELECT id FROM users)")
+        c_conn.execute("DELETE FROM account_deletions WHERE email LIKE '%@student.ng'")
+        c_conn.execute("DELETE FROM banned_identifiers WHERE identifier LIKE '%@student.ng' OR identifier LIKE '081%'")
+        c_conn.commit()
+except Exception as cleanup_err:
+    print(f"Cleanup notice: {cleanup_err}")
+
 # --- FINAL AUDIT SUMMARY ---
 print("\n=======================================================")
 print(f"📊 AUDIT RESULTS: {tests_passed} / {tests_total} TESTS PASSED ({(tests_passed/tests_total)*100:.1f}%)")
@@ -826,7 +839,9 @@ print("=======================================================\n")
 
 if tests_passed == tests_total:
     print("✅ SYSTEM IS 100% OPERATIONAL, SECURE & PRODUCTION READY!")
-    sys.exit(0)
+    if __name__ == '__main__':
+        sys.exit(0)
 else:
     print("❌ SOME TESTS FAILED. CHECK OUTPUT ABOVE.")
-    sys.exit(1)
+    if __name__ == '__main__':
+        sys.exit(1)

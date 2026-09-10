@@ -461,9 +461,6 @@ Reply with a number:
           <label class="form-label">Password</label>
           <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required>
         </div>
-        <p style="font-size: 0.75rem; color: var(--text-dim); margin-bottom: 1rem;">
-          Demo Login: <code>favour@student.ng</code> / <code>password123</code>
-        </p>
         <button type="submit" class="btn-pill btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem;">
           🔐 Sign In to PassMaster
         </button>
