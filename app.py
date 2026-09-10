@@ -371,6 +371,58 @@ def get_questions():
 def get_syllabus():
     return jsonify({"status": "success", "syllabus": diagnostics.syllabus})
 
+@app.route('/api/drill/weakness', methods=['GET'])
+def get_weakness_drill():
+    """
+    Analyzes student's recorded mistake vault & attempt history to pinpoint weak syllabus topics,
+    dynamically assembling an intensive 15-question remedial drill tailored to those weaknesses.
+    If student has no recorded history or is not logged in, delivers high-yield diagnostic questions.
+    """
+    user_id = session.get('user_id')
+    weak_topics = []
+    mistakes = []
+
+    if user_id:
+        mistakes = db.get_mistake_vault(user_id)
+        if mistakes:
+            top_counts = Counter(m.get('topic') for m in mistakes if m.get('topic'))
+            weak_topics = [t for t, _ in top_counts.most_common(4)]
+
+    # If no user-specific weak topics found, default to universally challenging JAMB trap topics
+    if not weak_topics:
+        weak_topics = [
+            "Concord & Grammar",
+            "Calculus",
+            "Organic Chemistry",
+            "Electricity & Magnetism",
+            "Microeconomics & Price Mechanism",
+            "Genetics & Evolution"
+        ]
+
+    remedial_pool = [
+        dict(q) for q in tutor.questions.values()
+        if q.get('topic') in weak_topics
+    ]
+    random.shuffle(remedial_pool)
+    selected_questions = remedial_pool[:15]
+
+    if len(selected_questions) < 10:
+        all_q = list(tutor.questions.values())
+        random.shuffle(all_q)
+        selected_questions = all_q[:15]
+
+    resp = jsonify({
+        "status": "success",
+        "mode": "weakness_drill",
+        "weak_topics": weak_topics,
+        "mistake_count_analyzed": len(mistakes),
+        "count": len(selected_questions),
+        "duration_minutes": 15,
+        "questions": selected_questions
+    })
+    resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    return resp
+
 # ----------------- TOPIC MASTER LESSONS API -----------------
 LESSONS_PATH = os.path.join(os.path.dirname(__file__), "data", "lessons.json")
 

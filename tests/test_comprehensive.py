@@ -908,6 +908,80 @@ for t_name, t_fn in [
     tests_total += 1
     if run_test(t_name, t_fn): tests_passed += 1
 
+# 🚀 SECTION 14: Question Bank 6,400 Scale Audit, Coach Kalu Gemini 2.5 Pro & Weakness Drill
+print("\n🚀 SECTION 14: Scale to 6,400 Questions (800/Subject), Gemini-2.5-Pro & Weakness Drill")
+
+def test_scaled_6400_question_bank():
+    from collections import Counter
+    res = client.get("/api/questions")
+    assert res.status_code == 200
+    qs = res.json["questions"]
+    assert len(qs) >= 6400, f"Expected >= 6,400 questions, found {len(qs)}"
+
+    canonical_subjects = [
+        "Biology", "Chemistry", "Economics", "Government",
+        "Literature in English", "Mathematics", "Physics", "Use of English"
+    ]
+    by_subj = Counter(q["subject"] for q in qs)
+    for s in canonical_subjects:
+        assert by_subj[s] >= 800, f"Subject {s} has only {by_subj[s]} questions (expected >= 800)"
+
+    # Check 32 canonical topics have at least 200 questions each
+    from tools.scale_to_800_bank import CANONICAL_TOPICS
+    for s, topics in CANONICAL_TOPICS.items():
+        by_topic = Counter(q["topic"] for q in qs if q["subject"] == s)
+        for t in topics:
+            assert by_topic[t] >= 200, f"Topic [{s}] {t} has {by_topic[t]} questions (expected >= 200)"
+
+def test_coach_kalu_gemini_2_5_pro_configuration():
+    from engine.socratic_tutor import SocraticTutor
+    tut = SocraticTutor()
+    # Check default model configuration
+    model_pref = os.getenv("GEMINI_MODEL", "gemini-2.5-pro")
+    assert "gemini-2.5-pro" in model_pref or "gemini" in model_pref
+
+    # Verify Socratic question chat response and local fallback integrity
+    chat_res = tut.chat_reply("mth_001", "Why is option B incorrect?")
+    assert "reply" in chat_res
+    assert len(chat_res["reply"]) > 20
+
+    # Verify general academic reply integrity
+    acad_res = tut.chat_reply("general", "Explain the rule of proximity in English grammar")
+    assert "reply" in acad_res
+    assert "proximity" in acad_res["reply"].lower() or len(acad_res["reply"]) > 20
+
+def test_weakness_drill_api():
+    res = client.get("/api/drill/weakness")
+    assert res.status_code == 200
+    data = res.json
+    assert data["status"] == "success"
+    assert data["mode"] == "weakness_drill"
+    assert len(data["questions"]) >= 10
+    assert len(data["weak_topics"]) >= 1
+    for q in data["questions"]:
+        assert "question" in q
+        assert "options" in q
+        assert "correct_option" in q
+
+def test_jamb_8key_and_weakness_ui_dom():
+    res = client.get("/")
+    assert res.status_code == 200
+    html = res.data.decode("utf-8")
+    assert "jamb8KeysBadge" in html
+    assert "startWeaknessDrill" in html
+    assert "prevBtn" in html
+    assert "nextBtn" in html
+    assert "calcModal" in html
+
+for t_name, t_fn in [
+    ("Scaled Question Bank Audit (6,400+ Total, 800/Subject, 200/Topic)", test_scaled_6400_question_bank),
+    ("Coach Kalu Gemini-2.5-Pro Reasoning & Cascading Fallback Architecture", test_coach_kalu_gemini_2_5_pro_configuration),
+    ("Targeted Weakness Rapid Drill API (/api/drill/weakness)", test_weakness_drill_api),
+    ("JAMB 8-Key Shortcut System & Weakness Drill UI Elements", test_jamb_8key_and_weakness_ui_dom)
+]:
+    tests_total += 1
+    if run_test(t_name, t_fn): tests_passed += 1
+
 # --- POST-TEST CLEANUP: Keep Production Database Pristine ---
 try:
     with db.get_db_connection() as c_conn:

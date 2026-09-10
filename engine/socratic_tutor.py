@@ -69,6 +69,56 @@ class SocraticTutor:
                 "can_retry": True
             }
 
+    def _call_gemini(self, prompt, context_system=None):
+        """
+        Invokes the Google Gemini API with the highest feasible reasoning model.
+        Defaults to gemini-2.5-pro (or GEMINI_MODEL env), cascading gracefully through:
+        gemini-2.5-pro -> gemini-1.5-pro -> gemini-2.5-flash -> gemini-1.5-flash.
+        Returns: (text_reply, model_used) or (None, None) if unreachable.
+        """
+        api_key = self.gemini_api_key or os.getenv("GEMINI_API_KEY", "")
+        if not api_key:
+            return None, None
+
+        preferred_model = os.getenv("GEMINI_MODEL", "gemini-2.5-pro").strip()
+        cascade_models = [preferred_model]
+        for m in ["gemini-2.5-pro", "gemini-1.5-pro", "gemini-2.5-flash", "gemini-1.5-flash"]:
+            if m not in cascade_models:
+                cascade_models.append(m)
+
+        parts = []
+        if context_system:
+            parts.append({"text": context_system})
+        parts.append({"text": prompt})
+
+        payload = {
+            "contents": [{"role": "user", "parts": parts}],
+            "generationConfig": {
+                "temperature": 0.65,
+                "maxOutputTokens": 1024
+            }
+        }
+
+        for model in cascade_models:
+            try:
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
+                res = requests.post(url, json=payload, timeout=9)
+                if res.status_code == 200:
+                    data = res.json()
+                    candidates = data.get("candidates", [])
+                    if candidates and "content" in candidates[0] and "parts" in candidates[0]["content"]:
+                        ai_text = candidates[0]["content"]["parts"][0].get("text", "").strip()
+                        if ai_text:
+                            return ai_text, model
+                elif res.status_code in (400, 404, 429, 503):
+                    print(f"Gemini model {model} returned HTTP {res.status_code}, falling back...")
+                    continue
+            except Exception as ex:
+                print(f"Gemini API model {model} error: {ex}")
+                continue
+
+        return None, None
+
     def chat_reply(self, question_id, user_message, previous_attempts=None):
         """
         Handles interactive follow-up dialogue between the student and the AI tutor.
@@ -80,34 +130,20 @@ class SocraticTutor:
         if not question or question_id == "general":
             return self.general_academic_reply(user_message)
 
-        api_key = self.gemini_api_key or os.getenv("GEMINI_API_KEY", "")
-        # If Gemini API Key is available, attempt live LLM call for question
-        if api_key:
-            try:
-                system_prompt = (
-                    "You are 'Coach Kalu', a brilliant, encouraging, sharp Nigerian master tutor specializing in JAMB/WAEC. "
-                    "Your goal is Socratic coaching: NEVER just blurt out the answer. Guide the student to see the solution. "
-                    "Use crisp, clear language, occasional friendly Nigerian educational warmth, and solid scientific/mathematical rigor. "
-                    f"Current Question: {question['question']}\n"
-                    f"Options: {json.dumps(question['options'])}\n"
-                    f"Correct Option: {question['correct_option']}\n"
-                    f"Underlying Rule: {question['pedagogical_concept']}\n"
-                    f"Common Traps: {json.dumps(question['traps'])}"
-                )
-
-                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
-                payload = {
-                    "contents": [
-                        {"role": "user", "parts": [{"text": f"{system_prompt}\n\nStudent Message: {user_message}"}]}
-                    ]
-                }
-                res = requests.post(url, json=payload, timeout=8)
-                if res.status_code == 200:
-                    data = res.json()
-                    ai_text = data["candidates"][0]["content"]["parts"][0]["text"]
-                    return {"reply": ai_text, "source": "gemini_live"}
-            except Exception as ex:
-                print(f"LLM API fallback triggered: {ex}")
+        # If Gemini API Key is available, attempt live LLM call with highest model (gemini-2.5-pro)
+        system_prompt = (
+            "You are 'Coach Kalu', a brilliant, encouraging, sharp Nigerian master tutor specializing in JAMB/WAEC. "
+            "Your goal is Socratic coaching: NEVER just blurt out the answer. Guide the student to see the solution. "
+            "Use crisp, clear language, occasional friendly Nigerian educational warmth, and solid scientific/mathematical rigor. "
+            f"Current Question: {question['question']}\n"
+            f"Options: {json.dumps(question['options'])}\n"
+            f"Correct Option: {question['correct_option']}\n"
+            f"Underlying Rule: {question['pedagogical_concept']}\n"
+            f"Common Traps: {json.dumps(question['traps'])}"
+        )
+        ai_text, model_used = self._call_gemini(f"Student Message: {user_message}", context_system=system_prompt)
+        if ai_text:
+            return {"reply": ai_text, "source": "gemini_live", "model": model_used}
 
         # Intelligent Built-in Pedagogical Logic (Fast, deterministic, conversational & zero latency)
         msg_lower = user_message.lower().strip()
@@ -265,24 +301,15 @@ class SocraticTutor:
         msg_lower = (user_message or "").lower().strip()
         api_key = self.gemini_api_key or os.getenv("GEMINI_API_KEY", "")
 
-        # If Gemini API Key is available, answer via LLM
-        if api_key:
-            try:
-                prompt = (
-                    "You are 'Coach Kalu', a brilliant, encouraging master Nigerian tutor specializing in JAMB & WAEC. "
-                    "The student is preparing for the 2026/2027 JAMB exam and asked an academic or syllabus question. "
-                    "Provide a direct, crystal-clear, structured explanation with rules/formulas, worked examples, and key traps to watch out for. "
-                    f"Student Question: {user_message}"
-                )
-                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
-                payload = {"contents": [{"role": "user", "parts": [{"text": prompt}]}]}
-                res = requests.post(url, json=payload, timeout=8)
-                if res.status_code == 200:
-                    data = res.json()
-                    ai_text = data["candidates"][0]["content"]["parts"][0]["text"]
-                    return {"reply": ai_text, "source": "gemini_live", "topic": "General Academic"}
-            except Exception as ex:
-                print(f"LLM general chat fallback: {ex}")
+        # If Gemini API Key is available, answer via highest model (gemini-2.5-pro)
+        system_prompt = (
+            "You are 'Coach Kalu', a brilliant, encouraging master Nigerian tutor specializing in JAMB & WAEC. "
+            "The student is preparing for the 2026/2027 JAMB exam and asked an academic or syllabus question. "
+            "Provide a direct, crystal-clear, structured explanation with rules/formulas, worked examples, and key traps to watch out for."
+        )
+        ai_text, model_used = self._call_gemini(f"Student Question: {user_message}", context_system=system_prompt)
+        if ai_text:
+            return {"reply": ai_text, "source": "gemini_live", "model": model_used, "topic": "General Academic"}
 
         # English Grammar & Lexis
         if any(w in msg_lower for w in ["proximity", "neither", "either", "not only"]):

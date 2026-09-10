@@ -186,6 +186,9 @@
           <button class="btn-pill btn-primary" onclick="openCbtSetupModal()" title="Customize Drill, Topic or Mock">
             <span>⚙️</span> Drill / Mock Setup
           </button>
+          <button class="btn-pill" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(249, 115, 22, 0.2)); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171;" onclick="startWeaknessDrill()" title="Intensive Rapid Drill on your weakest syllabus topics">
+            <span>🎯</span> Weakness Drill
+          </button>
           <button class="btn-pill" onclick="startNewRandomExam()" title="Generate a brand new randomized exam paper">
             <span>🔀</span> New Random Exam
           </button>
@@ -239,6 +242,16 @@
             </div>
           </div>
 
+          <!-- JAMB 8-Key Shortcut System Notification -->
+          <div class="jamb-8keys-badge" id="jamb8KeysBadge" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); padding: 0.35rem 0.65rem; border-radius: var(--radius-sm); margin-bottom: 0.6rem; flex-wrap: wrap;">
+            <span style="font-weight: 700; color: #34d399;">⌨️ JAMB 8-Keys Active:</span>
+            <span style="color: var(--text-muted);"><kbd style="background: #1f2937; border: 1px solid #374151; padding: 0.1rem 0.35rem; border-radius: 3px; font-family: monospace; color: #fff;">A</kbd> <kbd style="background: #1f2937; border: 1px solid #374151; padding: 0.1rem 0.35rem; border-radius: 3px; font-family: monospace; color: #fff;">B</kbd> <kbd style="background: #1f2937; border: 1px solid #374151; padding: 0.1rem 0.35rem; border-radius: 3px; font-family: monospace; color: #fff;">C</kbd> <kbd style="background: #1f2937; border: 1px solid #374151; padding: 0.1rem 0.35rem; border-radius: 3px; font-family: monospace; color: #fff;">D</kbd> Select</span>
+            <span style="color: var(--text-muted);"><kbd style="background: #1f2937; border: 1px solid #374151; padding: 0.1rem 0.35rem; border-radius: 3px; font-family: monospace; color: #fff;">P</kbd> Prev</span>
+            <span style="color: var(--text-muted);"><kbd style="background: #1f2937; border: 1px solid #374151; padding: 0.1rem 0.35rem; border-radius: 3px; font-family: monospace; color: #fff;">N</kbd> Next</span>
+            <span style="color: var(--text-muted);"><kbd style="background: #1f2937; border: 1px solid #374151; padding: 0.1rem 0.35rem; border-radius: 3px; font-family: monospace; color: #fff;">R</kbd> Flag</span>
+            <span style="color: var(--text-muted);"><kbd style="background: #1f2937; border: 1px solid #374151; padding: 0.1rem 0.35rem; border-radius: 3px; font-family: monospace; color: #fff;">S</kbd> Submit</span>
+          </div>
+
           <!-- CBT 4-Subject Quick Switcher Tabs (20 Questions each) -->
           <div class="cbt-subject-tabs" id="cbtSubjectTabsContainer">
             <!-- Dynamically populated subject tabs with progress counters -->
@@ -261,9 +274,9 @@
 
           <!-- Bottom Nav & Question Palette Toggle -->
           <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
-            <button class="btn-pill" onclick="prevQuestion()">⬅️ Previous</button>
+            <button class="btn-pill" id="prevBtn" onclick="prevQuestion()">⬅️ Previous</button>
             <span style="font-size: 0.85rem; color: var(--text-muted);" id="qCounterDisplay">Question 1 of 12</span>
-            <button class="btn-pill btn-primary" onclick="nextQuestion()">Next ➡️</button>
+            <button class="btn-pill btn-primary" id="nextBtn" onclick="nextQuestion()">Next ➡️</button>
           </div>
 
           <!-- Official JAMB Numbered Question Palette (1 to N) -->

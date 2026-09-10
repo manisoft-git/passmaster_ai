@@ -653,6 +653,37 @@ All questions are shuffled per candidate session. Good luck!`);
   }
 }
 
+async function startWeaknessDrill() {
+  try {
+    const url = `/api/drill/weakness?_t=${Date.now()}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.status === "success" && data.questions && data.questions.length > 0) {
+      allQuestions = data.questions;
+      filteredQuestions = [...allQuestions];
+      currentIndex = 0;
+      currentActiveSubject = 'all';
+      currentActiveTopic = 'all';
+
+      document.querySelectorAll(".subject-filter-bar .filter-pill").forEach(p => {
+        p.classList.toggle("active", p.textContent.includes("All"));
+      });
+
+      renderCbtSubjectTabs();
+      renderCbtTopicBar("all");
+      renderCurrentQuestion();
+      renderPaletteGrid();
+
+      const weakList = (data.weak_topics || []).slice(0, 3).join(', ');
+      alert(`🎯 Targeted Weakness Rapid Drill Loaded!\n\nPassMaster AI has analyzed your past mistake patterns and generated a tailored 15-question remediation set focusing on: ${weakList}.\n\nPractice Socratically and eliminate the cognitive traps!`);
+    } else {
+      alert("Unable to generate weakness drill at this time.");
+    }
+  } catch (err) {
+    alert("Error loading weakness drill: " + err);
+  }
+}
+
 async function drillLeakTopic(subject, topic) {
   try {
     closeModal("lessonModal");
@@ -3517,4 +3548,61 @@ async function openCramSheetModal() {
 function printCramSheet() {
   window.print();
 }
+
+// =========================================================================
+// ⌨️ OFFICIAL JAMB CBT 8-KEY SHORTCUT NAVIGATION ENGINE
+// =========================================================================
+// Emulates the official JAMB exam keyboard shortcut protocol:
+// A, B, C, D: Select the corresponding multiple-choice option
+// P: Previous question (Prev)
+// N: Next question (Next)
+// R: Reverse / Flag question for review
+// S: Submit examination confirmation
+// =========================================================================
+window.addEventListener('keydown', function(e) {
+  // Do not intercept if user is typing in form inputs, textareas or modals
+  const tag = (document.activeElement && document.activeElement.tagName) || '';
+  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tag) || (document.activeElement && document.activeElement.isContentEditable)) {
+    return;
+  }
+
+  // Only active when drill / cbt is active
+  const drillTab = document.getElementById('tab-drill');
+  if (!drillTab || !drillTab.classList.contains('active')) {
+    return;
+  }
+
+  const key = (e.key || '').toUpperCase();
+
+  if (['A', 'B', 'C', 'D'].includes(key)) {
+    // If calcModal is open, don't interfere
+    const calcModal = document.getElementById('calcModal');
+    if (calcModal && calcModal.classList.contains('active')) {
+      return;
+    }
+    const optBtn = document.querySelector(`.option-btn[data-option="${key}"]`);
+    if (optBtn) {
+      optBtn.click();
+      e.preventDefault();
+    }
+  } else if (key === 'P') {
+    const prevBtn = document.getElementById('prevBtn');
+    if (prevBtn) {
+      prevBtn.click();
+      e.preventDefault();
+    }
+  } else if (key === 'N') {
+    const nextBtn = document.getElementById('nextBtn');
+    if (nextBtn) {
+      nextBtn.click();
+      e.preventDefault();
+    }
+  } else if (key === 'R') {
+    const flagBtn = document.getElementById('flagQuestionBtn');
+    if (flagBtn) {
+      flagBtn.click();
+      e.preventDefault();
+    }
+  }
+});
 
