@@ -1106,3 +1106,412 @@ body {
   color: #ffffff;
 }
 
+/* ==========================================================================
+   VIDEO LECTURE & EDUCATIONAL VISUAL SCHEMATICS
+   ========================================================================== */
+.lesson-tabs-nav {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 0.6rem;
+  margin-bottom: 1rem;
+  overflow-x: auto;
+}
+.lesson-tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+.lesson-tab-btn:hover {
+  color: var(--text-main);
+  background: var(--bg-card-hover);
+}
+.lesson-tab-btn.active {
+  color: var(--accent-cyan);
+  background: rgba(56, 189, 248, 0.12);
+  border-bottom: 2px solid var(--accent-cyan);
+}
+
+.video-player-container {
+  background: #070b14;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+.video-screen-mock {
+  position: relative;
+  background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+  aspect-ratio: 16 / 9;
+  max-height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.video-screen-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.video-center-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+.video-play-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0ea5e9, #2563eb);
+  color: #ffffff;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(14, 165, 233, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.video-play-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 28px rgba(14, 165, 233, 0.6);
+}
+.video-waveform {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 28px;
+}
+.waveform-bar {
+  width: 4px;
+  background: var(--accent-cyan);
+  border-radius: 2px;
+  animation: soundwave 1.2s ease-in-out infinite alternate;
+}
+.waveform-bar:nth-child(2) { animation-delay: 0.15s; }
+.waveform-bar:nth-child(3) { animation-delay: 0.3s; }
+.waveform-bar:nth-child(4) { animation-delay: 0.45s; }
+.waveform-bar:nth-child(5) { animation-delay: 0.6s; }
+.waveform-bar:nth-child(6) { animation-delay: 0.75s; }
+.waveform-bar:nth-child(7) { animation-delay: 0.9s; }
+.waveform-bar:nth-child(8) { animation-delay: 1.05s; }
+
+@keyframes soundwave {
+  0% { height: 6px; opacity: 0.4; }
+  100% { height: 26px; opacity: 1; }
+}
+
+.video-progress-bar-wrap {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  height: 6px;
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.video-progress-filled {
+  height: 100%;
+  background: linear-gradient(90deg, #38bdf8, #3b82f6);
+  width: 35%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+.video-controls-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: #0b111e;
+  font-size: 0.82rem;
+  color: var(--text-dim);
+}
+.video-speed-pill {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+.video-speed-pill.active {
+  background: var(--accent-cyan);
+  color: #000;
+  border-color: var(--accent-cyan);
+}
+
+.video-chapters-container {
+  padding: 0.85rem 1rem;
+  background: #090e18;
+  border-top: 1px solid var(--border-subtle);
+}
+.video-chapter-pill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.45rem 0.75rem;
+  margin-bottom: 0.35rem;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: #cbd5e1;
+  transition: all 0.2s;
+}
+.video-chapter-pill:hover {
+  background: rgba(56, 189, 248, 0.08);
+  border-color: rgba(56, 189, 248, 0.3);
+  color: #ffffff;
+}
+.video-chapter-pill.active {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  font-weight: 700;
+}
+
+/* Visual Diagram Card */
+.lesson-diagram-card {
+  background: #080d1a;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.diagram-svg-wrap {
+  width: 100%;
+  overflow-x: auto;
+  text-align: center;
+  padding: 0.5rem 0;
+}
+.diagram-svg-wrap svg {
+  max-width: 100%;
+  height: auto;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+}
+.diagram-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+}
+.diagram-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--text-dim);
+}
+.diagram-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+/* Worked Examples Card */
+.worked-example-card {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-left: 4px solid var(--accent-cyan);
+  border-radius: var(--radius-sm);
+  padding: 0.95rem;
+  margin-bottom: 0.75rem;
+}
+.worked-example-header {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+  margin-bottom: 0.4rem;
+  display: flex;
+  justify-content: space-between;
+}
+.worked-example-solution {
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 1px dashed var(--border-subtle);
+  font-size: 0.85rem;
+  color: #a7f3d0;
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   CBT SUBJECT NAVIGATION TABS (20 QUESTIONS PER SUBJECT)
+   ========================================================================== */
+.cbt-subject-tabs {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.85rem;
+}
+.cbt-subject-tab {
+  flex: 1;
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.55rem 0.85rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.cbt-subject-tab:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(56, 189, 248, 0.4);
+  color: var(--text-main);
+}
+.cbt-subject-tab.active {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(6, 182, 212, 0.2));
+  border-color: var(--accent-cyan);
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.25);
+  font-weight: 700;
+}
+.cbt-subject-tab .badge-count {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+}
+.cbt-subject-tab.active .badge-count {
+  background: var(--accent-cyan);
+  color: #000;
+  font-weight: 800;
+}
+.cbt-subject-tab.completed {
+  border-color: rgba(16, 185, 129, 0.5);
+}
+.cbt-subject-tab.completed .badge-count {
+  background: rgba(16, 185, 129, 0.25);
+  color: #34d399;
+}
+
+/* ==========================================================================
+   CANDIDATE SETTINGS & LOCKED IDENTITY BADGING
+   ========================================================================== */
+.locked-identity-card {
+  background: linear-gradient(135deg, #0b1329 0%, #0d1b38 100%);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+.locked-identity-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #38bdf8, #10b981);
+}
+.locked-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: rgba(16, 185, 129, 0.18);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #34d399;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+}
+.locked-field-box {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.locked-field-val {
+  font-family: monospace;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.preference-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.preference-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.preference-desc {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-top: -0.2rem;
+  line-height: 1.4;
+}
+.preference-pills-row {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.pref-pill-btn {
+  flex: 1;
+  min-width: 60px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  padding: 0.45rem 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+.pref-pill-btn:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-main);
+  border-color: rgba(56, 189, 248, 0.4);
+}
+.pref-pill-btn.active {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  font-weight: 700;
+}
+
+

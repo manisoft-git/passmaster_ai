@@ -714,6 +714,88 @@ def test_cbt_topic_focus_ui_elements():
     assert "cbtTopicCountIndicator" in html
     assert "resetTopicFocus()" in html
 
+def test_preferences_identity_protection():
+    # Login candidate
+    client.post("/api/auth/login", json={
+        "identifier": "08011223344",
+        "password": "Password123"
+    })
+    
+    # 1. Attempt to change email -> must be rejected with 403
+    res = client.post("/api/auth/preferences", json={
+        "email": "malicious_hacker@gmail.com",
+        "questions_per_subject": 20
+    })
+    assert res.status_code == 403
+    assert "cannot modify sensitive records" in res.json["error"].lower()
+
+    # 2. Attempt to change phone -> must be rejected with 403
+    res = client.post("/api/auth/preferences", json={
+        "phone": "08099999999"
+    })
+    assert res.status_code == 403
+    assert "cannot modify sensitive records" in res.json["error"].lower()
+
+    # 3. Attempt to change name -> must be rejected with 403
+    res = client.post("/api/auth/preferences", json={
+        "name": "Different Impersonator Name"
+    })
+    assert res.status_code == 403
+    assert "cannot modify sensitive records" in res.json["error"].lower()
+
+    # 4. Valid preference update -> must succeed with 200
+    res = client.post("/api/auth/preferences", json={
+        "questions_per_subject": 20,
+        "subjects": ["Use of English", "Biology", "Chemistry", "Physics"],
+        "target_course": "Pharmacy",
+        "target_uni": "UNN",
+        "target_score": 310
+    })
+    assert res.status_code == 200
+    assert res.json["status"] == "success"
+    assert res.json["preferences"]["questions_per_subject"] == 20
+    assert res.json["preferences"]["subjects"] == ["Use of English", "Biology", "Chemistry", "Physics"]
+
+def test_jamb_standard_20_questions_per_subject():
+    # Default 20 Qs per subject (4 subjects = 80 Qs)
+    res = client.get("/api/questions?mode=jamb_standard&questions_per_subject=20")
+    assert res.status_code == 200
+    data = res.json
+    assert data["status"] == "success"
+    assert data["count"] == 80
+    assert data["questions_per_subject"] == 20
+    
+    # Verify each subject has exactly 20 questions
+    subj_counts = {}
+    for q in data["questions"]:
+        subj_counts[q["subject"]] = subj_counts.get(q["subject"], 0) + 1
+    assert len(subj_counts) == 4
+    for subj, cnt in subj_counts.items():
+        assert cnt == 20, f"Expected 20 questions for {subj}, got {cnt}"
+
+    # 10 Qs per subject (4 subjects = 40 Qs)
+    res10 = client.get("/api/questions?mode=jamb_standard&questions_per_subject=10")
+    assert res10.status_code == 200
+    assert res10.json["count"] == 40
+
+    # Custom 4-subject combination: English, Biology, Chemistry, Physics
+    res_med = client.get("/api/questions?mode=jamb_standard&questions_per_subject=20&subjects=Use%20of%20English,Biology,Chemistry,Physics")
+    assert res_med.status_code == 200
+    assert res_med.json["count"] == 80
+    med_subjs = {q["subject"] for q in res_med.json["questions"]}
+    assert med_subjs == {"Use of English", "Biology", "Chemistry", "Physics"}
+
+def test_visual_schematics_and_cbt_tabs_ui():
+    res = client.get("/")
+    assert res.status_code == 200
+    html = res.data.decode("utf-8")
+    assert "cbtSubjectTabsContainer" in html
+    assert "lessonDiagramMount" in html
+    assert "lessonVideoChaptersList" in html
+    assert "locked-identity-card" in html
+    assert "prefQuestionsPerSubject" in html
+    assert "openPreferencesModal()" in html
+
 for t_name, t_fn in [
     ("Revised Pass Pricing (₦1,500 / ₦3,500 / ₦8,500)", test_revised_plan_pricing),
     ("Retired Demo PINs Strict Rejection", test_demo_pin_retirement),
@@ -728,7 +810,10 @@ for t_name, t_fn in [
     ("Comprehensive 280+ Question Bank Quality Audit", test_expanded_280_question_bank),
     ("Topic Focus Query Filtering Across 32 Syllabus Topics", test_topic_focus_query_filtering),
     ("Deep Topic Lessons Exhaustiveness & Zero Placeholders", test_deep_lessons_exhaustiveness),
-    ("Mock CBT Topic Focus Interactive Bar & UI Elements", test_cbt_topic_focus_ui_elements)
+    ("Mock CBT Topic Focus Interactive Bar & UI Elements", test_cbt_topic_focus_ui_elements),
+    ("Candidate Identity Record Immutability & Protection (403)", test_preferences_identity_protection),
+    ("JAMB Standard CBT Mode (Strict 20 Qs Per Subject = 80 Total)", test_jamb_standard_20_questions_per_subject),
+    ("Visual Schematics, Video Theater & CBT Subject Tabs UI", test_visual_schematics_and_cbt_tabs_ui)
 ]:
     tests_total += 1
     if run_test(t_name, t_fn): tests_passed += 1
