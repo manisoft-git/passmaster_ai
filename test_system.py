@@ -48,9 +48,19 @@ assert parent_res.status_code == 200
 rep = parent_res.json["report"]
 print("5. Parent Portal Report verified for", rep["name"], ":", rep["questions_completed"], "questions,", rep["accuracy_pct"], "% accuracy")
 
-# 6. Test Demo User Parent Report
-demo_parent = client.get("/api/parent/report?phone=08012345678")
-assert demo_parent.status_code == 200
-print("6. Seeded Demo Student Parent Report verified:", demo_parent.json["report"]["name"])
+# 6. Test Non-Existent User Parent Report (Expected 404)
+demo_parent = client.get("/api/parent/report?phone=08000000000")
+assert demo_parent.status_code == 404
+print("6. Non-Existent Parent Report correctly rejected with 404")
+
+# Cleanup test user
+from db.database import get_db_connection
+conn = get_db_connection()
+c = conn.cursor()
+c.execute("DELETE FROM attempts WHERE user_id IN (SELECT id FROM users WHERE email = 'chidi2@student.ng')")
+c.execute("DELETE FROM user_streaks WHERE user_id IN (SELECT id FROM users WHERE email = 'chidi2@student.ng')")
+c.execute("DELETE FROM users WHERE email = 'chidi2@student.ng'")
+conn.commit()
+conn.close()
 
 print("\n🚀 ALL AUTHENTICATION, DATABASE & PARENT PORTAL CHECKS PASSED WITH 100% SUCCESS!")

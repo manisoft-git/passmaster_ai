@@ -455,7 +455,7 @@ Reply with a number:
       <form id="loginForm" onsubmit="handleLogin(event)">
         <div class="form-group">
           <label class="form-label">Email Address or Phone Number</label>
-          <input type="text" id="loginIdentifier" class="form-input" placeholder="e.g. favour@student.ng or 08012345678" required>
+          <input type="text" id="loginIdentifier" class="form-input" placeholder="e.g. tobi585olive@gmail.com or 08012345678" required>
         </div>
         <div class="form-group">
           <label class="form-label">Password</label>
@@ -473,12 +473,12 @@ Reply with a number:
       <form id="registerForm" style="display: none;" onsubmit="handleRegister(event)">
         <div class="form-group">
           <label class="form-label">Full Name</label>
-          <input type="text" id="regName" class="form-input" placeholder="e.g. Favour Adeyemi" required>
+          <input type="text" id="regName" class="form-input" placeholder="e.g. Tobi Olive" required>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Email</label>
-            <input type="email" id="regEmail" class="form-input" placeholder="name@email.com" required>
+            <input type="email" id="regEmail" class="form-input" placeholder="tobi585olive@gmail.com" required>
           </div>
           <div class="form-group">
             <label class="form-label">Phone</label>
