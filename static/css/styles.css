@@ -204,7 +204,7 @@ body {
 /* Dashboard Grid */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: 1.25rem;
   margin-bottom: 1.5rem;
 }
@@ -694,11 +694,14 @@ body {
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   display: none;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   z-index: 200;
-  padding: 1rem;
+  padding: max(16px, env(safe-area-inset-top)) 12px max(16px, env(safe-area-inset-bottom)) 12px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .modal-overlay.active {
@@ -711,8 +714,12 @@ body {
   border-radius: var(--radius-lg);
   max-width: 500px;
   width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 1.5rem;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  margin: auto 0;
 }
 
 .modal-header {
@@ -1513,5 +1520,160 @@ body {
   color: var(--accent-cyan);
   font-weight: 700;
 }
+
+/* ==========================================================================
+   PassMaster AI Mobile Responsive Ergonomics (< 768px and < 480px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .app-header {
+    padding: max(6px, env(safe-area-inset-top)) 0 6px 0;
+  }
+
+  .header-container {
+    padding: 0 12px;
+    gap: 8px;
+  }
+
+  .brand-logo {
+    font-size: 1.4rem;
+  }
+
+  .brand-info h1 {
+    font-size: 1rem;
+  }
+
+  .brand-info span {
+    font-size: 0.65rem;
+  }
+
+  .header-actions {
+    gap: 4px;
+  }
+
+  .btn-pill {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.75rem;
+    min-height: 36px;
+  }
+
+  .countdown-banner {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+    gap: 4px;
+    text-align: center;
+  }
+
+  .countdown-banner .hide-mobile {
+    display: none;
+  }
+
+  .tabs-container {
+    padding: 4px 10px;
+    gap: 4px;
+  }
+
+  .tab-btn {
+    padding: 0.45rem 0.75rem;
+    font-size: 0.8rem;
+    min-height: 40px;
+  }
+
+  .main-content {
+    padding: 12px 10px;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  /* CBT Layout on Mobile */
+  .cbt-container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .cbt-screen {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .cbt-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .cbt-timer {
+    font-size: 1rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .cbt-question-text {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .option-btn {
+    padding: 0.85rem;
+    font-size: 0.9rem;
+    min-height: 46px;
+  }
+
+  .cbt-actions {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .cbt-actions button {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-input, select.form-input {
+    font-size: 16px !important; /* Prevent iOS auto-zoom */
+    min-height: 44px;
+  }
+
+  /* Modals on Phone */
+  .modal-box {
+    padding: 1.15rem;
+    width: 100%;
+    border-radius: 14px;
+  }
+
+  /* Mistake Vault & Leaky Topic Grids */
+  .leak-grid,
+  .vault-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-actions .btn-pill:not(.btn-primary) span:not(:first-child) {
+    display: none; /* Icon-only for secondary pills on extra-narrow phones */
+  }
+
+  .header-actions .btn-pill {
+    padding: 0.4rem;
+  }
+
+  .brand-info span {
+    display: none;
+  }
+
+  .calc-grid {
+    gap: 0.35rem;
+  }
+
+  .calc-btn {
+    height: 40px;
+    font-size: 0.9rem;
+  }
+}
+
 
 
