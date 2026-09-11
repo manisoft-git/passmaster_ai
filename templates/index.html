@@ -1132,14 +1132,22 @@ Reply with a number:
   <!-- MODAL: Topic Masterclass Lesson Reader -->
   <div class="modal-overlay" id="lessonModal">
     <div class="modal-box" style="max-width: 820px; width: 95%; max-height: 88vh; display: flex; flex-direction: column;">
-      <div class="modal-header" style="flex-wrap: wrap; gap: 0.5rem;">
+      <div class="modal-header" style="flex-wrap: wrap; gap: 0.5rem; justify-content: space-between; align-items: center;">
         <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
           <span class="subject-badge" id="lessonSubjectBadge">Physics</span>
           <span style="font-size: 0.8rem; color: var(--accent-cyan); font-weight: 700;" id="lessonTopicBadge">Gas Laws & Thermodynamics</span>
           <span style="font-size: 0.72rem; background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 600;" id="lessonCategoryBadge">Core Syllabus Masterclass</span>
           <span style="font-size: 0.72rem; background: rgba(251, 191, 36, 0.15); color: #fbbf24; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 600;" id="lessonWeightBadge">25% Weight</span>
         </div>
-        <button class="modal-close" onclick="closeModal('lessonModal')">&times;</button>
+        <div style="display: flex; align-items: center; gap: 0.4rem;">
+          <button class="btn-pill" style="font-size: 0.75rem; padding: 0.25rem 0.65rem; background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(59, 130, 246, 0.2)); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8;" onclick="switchLessonModalTab('visual')">
+            <span>🎬</span> Watch Video Masterclass
+          </button>
+          <button class="btn-pill" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;" onclick="printTopicMasterclassCheatSheet()" title="Print or save 1-page revision sheet">
+            <span>🖨️</span> Cheat Sheet
+          </button>
+          <button class="modal-close" onclick="closeModal('lessonModal')">&times;</button>
+        </div>
       </div>
 
       <!-- Navigation Tabs inside Masterclass Reader -->
@@ -1176,6 +1184,17 @@ Reply with a number:
           <div style="background: rgba(56, 189, 248, 0.1); border-left: 4px solid var(--accent-cyan); padding: 0.9rem; border-radius: 4px;">
             <div style="font-size: 0.75rem; color: var(--accent-cyan); font-weight: 800; text-transform: uppercase;">Key Golden Rule & Mathematical Axiom</div>
             <div style="font-size: 1rem; font-weight: 700; color: #ffffff; margin-top: 0.25rem; font-family: monospace;" id="lessonKeyRule">P1V1/T1 = P2V2/T2</div>
+          </div>
+
+          <!-- Key Syllabus Terminology & Definitions Box -->
+          <div id="lessonKeyTermsBox" style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(56, 189, 248, 0.25); padding: 0.95rem; border-radius: var(--radius-md);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 0.35rem;">
+              <span style="font-size: 0.8rem; color: var(--accent-cyan); font-weight: 800; text-transform: uppercase;">📚 Key Syllabus Terminology & Essential Definitions</span>
+              <span style="font-size: 0.72rem; color: #94a3b8;">High-Yield Vocabulary for Direct Exam Questions</span>
+            </div>
+            <div id="lessonKeyTermsContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.6rem;">
+              <!-- Dynamically populated key terms -->
+            </div>
           </div>
 
           <!-- Examiner Deep Dive -->
@@ -1229,9 +1248,27 @@ Reply with a number:
 
           <!-- Video Lecture Theater Box -->
           <div class="video-player-container">
-            <div class="video-screen-mock">
+            <!-- Video Screen Header & Mode Toggle -->
+            <div style="padding: 0.75rem 1rem; background: #070b14; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                <span style="font-size: 0.78rem; font-weight: 800; color: #38bdf8; text-transform: uppercase;" id="lessonVideoBadge">🎬 JAMB Topic Video Masterclass</span>
+                <span class="status-badge status-confirmed" id="lessonVideoDurationBadge">HD Video Lecture</span>
+              </div>
+              <div style="display: flex; gap: 0.35rem; align-items: center;">
+                <button class="video-mode-btn active" id="btnModeRealVideo" onclick="setVideoPlaybackMode('real')">📺 Video Lecture (HD)</button>
+                <button class="video-mode-btn" id="btnModeSimulated" onclick="setVideoPlaybackMode('simulated')">🎙️ AI Audio Walkthrough</button>
+              </div>
+            </div>
+
+            <!-- Real High-Definition YouTube Embed Player -->
+            <div id="lessonRealVideoWrapper" style="position: relative; width: 100%; aspect-ratio: 16 / 9; max-height: 420px; background: #000; overflow: hidden;">
+              <iframe id="lessonRealVideoIframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="width: 100%; height: 100%; border: none;"></iframe>
+            </div>
+
+            <!-- Simulated Coach Kalu Audio Walkthrough Player (Alternative Mode) -->
+            <div class="video-screen-mock" id="lessonAudioMockWrapper" style="display: none;">
               <div class="video-screen-top">
-                <span style="font-size: 0.75rem; font-weight: 700; background: rgba(0,0,0,0.65); padding: 0.25rem 0.65rem; border-radius: 4px; color: #38bdf8; border: 1px solid rgba(56,189,248,0.3);" id="lessonVideoBadge">🎬 JAMB Topic Video Masterclass</span>
+                <span style="font-size: 0.75rem; font-weight: 700; background: rgba(0,0,0,0.65); padding: 0.25rem 0.65rem; border-radius: 4px; color: #38bdf8; border: 1px solid rgba(56,189,248,0.3);">🎙️ Coach Kalu Socratic Lecture</span>
                 <span style="font-size: 0.72rem; color: #cbd5e1; background: rgba(15,23,42,0.7); padding: 0.2rem 0.5rem; border-radius: 4px;" id="lessonVideoLecturer">PassMaster Socratic Fellow</span>
               </div>
               
@@ -1274,6 +1311,30 @@ Reply with a number:
               </div>
               <div id="lessonVideoChaptersList">
                 <!-- Dynamically populated chapter pills -->
+              </div>
+            </div>
+
+            <!-- Video Details Card & Key Takeaways -->
+            <div id="lessonVideoDetailsCard" style="padding: 1rem; background: #0b111e; border-top: 1px solid var(--border-subtle);">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; flex-wrap: wrap;">
+                <div>
+                  <h4 id="lessonVideoDetailTitle" style="font-size: 0.98rem; font-weight: 800; color: #ffffff; margin: 0 0 0.35rem 0;">Video Title</h4>
+                  <div style="font-size: 0.78rem; color: var(--accent-cyan);" id="lessonVideoDetailLecturer">Instructor: Coach Kalu & Fellows</div>
+                </div>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                  <a id="lessonVideoExternalLink" href="#" target="_blank" rel="noopener noreferrer" class="btn-pill" style="font-size: 0.75rem; padding: 0.35rem 0.75rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.3rem;">
+                    <span>↗️</span> Open on YouTube
+                  </a>
+                  <button class="btn-pill btn-primary" onclick="askCoachKaluAboutLesson()" style="font-size: 0.75rem; padding: 0.35rem 0.75rem;">
+                    <span>🤖</span> Ask Coach Kalu
+                  </button>
+                </div>
+              </div>
+              <p id="lessonVideoDetailSummary" style="font-size: 0.84rem; color: #cbd5e1; line-height: 1.55; margin: 0.6rem 0;"></p>
+              <div style="margin-top: 0.6rem;">
+                <div style="font-size: 0.76rem; font-weight: 800; color: #34d399; text-transform: uppercase; margin-bottom: 0.3rem;">🎯 Key Takeaways from this Lecture:</div>
+                <ul id="lessonVideoTakeawaysList" style="margin: 0; padding-left: 1.25rem; font-size: 0.82rem; color: #e2e8f0; line-height: 1.6;">
+                </ul>
               </div>
             </div>
           </div>
@@ -1323,13 +1384,15 @@ Reply with a number:
 
       <div style="padding-top: 1rem; border-top: 1px solid var(--border-subtle); display: flex; gap: 0.75rem; justify-content: space-between; align-items: center; margin-top: 0.5rem; flex-wrap: wrap;">
         <button class="btn-pill" onclick="closeModal('lessonModal')">✕ Close Masterclass</button>
-        <div style="display: flex; gap: 0.5rem;">
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button class="btn-pill" onclick="printTopicMasterclassCheatSheet()">🖨️ Print Cheat Sheet</button>
           <button class="btn-pill btn-primary" id="lessonPracticeBtn" onclick="practiceCurrentTopicQuestions()">
-            ⚡ Practice Questions on This Topic
+            ⚡ Practice 5 Questions
           </button>
         </div>
       </div>
     </div>
+  </div>
   <!-- MODAL: 1-Page Printable JAMB Diagnostic Cram Sheet -->
   <div class="modal-overlay" id="cramSheetModal">
     <div class="modal-box" style="max-width: 720px; width: 95%; max-height: 90vh; display: flex; flex-direction: column;">

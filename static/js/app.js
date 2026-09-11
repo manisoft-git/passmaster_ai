@@ -1265,11 +1265,15 @@ function renderLessonCards(lessons) {
         </div>
         <h4 style="font-size: 1.05rem; font-weight: 700; color: #ffffff; margin-bottom: 0.35rem;">${les.title}</h4>
         <div style="font-size: 0.78rem; color: var(--accent-cyan); font-weight: 600; margin-bottom: 0.5rem;">Topic: ${les.topic}</div>
+        <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.6rem;">
+          <span style="font-size: 0.72rem; color: #38bdf8; background: rgba(56, 189, 248, 0.12); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 600; border: 1px solid rgba(56, 189, 248, 0.25);">🎬 Video Masterclass (${les.video_duration || '25 mins'})</span>
+          <span style="font-size: 0.72rem; color: #fbbf24; background: rgba(251, 191, 36, 0.12); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 600;">⚡ 2 Worked Qs</span>
+        </div>
         <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem;">${les.summary}</p>
       </div>
       <div>
-        <button class="btn-pill ${les.is_locked ? '' : 'btn-primary'}" style="width: 100%; justify-content: center;" onclick="viewLesson('${les.subject.replace(/'/g, "\'")}', '${les.topic.replace(/'/g, "\'")}', ${les.is_locked})">
-          ${les.is_locked ? '🔒 Unlock Masterclass' : '📖 Read Masterclass'}
+        <button class="btn-pill ${les.is_locked ? '' : 'btn-primary'}" style="width: 100%; justify-content: center;" onclick="viewLesson('${les.subject.replace(/'/g, "\\'")}', '${les.topic.replace(/'/g, "\\'")}', ${les.is_locked})">
+          ${les.is_locked ? '🔒 Unlock Masterclass' : '📖 Study & Watch Lecture'}
         </button>
       </div>
     `;
@@ -1346,6 +1350,9 @@ Would you like to unlock all 32 lessons and full mocks now?`)) {
 
       const tipElem = document.getElementById("lessonTipText");
       if (tipElem) tipElem.textContent = les.secret_tip || "Eliminate extremes and calculate order of magnitude first.";
+
+      // Key Syllabus Terminology
+      renderLessonKeyTerms(les.key_terms || []);
 
       // Worked Examples
       renderWorkedExamples(les.worked_examples || []);
@@ -1848,6 +1855,8 @@ function closeModal(id) {
       toggleSimulatedVideoPlayback();
     }
     stopLectureSpeech();
+    const iframe = document.getElementById("lessonRealVideoIframe");
+    if (iframe) iframe.src = "";
   }
 }
 
@@ -2532,19 +2541,51 @@ function renderTopicVisual(subject, topic) {
 }
 
 
-// ----------------- VIDEO LECTURE THEATER SIMULATION -----------------
+// ----------------- VIDEO LECTURE THEATER SIMULATION & REAL YOUTUBE EMBED -----------------
 let simulatedVideoPlaying = false;
 let simulatedVideoTimer = null;
 let simulatedVideoSeconds = 0;
 let simulatedVideoDuration = 1000; // 16:40 in seconds
 let simulatedVideoSpeed = 1.0;
+let currentVideoPlaybackMode = "real";
+let currentVideoMeta = null;
+
+function setVideoPlaybackMode(mode) {
+  currentVideoPlaybackMode = mode;
+  const btnReal = document.getElementById("btnModeRealVideo");
+  const btnSim = document.getElementById("btnModeSimulated");
+  const realWrap = document.getElementById("lessonRealVideoWrapper");
+  const audioWrap = document.getElementById("lessonAudioMockWrapper");
+
+  if (mode === "real") {
+    if (btnReal) btnReal.classList.add("active");
+    if (btnSim) btnSim.classList.remove("active");
+    if (realWrap) realWrap.style.display = "block";
+    if (audioWrap) audioWrap.style.display = "none";
+    if (simulatedVideoPlaying) {
+      toggleSimulatedVideoPlayback();
+    }
+    stopLectureSpeech();
+  } else {
+    if (btnReal) btnReal.classList.remove("active");
+    if (btnSim) btnSim.classList.add("active");
+    if (realWrap) realWrap.style.display = "none";
+    if (audioWrap) audioWrap.style.display = "block";
+    const iframe = document.getElementById("lessonRealVideoIframe");
+    if (iframe && iframe.src) {
+      iframe.src = iframe.src.replace("&autoplay=1", "");
+    }
+  }
+}
 
 function renderTopicVideo(videoMeta, topicTitle) {
+  currentVideoMeta = videoMeta;
   simulatedVideoPlaying = false;
   clearInterval(simulatedVideoTimer);
   simulatedVideoSeconds = 0;
 
   const badge = document.getElementById("lessonVideoBadge");
+  const durBadge = document.getElementById("lessonVideoDurationBadge");
   const lecturer = document.getElementById("lessonVideoLecturer");
   const timer = document.getElementById("lessonVideoTimerDisplay");
   const progress = document.getElementById("lessonVideoProgress");
@@ -2552,26 +2593,69 @@ function renderTopicVideo(videoMeta, topicTitle) {
   const status = document.getElementById("lessonVideoStatus");
   const waveform = document.getElementById("lessonVideoWaveform");
   const chaptersList = document.getElementById("lessonVideoChaptersList");
+  const iframe = document.getElementById("lessonRealVideoIframe");
+  const detailTitle = document.getElementById("lessonVideoDetailTitle");
+  const detailLecturer = document.getElementById("lessonVideoDetailLecturer");
+  const detailSummary = document.getElementById("lessonVideoDetailSummary");
+  const externalLink = document.getElementById("lessonVideoExternalLink");
+  const takeawaysList = document.getElementById("lessonVideoTakeawaysList");
 
-  const durationStr = (videoMeta && videoMeta.duration) ? videoMeta.duration : "16:40";
+  const durationStr = (videoMeta && videoMeta.duration) ? videoMeta.duration : "24:30";
   const parts = durationStr.split(":");
-  simulatedVideoDuration = (parseInt(parts[0]) || 16) * 60 + (parseInt(parts[1]) || 40);
+  simulatedVideoDuration = (parseInt(parts[0]) || 24) * 60 + (parseInt(parts[1]) || 30);
 
-  if (badge) badge.textContent = `🎬 JAMB: ${topicTitle}`;
-  if (lecturer) lecturer.textContent = (videoMeta && videoMeta.lecturer) ? `👨‍🏫 ${videoMeta.lecturer}` : "PassMaster Socratic Fellow";
+  const titleStr = (videoMeta && videoMeta.title) ? videoMeta.title : `JAMB Masterclass: ${topicTitle}`;
+  const lecturerStr = (videoMeta && videoMeta.lecturer) ? videoMeta.lecturer : "Coach Kalu & Socratic Video Fellow";
+  const youtubeId = (videoMeta && videoMeta.youtube_id) ? videoMeta.youtube_id : "_xWp-zN85_Y";
+
+  if (badge) badge.textContent = `🎬 ${topicTitle}`;
+  if (durBadge) durBadge.textContent = `HD Video (${durationStr})`;
+  if (lecturer) lecturer.textContent = `👨‍🏫 ${lecturerStr}`;
   if (timer) timer.textContent = `00:00 / ${durationStr}`;
   if (progress) progress.style.width = "0%";
   if (playBtn) playBtn.textContent = "▶";
   if (status) status.textContent = "Ready to Stream (High-Def)";
   if (waveform) waveform.style.display = "none";
 
+  // Setup YouTube embed
+  if (iframe) {
+    iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(youtubeId)}?enablejsapi=1&rel=0`;
+  }
+
+  // Setup details card
+  if (detailTitle) detailTitle.textContent = titleStr;
+  if (detailLecturer) detailLecturer.textContent = `Instructor: ${lecturerStr}`;
+  if (detailSummary) {
+    detailSummary.textContent = (videoMeta && videoMeta.summary) ? videoMeta.summary : 
+      `In-depth visual lecture covering core syllabus axioms, authentic past JAMB examination questions, and examiner trap elimination.`;
+  }
+  if (externalLink) {
+    externalLink.href = `https://www.youtube.com/watch?v=${encodeURIComponent(youtubeId)}`;
+  }
+
+  // Setup takeaways list
+  if (takeawaysList) {
+    takeawaysList.innerHTML = "";
+    const takeaways = (videoMeta && videoMeta.key_takeaways) ? videoMeta.key_takeaways : [
+      "Master core foundational principles without rote memorization.",
+      "Identify subtle distractor traps designed to catch unwary candidates.",
+      "Apply speed heuristics to solve complex questions in under 45 seconds."
+    ];
+    takeaways.forEach(t => {
+      const li = document.createElement("li");
+      li.textContent = t;
+      takeawaysList.appendChild(li);
+    });
+  }
+
+  // Setup interactive chapter bookmarks
   if (chaptersList) {
     chaptersList.innerHTML = "";
     const chapters = (videoMeta && videoMeta.chapters) ? videoMeta.chapters : [
       { time: "00:00", title: "Zero-to-One Conceptual Foundations" },
-      { time: "04:15", title: "Core Laws, Equations & Definitions" },
-      { time: "08:30", title: "Authentic JAMB Past Questions Solved" },
-      { time: "12:50", title: "Fatal Cognitive Traps & Speed Hacks" }
+      { time: "06:15", title: "Core Laws, Equations & Definitions" },
+      { time: "14:20", title: "Authentic JAMB Past Questions Solved" },
+      { time: "20:50", title: "Fatal Cognitive Traps & Speed Hacks" }
     ];
 
     chapters.forEach((ch, idx) => {
@@ -2589,6 +2673,8 @@ function renderTopicVideo(videoMeta, topicTitle) {
       chaptersList.appendChild(pill);
     });
   }
+
+  setVideoPlaybackMode("real");
 }
 
 let lectureVoiceEnabled = true;
@@ -2683,16 +2769,24 @@ function updateVideoProgressDisplay() {
 function seekToChapter(timeStr, pillElem) {
   const parts = timeStr.split(":");
   const secs = (parseInt(parts[0]) || 0) * 60 + (parseInt(parts[1]) || 0);
-  simulatedVideoSeconds = secs;
-  updateVideoProgressDisplay();
 
   document.querySelectorAll(".video-chapter-pill").forEach(p => p.classList.remove("active"));
   if (pillElem) pillElem.classList.add("active");
 
-  if (simulatedVideoPlaying) {
-    startLectureSpeech();
+  if (currentVideoPlaybackMode === "real") {
+    const iframe = document.getElementById("lessonRealVideoIframe");
+    const ytid = (currentVideoMeta && currentVideoMeta.youtube_id) ? currentVideoMeta.youtube_id : "_xWp-zN85_Y";
+    if (iframe) {
+      iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(ytid)}?start=${secs}&autoplay=1&enablejsapi=1&rel=0`;
+    }
   } else {
-    toggleSimulatedVideoPlayback();
+    simulatedVideoSeconds = secs;
+    updateVideoProgressDisplay();
+    if (simulatedVideoPlaying) {
+      startLectureSpeech();
+    } else {
+      toggleSimulatedVideoPlayback();
+    }
   }
 }
 
@@ -2860,6 +2954,29 @@ function switchLessonModalTab(tabKey) {
       loadInModalTopicQuiz();
     }
   }
+}
+
+function renderLessonKeyTerms(keyTerms) {
+  const box = document.getElementById("lessonKeyTermsBox");
+  const container = document.getElementById("lessonKeyTermsContainer");
+  if (!container) return;
+
+  container.innerHTML = "";
+  if (!keyTerms || keyTerms.length === 0) {
+    if (box) box.style.display = "none";
+    return;
+  }
+  if (box) box.style.display = "block";
+
+  keyTerms.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "key-term-card";
+    card.innerHTML = `
+      <div class="key-term-title">📌 ${escapeHtml(item.term || "")}</div>
+      <div class="key-term-def">${escapeHtml(item.definition || "")}</div>
+    `;
+    container.appendChild(card);
+  });
 }
 
 function renderWorkedExamples(examples) {
@@ -3431,6 +3548,11 @@ async function openCramSheetModal() {
   const content = document.getElementById("cramSheetContent");
   if (!content) return;
 
+  const headerTitle = document.querySelector("#cramSheetModal .modal-header h3");
+  if (headerTitle) {
+    headerTitle.innerHTML = `<span>🖨️</span> Official JAMB 1-Page Diagnostic Cram Sheet`;
+  }
+
   const name = currentUser ? currentUser.name : candidateName;
   const course = currentUser ? currentUser.target_course : targetCourse;
   const uni = currentUser ? currentUser.target_uni : targetUni;
@@ -3547,6 +3669,159 @@ async function openCramSheetModal() {
 
 function printCramSheet() {
   window.print();
+}
+
+function printTopicMasterclassCheatSheet() {
+  if (!activeLessonData) return;
+  const les = activeLessonData;
+  const content = document.getElementById("cramSheetContent");
+  if (!content) return;
+
+  const headerTitle = document.querySelector("#cramSheetModal .modal-header h3");
+  if (headerTitle) {
+    headerTitle.innerHTML = `<span>🖨️</span> JAMB Masterclass Cheat Sheet — ${escapeHtml(les.topic || les.title)}`;
+  }
+
+  // Key terms
+  let keyTermsHtml = "";
+  if (les.key_terms && les.key_terms.length > 0) {
+    keyTermsHtml = `
+      <div style="margin-bottom: 0.75rem;">
+        <h4 style="margin: 0 0 0.35rem 0; font-size: 0.88rem; font-weight: 800; color: #0284c7; text-transform: uppercase;">
+          📚 High-Yield Syllabus Definitions & Terminology
+        </h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.45rem;">
+          ${les.key_terms.map(t => `
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 4px; padding: 0.4rem 0.6rem; font-size: 0.78rem;">
+              <strong style="color: #0369a1;">${escapeHtml(t.term)}:</strong>
+              <span style="color: #334155;"> ${escapeHtml(t.definition)}</span>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  // Worked examples
+  let workedExHtml = "";
+  if (les.worked_examples && les.worked_examples.length > 0) {
+    workedExHtml = `
+      <div style="margin-bottom: 0.75rem;">
+        <h4 style="margin: 0 0 0.35rem 0; font-size: 0.88rem; font-weight: 800; color: #059669; text-transform: uppercase;">
+          ⚡ Authentic Exam Questions & Step-by-Step Solutions
+        </h4>
+        ${les.worked_examples.map((ex, i) => `
+          <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 0.55rem 0.75rem; margin-bottom: 0.45rem; font-size: 0.8rem;">
+            <div style="font-weight: 700; color: #166534; margin-bottom: 0.25rem;">Q${i+1}: ${escapeHtml(ex.question)}</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.25rem; font-size: 0.75rem; color: #374151; margin-bottom: 0.35rem;">
+              ${(ex.options || []).map(o => `<div>${escapeHtml(o)}</div>`).join("")}
+            </div>
+            <div style="font-size: 0.76rem; color: #15803d; background: #dcfce7; padding: 0.3rem 0.5rem; border-radius: 4px;">
+              <strong>Solution:</strong> ${escapeHtml(ex.solution)}
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+
+  // Fatal traps
+  let trapsList = Array.isArray(les.fatal_traps) ? les.fatal_traps : (les.common_traps ? les.common_traps.split("\n") : []);
+  let trapsHtml = trapsList.length ? `
+    <div style="margin-bottom: 0.75rem; background: #fff1f2; border: 1px solid #fecdd3; border-radius: 6px; padding: 0.6rem 0.8rem;">
+      <h4 style="margin: 0 0 0.3rem 0; font-size: 0.88rem; font-weight: 800; color: #be123c; text-transform: uppercase;">
+        🚨 Examiner's Fatal Cognitive Traps
+      </h4>
+      <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.78rem; color: #9f1239; line-height: 1.5;">
+        ${trapsList.map(tr => `<li>${escapeHtml(tr)}</li>`).join("")}
+      </ul>
+    </div>
+  ` : "";
+
+  content.innerHTML = `
+    <div class="cram-sheet-print-container" style="padding: 1.25rem; border: 2px solid #0f172a; border-radius: 8px; background: #ffffff; color: #0f172a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+      <!-- Header -->
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0f172a; padding-bottom: 0.75rem; margin-bottom: 0.75rem;">
+        <div>
+          <h2 style="margin: 0; font-size: 1.25rem; font-weight: 900; letter-spacing: -0.5px; color: #0f172a;">🎯 PASSMASTER AI — 1-PAGE TOPIC CHEAT SHEET</h2>
+          <div style="font-size: 0.82rem; color: #0284c7; font-weight: 700; margin-top: 0.15rem;">${escapeHtml(les.subject)}: ${escapeHtml(les.topic || les.title)}</div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 0.85rem; font-weight: 800; color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; padding: 0.25rem 0.6rem; border-radius: 4px;">OFFICIAL BLUEPRINT</div>
+          <small style="font-size: 0.7rem; color: #64748b; font-weight: 600;">JAMB 2026 HIGH-YIELD</small>
+        </div>
+      </div>
+
+      <!-- Golden Rule Box -->
+      <div style="background: #0f172a; color: #38bdf8; border-radius: 6px; padding: 0.75rem 1rem; margin-bottom: 0.75rem;">
+        <div style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; font-weight: 800;">⚡ Golden Rule & Core Examination Formula</div>
+        <div style="font-size: 0.95rem; font-weight: 800; color: #ffffff; font-family: monospace; margin-top: 0.2rem;">
+          ${escapeHtml(les.key_rule_or_formula || les.golden_rule || "Master foundational principles.")}
+        </div>
+        ${les.secret_tip ? `<div style="font-size: 0.78rem; color: #fbbf24; margin-top: 0.35rem; font-style: italic;">💡 Secret Hack: ${escapeHtml(les.secret_tip)}</div>` : ''}
+      </div>
+
+      <!-- Zero-to-One Core Intuition -->
+      ${les.from_scratch_guide ? `
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 0.6rem 0.8rem; margin-bottom: 0.75rem; font-size: 0.78rem; color: #334155; line-height: 1.5;">
+          <strong style="color: #0f172a;">💡 Zero-to-One Intuition:</strong> ${escapeHtml(les.from_scratch_guide.replace('💡 LEARN FROM SCRATCH (Zero Prior Jargon):\n', ''))}
+        </div>
+      ` : ''}
+
+      <!-- High Yield Syllabus Terms -->
+      ${keyTermsHtml}
+
+      <!-- Fatal Traps -->
+      ${trapsHtml}
+
+      <!-- Worked Examples -->
+      ${workedExHtml}
+
+      <!-- Footer Sign-off -->
+      <div style="text-align: center; font-size: 0.72rem; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 0.5rem; margin-top: 0.5rem;">
+        PassMaster AI Official Masterclass Series • Engineered by <strong>Manifest Subeno</strong> • 100% Exam Day Mastery
+      </div>
+    </div>
+  `;
+
+  openModal("cramSheetModal");
+}
+
+async function askCoachKaluAboutLesson() {
+  if (!activeLessonData) return;
+  const topic = activeLessonData.topic || activeLessonData.title;
+  const subj = activeLessonData.subject;
+  
+  const question = prompt(
+    `🤖 Ask Coach Kalu anything about "${topic}" (${subj}):\n\n` +
+    `Popular prompts:\n` +
+    `1. What is the #1 trick question examiners set on this topic?\n` +
+    `2. Give me a 30-second speed shortcut to solve these questions.\n` +
+    `3. Can you explain the difference between the most confusing concepts?`,
+    `Coach Kalu, what is the most dangerous trap examiners set on ${topic} and what is the foolproof shortcut to avoid it?`
+  );
+
+  if (!question || !question.trim()) return;
+
+  try {
+    const res = await fetch("/api/tutor/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        question_id: "general",
+        message: `Subject: ${subj}. Topic: ${topic}. Student inquiry: ${question.trim()}`
+      })
+    });
+    const data = await res.json();
+    if (data.reply) {
+      alert(`👨‍🏫 COACH KALU'S SOCRATIC GUIDANCE:\n\n${data.reply}`);
+      if (typeof audioEnabled !== "undefined" && audioEnabled && typeof speakCoachText === "function") {
+        speakCoachText(data.reply);
+      }
+    }
+  } catch (err) {
+    alert("Coach Kalu is momentarily unavailable: " + err);
+  }
 }
 
 // =========================================================================

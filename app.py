@@ -449,6 +449,7 @@ def get_lessons():
             continue
         for idx, l in enumerate(topic_list):
             is_locked = (idx > 0 and not is_sub)
+            v_meta = l.get("video_meta") or l.get("video") or {}
             lessons_list.append({
                 "id": l["id"],
                 "subject": subj,
@@ -461,7 +462,11 @@ def get_lessons():
                 "prepares_for": l.get("prepares_for", []),
                 "cbt_drill_topic": l.get("cbt_drill_topic", l["topic"]),
                 "is_locked": is_locked,
-                "is_preview": (idx == 0)
+                "is_preview": (idx == 0),
+                "has_video": True,
+                "video_duration": v_meta.get("duration", "25:00"),
+                "video_title": v_meta.get("title", f"JAMB Masterclass: {l.get('title', l['topic'])}"),
+                "youtube_id": v_meta.get("youtube_id", "")
             })
 
     return jsonify({"status": "success", "count": len(lessons_list), "lessons": lessons_list, "by_subject": data})
@@ -533,23 +538,37 @@ def get_single_lesson(subject, topic):
     lesson_obj["common_traps"] = "\n".join(target_lesson.get("fatal_traps", []))
     lesson_obj["secret_tip"] = target_lesson.get("golden_rule", "")
     lesson_obj["worked_examples"] = target_lesson.get("worked_examples", [])
+    lesson_obj["key_terms"] = target_lesson.get("key_terms", [])
     lesson_obj["prerequisites"] = target_lesson.get("prerequisites", [])
     lesson_obj["from_scratch_guide"] = target_lesson.get("from_scratch_guide", "")
     lesson_obj["prepares_for"] = target_lesson.get("prepares_for", [])
     lesson_obj["category"] = target_lesson.get("category", "Core JAMB Syllabus Masterclass")
     lesson_obj["cbt_drill_topic"] = target_lesson.get("cbt_drill_topic", target_lesson.get("topic"))
     lesson_obj["diagram_key"] = target_lesson.get("topic", topic)
-    lesson_obj["video_meta"] = {
-        "title": f"JAMB Masterclass: {target_lesson.get('title', topic)}",
-        "duration": "16:40",
-        "lecturer": "PassMaster Socratic Fellow (JAMB 340 Alum)",
-        "chapters": [
-            {"time": "00:00", "title": "Zero-to-One Conceptual Foundations"},
-            {"time": "04:15", "title": "Core Laws, Equations & Definitions"},
-            {"time": "08:30", "title": "Authentic JAMB Past Questions Solved"},
-            {"time": "12:50", "title": "Fatal Cognitive Traps & Heuristics"}
-        ]
-    }
+    
+    # Authentic video metadata
+    if "video_meta" in target_lesson and target_lesson["video_meta"]:
+        lesson_obj["video_meta"] = target_lesson["video_meta"]
+    elif "video" in target_lesson and target_lesson["video"]:
+        lesson_obj["video_meta"] = target_lesson["video"]
+    else:
+        lesson_obj["video_meta"] = {
+            "youtube_id": "_xWp-zN85_Y",
+            "title": f"JAMB Masterclass: {target_lesson.get('title', topic)}",
+            "duration": "24:30",
+            "lecturer": "Coach Kalu & Socratic Video Fellow",
+            "chapters": [
+                {"time": "00:00", "title": "Zero-to-One Conceptual Foundations"},
+                {"time": "06:15", "title": "Core Laws, Equations & Definitions"},
+                {"time": "14:20", "title": "Authentic JAMB Past Questions Solved"},
+                {"time": "20:50", "title": "Fatal Cognitive Traps & Heuristics"}
+            ],
+            "key_takeaways": [
+                "Master core foundational axioms without rote memorization.",
+                "Identify subtle distractor traps designed to catch unwary candidates.",
+                "Use speed heuristics to answer questions within 45 seconds."
+            ]
+        }
 
     return jsonify({
         "status": "success",
