@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   <title>PassMaster AI — Socratic JAMB & WAEC Exam Coach</title>
   <meta name="description" content="Stop memorizing past questions. Master concepts, identify leaky topics, and hit 280+ in JAMB with Socratic AI coaching.">
   <link rel="manifest" href="/manifest.json">
@@ -60,6 +60,10 @@
         <button class="btn-pill btn-primary" onclick="openPaymentModal('monthly')">
           <span>⚡</span>
           <span>Activate Pass</span>
+        </button>
+
+        <button class="btn-pill mobile-menu-trigger" onclick="toggleMobileMoreSheet()" title="Open Menu" aria-label="Open Mobile Navigation">
+          <span>☰</span>
         </button>
       </div>
     </div>
@@ -182,7 +186,7 @@
           <button class="filter-pill" onclick="filterBySubject('Literature in English', this)">🎭 Literature</button>
         </div>
 
-        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <div class="cbt-tools-ribbon" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
           <button class="btn-pill btn-primary" onclick="openCbtSetupModal()" title="Customize Drill, Topic or Mock">
             <span>⚙️</span> Drill / Mock Setup
           </button>
@@ -280,14 +284,30 @@
           </div>
 
           <!-- Official JAMB Numbered Question Palette (1 to N) -->
-          <div style="margin-top: 1.25rem; border-top: 1px solid var(--border-subtle); padding-top: 0.75rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Question Navigator Grid:</span>
-              <span style="font-size: 0.7rem; color: var(--text-dim);">🟢 Answered | 🚩 Flagged | 🔵 Current</span>
+          <div class="palette-collapse-container" style="margin-top: 1.25rem; border-top: 1px solid var(--border-subtle); padding-top: 0.75rem;">
+            <div class="palette-header-row" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="togglePaletteCollapse()">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-size: 0.78rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Question Navigator Grid:</span>
+                <span id="paletteAnsweredCountBadge" style="font-size: 0.7rem; background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); padding: 0.1rem 0.45rem; border-radius: 999px; font-weight: 700;">0 Answered</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.4rem;">
+                <span class="hide-mobile" style="font-size: 0.7rem; color: var(--text-dim);">🟢 Answered | 🚩 Flagged | 🔵 Current</span>
+                <span id="paletteCollapseArrow" class="show-mobile" style="font-size: 0.85rem; color: var(--text-muted);">▾</span>
+              </div>
             </div>
             <div class="palette-grid" id="questionPaletteGrid">
               <!-- Dynamically populated buttons -->
             </div>
+          </div>
+
+          <!-- Sticky Mobile CBT Bottom Navigation Bar -->
+          <div class="mobile-cbt-bottom-bar" id="mobileCbtBottomBar">
+            <button class="btn-pill" id="mobilePrevBtn" onclick="prevQuestion()">⬅️ Prev</button>
+            <button class="btn-pill" id="mobileFlagBtn" onclick="toggleFlagCurrentQuestion()">🚩 Flag</button>
+            <button class="btn-pill btn-coach-peek" id="mobileCoachPeekBtn" onclick="toggleCoachMobileDrawer()">
+              <span>🧠</span> Coach <span class="coach-dot-pulse" id="coachDotPulse" style="display: none;"></span>
+            </button>
+            <button class="btn-pill btn-primary" id="mobileNextBtn" onclick="nextQuestion()">Next ➡️</button>
           </div>
         </div>
 
@@ -859,8 +879,8 @@ Reply with a number:
       <!-- Login Form -->
       <form id="loginForm" onsubmit="handleLogin(event)">
         <div class="form-group">
-          <label class="form-label">Email Address or Phone Number</label>
-          <input type="text" id="loginIdentifier" class="form-input" placeholder="e.g. tobi585olive@gmail.com or 08012345678" required>
+          <label class="form-label">Email Address, Phone, or Username</label>
+          <input type="text" id="loginIdentifier" class="form-input" placeholder="tobiolive5850 or tobi585olive@gmail.com" required>
         </div>
         <div class="form-group">
           <label class="form-label">Password</label>
@@ -875,8 +895,8 @@ Reply with a number:
       <!-- Register Form -->
       <form id="registerForm" style="display: none;" onsubmit="handleRegister(event)">
         <div class="form-group">
-          <label class="form-label">Full Name</label>
-          <input type="text" id="regName" class="form-input" placeholder="e.g. Tobi Olive" required>
+          <label class="form-label">Full Name (Surname Firstname)</label>
+          <input type="text" id="regName" class="form-input" placeholder="Surname Firstname (e.g. Tobi Olive)" required>
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -885,7 +905,7 @@ Reply with a number:
           </div>
           <div class="form-group">
             <label class="form-label">Phone</label>
-            <input type="tel" id="regPhone" class="form-input" placeholder="08012345678" required>
+            <input type="tel" id="regPhone" class="form-input" placeholder="08091977795" required>
           </div>
         </div>
         <div class="form-group">
@@ -1768,6 +1788,123 @@ Reply with a number:
       </div>
     </div>
   </footer>
+
+  <!-- Mobile Bottom Dock (Smartphones & Handhelds) -->
+  <nav class="mobile-bottom-dock" id="mobileBottomDock" aria-label="Mobile Navigation">
+    <button class="mobile-dock-btn active" data-view="dashboard" onclick="switchView('dashboard')">
+      <span class="dock-icon">📊</span>
+      <span class="dock-label">Home</span>
+    </button>
+    <button class="mobile-dock-btn" data-view="cbt" onclick="switchView('cbt')">
+      <span class="dock-icon">⚡</span>
+      <span class="dock-label">CBT Exam</span>
+    </button>
+    <button class="mobile-dock-btn" data-view="novel" onclick="switchView('novel')">
+      <span class="dock-icon">📖</span>
+      <span class="dock-label">Novel</span>
+    </button>
+    <button class="mobile-dock-btn" data-view="vault" onclick="switchView('vault')">
+      <span class="dock-icon">📓</span>
+      <span class="dock-label">Mistakes</span>
+    </button>
+    <button class="mobile-dock-btn" id="btnMobileMore" onclick="toggleMobileMoreSheet()">
+      <span class="dock-icon">☰</span>
+      <span class="dock-label">More</span>
+    </button>
+  </nav>
+
+  <!-- Mobile Slide-Up Quick Features Sheet -->
+  <div class="mobile-sheet-overlay" id="mobileMoreSheet" onclick="if(event.target===this) toggleMobileMoreSheet()">
+    <div class="mobile-sheet-card">
+      <div class="sheet-drag-handle"></div>
+      <div class="sheet-header" style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.25rem;">🎯</span>
+          <strong style="font-size: 1rem; color: #fff;">PassMaster AI Menu</strong>
+        </div>
+        <button class="modal-close" style="font-size: 1.4rem; padding: 0 4px; background: none; border: none; color: var(--text-muted); cursor: pointer;" onclick="toggleMobileMoreSheet()">&times;</button>
+      </div>
+
+      <div class="sheet-grid">
+        <button class="sheet-item" onclick="switchView('formulas'); toggleMobileMoreSheet();">
+          <span class="sheet-icon">⚡</span>
+          <span class="sheet-label">Formula Deck</span>
+        </button>
+        <button class="sheet-item" onclick="switchView('aggregate'); toggleMobileMoreSheet();">
+          <span class="sheet-icon">🎓</span>
+          <span class="sheet-label">Admissions</span>
+        </button>
+        <button class="sheet-item" onclick="switchView('lessons'); toggleMobileMoreSheet();">
+          <span class="sheet-icon">📚</span>
+          <span class="sheet-label">Topic Lessons</span>
+        </button>
+        <button class="sheet-item" onclick="switchView('leaks'); toggleMobileMoreSheet();">
+          <span class="sheet-icon">📉</span>
+          <span class="sheet-label">Mark Leaks</span>
+        </button>
+        <button class="sheet-item" onclick="switchView('leaderboard'); toggleMobileMoreSheet();">
+          <span class="sheet-icon">🏆</span>
+          <span class="sheet-label">Leaderboard</span>
+        </button>
+        <button class="sheet-item" onclick="switchView('parent'); toggleMobileMoreSheet();">
+          <span class="sheet-icon">👨‍👩‍👧</span>
+          <span class="sheet-label">Parent Portal</span>
+        </button>
+        <button class="sheet-item" onclick="switchView('whatsapp'); toggleMobileMoreSheet();">
+          <span class="sheet-icon">💬</span>
+          <span class="sheet-label">WhatsApp Bot</span>
+        </button>
+        <button class="sheet-item" onclick="switchView('pricing'); toggleMobileMoreSheet();">
+          <span class="sheet-icon">💳</span>
+          <span class="sheet-label">Passes & Plans</span>
+        </button>
+        <button class="sheet-item" onclick="openCramSheetModal(); toggleMobileMoreSheet();">
+          <span class="sheet-icon">🖨️</span>
+          <span class="sheet-label">Cram Sheet</span>
+        </button>
+        <button class="sheet-item" onclick="openShareModal(); toggleMobileMoreSheet();">
+          <span class="sheet-icon">📤</span>
+          <span class="sheet-label">Share Score</span>
+        </button>
+        <button class="sheet-item" onclick="openPreferencesModal(); toggleMobileMoreSheet();">
+          <span class="sheet-icon">⚙️</span>
+          <span class="sheet-label">Preferences</span>
+        </button>
+        <button class="sheet-item" onclick="openSupportModal(); toggleMobileMoreSheet();" style="border-color: rgba(251,191,36,0.4); color: #fbbf24;">
+          <span class="sheet-icon">💛</span>
+          <span class="sheet-label">Sponsor</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Socratic Coach Kalu Slide-Up Drawer -->
+  <div class="coach-mobile-drawer" id="coachMobileDrawer">
+    <div class="coach-drawer-header" style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-subtle); background: rgba(15, 28, 56, 0.95);">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <div class="coach-avatar" style="width: 32px; height: 32px; font-size: 1rem; display: flex; align-items: center; justify-content: center; background: rgba(56, 189, 248, 0.2); border-radius: 50%;">🧠</div>
+        <div>
+          <h4 style="margin: 0; font-size: 0.9rem; font-weight: 700; color: #ffffff;">Coach Kalu</h4>
+          <span style="font-size: 0.7rem; color: var(--accent-emerald);">● Socratic Guidance Active</span>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <button class="btn-speech" onclick="toggleAudioCoach()" style="font-size: 0.75rem; padding: 0.25rem 0.55rem;">
+          <span>🔊</span> Audio
+        </button>
+        <button class="modal-close" style="font-size: 1.35rem; padding: 0 6px; background: none; border: none; color: #94a3b8; cursor: pointer;" onclick="toggleCoachMobileDrawer(false)">&times;</button>
+      </div>
+    </div>
+    <div class="coach-chat-area" id="coachChatAreaMobile" style="flex: 1; min-height: 180px; max-height: 42vh; overflow-y: auto; padding: 0.85rem;">
+      <div class="chat-bubble coach">
+        👋 Select an option above! If you hit a trap topic, I will guide you through the logic so you master it before JAMB day.
+      </div>
+    </div>
+    <form class="coach-input-row" style="padding: 0.6rem 0.85rem; border-top: 1px solid var(--border-subtle); display: flex; gap: 0.5rem;" onsubmit="handleCoachMobileChatSubmit(event)">
+      <input type="text" class="coach-input" id="coachMessageInputMobile" placeholder="Ask Coach Kalu or answer his hint..." autocomplete="off" style="flex: 1;">
+      <button type="submit" class="btn-pill btn-primary" style="padding: 0.5rem 0.9rem;">Send</button>
+    </form>
+  </div>
 
 <script src="/static/js/app.js?v=2026091002"></script>
 </body>

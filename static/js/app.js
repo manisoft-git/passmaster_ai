@@ -36,7 +36,7 @@ let calcPrev = null;
 let calcOp = null;
 
 // Candidate Defaults
-let candidateName = "Olive Tobi";
+let candidateName = "Tobi Olive";
 let targetCourse = "Medicine & Surgery";
 let targetUni = "UNILAG";
 
@@ -87,7 +87,111 @@ function playSound(type) {
   }
 }
 
+// ============================================================================
+// MOBILE PHONE AUTO-DETECTION & ADAPTIVE ERGONOMICS ENGINE
+// ============================================================================
+window.isPhoneDevice = false;
+let paletteCollapsed = false;
+
+function detectAndAdaptPhoneUI() {
+  const ua = navigator.userAgent || navigator.vendor || window.opera || '';
+  const isMobileUA = /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(ua);
+  const isNarrowScreen = window.innerWidth <= 768;
+  const hasTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  
+  const isPhone = isMobileUA || (isNarrowScreen && hasTouch) || isNarrowScreen;
+  window.isPhoneDevice = isPhone;
+
+  document.documentElement.classList.toggle('is-phone', isPhone);
+  document.documentElement.classList.toggle('is-desktop', !isPhone);
+  document.body.classList.toggle('phone-device', isPhone);
+  document.body.classList.toggle('desktop-device', !isPhone);
+
+  const bottomDock = document.getElementById('mobileBottomDock');
+  if (bottomDock) {
+    bottomDock.style.display = isPhone ? 'flex' : 'none';
+  }
+
+  const activeSection = document.querySelector('.view-section.active');
+  const isCbtActive = activeSection && activeSection.id === 'view-cbt';
+  const mobileCbtBar = document.getElementById('mobileCbtBottomBar');
+  if (mobileCbtBar) {
+    mobileCbtBar.style.display = (isCbtActive && isPhone) ? 'flex' : 'none';
+  }
+
+  const activeSecId = activeSection ? activeSection.id.replace('view-', '') : 'dashboard';
+  document.querySelectorAll('.mobile-dock-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-view') === activeSecId);
+  });
+
+  // Adjust 8-keys notification text on phone
+  const badge8Keys = document.getElementById('jamb8KeysBadge');
+  if (badge8Keys) {
+    if (isPhone) {
+      badge8Keys.innerHTML = `<span style="font-weight: 700; color: #34d399;">📱 Touch CBT Active:</span> <span style="color: var(--text-muted);">Tap options A–D to answer • Use bottom bar for Prev/Next/Flag/Coach</span>`;
+    } else {
+      badge8Keys.innerHTML = `<span style="font-weight: 700; color: #34d399;">⌨️ JAMB 8-Keys Active:</span> <span style="color: var(--text-muted);"><kbd style="background: #1f2937; border: 1px solid #374151; padding: 0.1rem 0.35rem; border-radius: 3px; font-family: monospace; color: #fff;">A</kbd> <kbd style="background: #1f2937; border: 1px solid #374151; padding: 0.1rem 0.35rem; border-radius: 3px; font-family: monospace; color: #fff;">B</kbd> <kbd style="background: #1f2937; border: 1px solid #374151; padding: 0.1rem 0.35rem; border-radius: 3px; font-family: monospace; color: #fff;">C</kbd> <kbd style="background: #1f2937; border: 1px solid #374151; padding: 0.1rem 0.35rem; border-radius: 3px; font-family: monospace; color: #fff;">D</kbd> Select</span> <span style="color: var(--text-muted);"><kbd style="background: #1f2937; border: 1px solid #374151; padding: 0.1rem 0.35rem; border-radius: 3px; font-family: monospace; color: #fff;">P</kbd> Prev</span> <span style="color: var(--text-muted);"><kbd style="background: #1f2937; border: 1px solid #374151; padding: 0.1rem 0.35rem; border-radius: 3px; font-family: monospace; color: #fff;">N</kbd> Next</span> <span style="color: var(--text-muted);"><kbd style="background: #1f2937; border: 1px solid #374151; padding: 0.1rem 0.35rem; border-radius: 3px; font-family: monospace; color: #fff;">R</kbd> Flag</span> <span style="color: var(--text-muted);"><kbd style="background: #1f2937; border: 1px solid #374151; padding: 0.1rem 0.35rem; border-radius: 3px; font-family: monospace; color: #fff;">S</kbd> Submit</span>`;
+    }
+  }
+}
+
+function initPhoneDetectionAndAdaptation() {
+  detectAndAdaptPhoneUI();
+  window.addEventListener('resize', detectAndAdaptPhoneUI);
+  window.addEventListener('orientationchange', detectAndAdaptPhoneUI);
+}
+
+function toggleMobileMoreSheet(forceState) {
+  const sheet = document.getElementById('mobileMoreSheet');
+  if (!sheet) return;
+  if (typeof forceState === 'boolean') {
+    sheet.classList.toggle('active', forceState);
+  } else {
+    sheet.classList.toggle('active');
+  }
+}
+
+function toggleCoachMobileDrawer(forceState) {
+  const drawer = document.getElementById('coachMobileDrawer');
+  if (!drawer) return;
+  const willBeActive = (typeof forceState === 'boolean') ? forceState : !drawer.classList.contains('active');
+  drawer.classList.toggle('active', willBeActive);
+
+  if (willBeActive) {
+    const dot = document.getElementById('coachDotPulse');
+    if (dot) dot.style.display = 'none';
+    const area = document.getElementById('coachChatAreaMobile');
+    if (area) area.scrollTop = area.scrollHeight;
+  }
+}
+
+function togglePaletteCollapse() {
+  const grid = document.getElementById('questionPaletteGrid');
+  const arrow = document.getElementById('paletteCollapseArrow');
+  if (!grid) return;
+  paletteCollapsed = !paletteCollapsed;
+  grid.classList.toggle('collapsed', paletteCollapsed);
+  if (arrow) arrow.textContent = paletteCollapsed ? '▾' : '▴';
+}
+
+function handleCoachMobileChatSubmit(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  const input = document.getElementById('coachMessageInputMobile');
+  if (!input) return;
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  appendStudentMessage(msg);
+  input.value = '';
+
+  const deskInput = document.getElementById('coachMessageInput');
+  if (deskInput) deskInput.value = '';
+
+  sendCoachMessageToServer(msg);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  initPhoneDetectionAndAdaptation();
   checkAuth();
   loadQuestions();
   loadSyllabus();
@@ -564,12 +668,25 @@ IMPORTANT: If your email or phone is deleted more than 2 times, it will be autom
 function switchView(viewName) {
   document.querySelectorAll(".view-section").forEach(sec => sec.classList.remove("active"));
   document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+  document.querySelectorAll(".mobile-dock-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.getAttribute("data-view") === viewName);
+  });
 
   const targetView = document.getElementById("view-" + viewName);
   const targetTab = document.getElementById("tab-" + viewName);
 
   if (targetView) targetView.classList.add("active");
   if (targetTab) targetTab.classList.add("active");
+
+  const mobileCbtBar = document.getElementById("mobileCbtBottomBar");
+  if (mobileCbtBar) {
+    mobileCbtBar.style.display = (viewName === "cbt" && window.isPhoneDevice) ? "flex" : "none";
+  }
+
+  // Close any open mobile sheets or drawers
+  toggleMobileMoreSheet(false);
+  toggleCoachMobileDrawer(false);
+  window.scrollTo({ top: 0, behavior: "smooth" });
 
   if (viewName === "dashboard" || viewName === "leaks") {
     refreshDiagnostics();
@@ -888,10 +1005,29 @@ function renderCurrentQuestion() {
   document.getElementById("qCounterDisplay").textContent = `Question ${currentIndex + 1} of ${filteredQuestions.length} (${currentSubj}: ${subjIdx}/${subjPool.length})`;
   renderCbtSubjectTabs();
 
+  const isFlagged = flaggedQuestions.has(q.id);
   const flagBtn = document.getElementById("flagQuestionBtn");
   if (flagBtn) {
-    flagBtn.style.color = flaggedQuestions.has(q.id) ? "var(--accent-amber)" : "var(--text-main)";
-    flagBtn.style.borderColor = flaggedQuestions.has(q.id) ? "var(--accent-amber)" : "var(--border-subtle)";
+    flagBtn.style.color = isFlagged ? "var(--accent-amber)" : "var(--text-main)";
+    flagBtn.style.borderColor = isFlagged ? "var(--accent-amber)" : "var(--border-subtle)";
+  }
+
+  const mobileFlagBtn = document.getElementById("mobileFlagBtn");
+  if (mobileFlagBtn) {
+    mobileFlagBtn.style.color = isFlagged ? "var(--accent-amber)" : "var(--text-main)";
+    mobileFlagBtn.style.borderColor = isFlagged ? "var(--accent-amber)" : "var(--border-subtle)";
+  }
+
+  const mobilePrevBtn = document.getElementById("mobilePrevBtn");
+  if (mobilePrevBtn) {
+    mobilePrevBtn.disabled = currentIndex === 0;
+    mobilePrevBtn.style.opacity = currentIndex === 0 ? "0.45" : "1";
+  }
+
+  const mobileNextBtn = document.getElementById("mobileNextBtn");
+  if (mobileNextBtn) {
+    mobileNextBtn.disabled = currentIndex === filteredQuestions.length - 1;
+    mobileNextBtn.style.opacity = currentIndex === filteredQuestions.length - 1 ? "0.45" : "1";
   }
 
   const optsContainer = document.getElementById("cbtOptionsList");
@@ -926,6 +1062,8 @@ function renderPaletteGrid() {
   if (!grid || !filteredQuestions) return;
   grid.innerHTML = "";
 
+  let answeredCount = 0;
+
   filteredQuestions.forEach((q, idx) => {
     const btn = document.createElement("button");
     btn.className = "palette-btn";
@@ -937,6 +1075,7 @@ function renderPaletteGrid() {
 
     if (sessionHistory[q.id]) {
       btn.classList.add("answered");
+      answeredCount++;
     }
 
     if (flaggedQuestions.has(q.id)) {
@@ -950,6 +1089,11 @@ function renderPaletteGrid() {
 
     grid.appendChild(btn);
   });
+
+  const countBadge = document.getElementById("paletteAnsweredCountBadge");
+  if (countBadge) {
+    countBadge.textContent = `${answeredCount}/${filteredQuestions.length} Answered`;
+  }
 }
 
 function toggleFlagCurrentQuestion() {
@@ -1425,16 +1569,9 @@ ${subj} — ${topic}`);
 }
 
 // ----------------- SOCRATIC COACH CHAT & AUDIO -----------------
-async function handleCoachChatSubmit(e) {
-  e.preventDefault();
-  const input = document.getElementById("coachMessageInput");
-  const msg = input.value.trim();
-  if (!msg) return;
-
+async function sendCoachMessageToServer(msg) {
   const currentQ = (filteredQuestions && filteredQuestions[currentIndex]) ? filteredQuestions[currentIndex] : null;
   const qId = currentQ ? currentQ.id : null;
-  appendStudentMessage(msg);
-  input.value = "";
 
   try {
     const res = await fetch("/api/tutor/chat", {
@@ -1453,24 +1590,65 @@ async function handleCoachChatSubmit(e) {
   }
 }
 
+async function handleCoachChatSubmit(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  const input = document.getElementById("coachMessageInput");
+  const msg = input ? input.value.trim() : "";
+  if (!msg) return;
+
+  appendStudentMessage(msg);
+  if (input) input.value = "";
+
+  const mobileInput = document.getElementById("coachMessageInputMobile");
+  if (mobileInput) mobileInput.value = "";
+
+  await sendCoachMessageToServer(msg);
+}
+
 function appendCoachMessage(text) {
   const chatArea = document.getElementById("coachChatArea");
-  if (!chatArea) return;
-  const bubble = document.createElement("div");
-  bubble.className = "chat-bubble coach";
-  bubble.textContent = text;
-  chatArea.appendChild(bubble);
-  chatArea.scrollTop = chatArea.scrollHeight;
+  if (chatArea) {
+    const bubble = document.createElement("div");
+    bubble.className = "chat-bubble coach";
+    bubble.textContent = text;
+    chatArea.appendChild(bubble);
+    chatArea.scrollTop = chatArea.scrollHeight;
+  }
+
+  const mobileChatArea = document.getElementById("coachChatAreaMobile");
+  if (mobileChatArea) {
+    const bubbleMob = document.createElement("div");
+    bubbleMob.className = "chat-bubble coach";
+    bubbleMob.textContent = text;
+    mobileChatArea.appendChild(bubbleMob);
+    mobileChatArea.scrollTop = mobileChatArea.scrollHeight;
+
+    const drawer = document.getElementById("coachMobileDrawer");
+    if (drawer && !drawer.classList.contains("active")) {
+      const dot = document.getElementById("coachDotPulse");
+      if (dot) dot.style.display = "inline-block";
+    }
+  }
 }
 
 function appendStudentMessage(text) {
   const chatArea = document.getElementById("coachChatArea");
-  if (!chatArea) return;
-  const bubble = document.createElement("div");
-  bubble.className = "chat-bubble student";
-  bubble.textContent = text;
-  chatArea.appendChild(bubble);
-  chatArea.scrollTop = chatArea.scrollHeight;
+  if (chatArea) {
+    const bubble = document.createElement("div");
+    bubble.className = "chat-bubble student";
+    bubble.textContent = text;
+    chatArea.appendChild(bubble);
+    chatArea.scrollTop = chatArea.scrollHeight;
+  }
+
+  const mobileChatArea = document.getElementById("coachChatAreaMobile");
+  if (mobileChatArea) {
+    const bubbleMob = document.createElement("div");
+    bubbleMob.className = "chat-bubble student";
+    bubbleMob.textContent = text;
+    mobileChatArea.appendChild(bubbleMob);
+    mobileChatArea.scrollTop = mobileChatArea.scrollHeight;
+  }
 }
 
 function toggleAudioCoach() {
