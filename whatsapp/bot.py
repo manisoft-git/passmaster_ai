@@ -52,7 +52,9 @@ class WhatsAppBot:
         """
         Processes incoming WhatsApp message and returns the bot's response text.
         """
-        text = raw_text.strip()
+        text = (raw_text or "").strip()
+        if not text:
+            text = "START"
         msg_upper = text.upper()
         session = self.get_session(phone)
 
@@ -161,6 +163,22 @@ class WhatsAppBot:
         # If currently answering a question
         if session.get("current_q"):
             q_id = session["current_q"]
+
+            # Exit or pause active question
+            if msg_upper in ["QUIT", "EXIT", "STOP", "PAUSE", "CANCEL", "BACK"]:
+                session["current_q"] = None
+                session["state"] = "MENU"
+                return (
+                    "⏸️ *Practice paused!*\n"
+                    "You can resume anytime by typing `DRILL`, pick a subject (`ENG`, `MATH`, `PHY`, `BIO`), "
+                    "or ask Coach Kalu any academic question directly.\n\n"
+                    "Type `MENU` to view all options."
+                )
+
+            # Skip to next question
+            if msg_upper in ["SKIP", "PASS"]:
+                return self._serve_next_question(session)
+
             # Check if user picked an option A, B, C, D
             if msg_upper in ["A", "B", "C", "D"]:
                 result = self.tutor.analyze_attempt(q_id, msg_upper)
@@ -183,19 +201,37 @@ class WhatsAppBot:
             else:
                 # Student is asking a question or responding Socratically to Coach Kalu!
                 chat_res = self.tutor.chat_reply(q_id, text)
-                reply_text = chat_res["reply"]
+                reply_text = chat_res.get("reply", "")
                 if chat_res.get("revealed"):
                     session["current_q"] = None
-                    reply_text += "\n\n━━━━━━━━━━━━━━━━━━━━━\nType `NEXT` for the next question!"
+                    reply_text += "\n\n━━━━━━━━━━━━━━━━━━━━━\nType `NEXT` for the next question, or `MENU` for options."
+                elif "Reply with A, B, C, or D" not in reply_text:
+                    reply_text += "\n\n━━━━━━━━━━━━━━━━━━━━━\n👉 *Reply with A, B, C, or D when ready, or type `NEXT` to skip.*"
                 return reply_text
 
-        if msg_upper in ["NEXT", "DRILL"]:
+        if msg_upper in ["NEXT", "DRILL", "PRACTICE"]:
             return self._serve_next_question(session)
 
-        # Fallback
+        if msg_upper in ["RESET", "CLEAR"]:
+            session["current_q"] = None
+            session["history"] = {}
+            session["state"] = "MENU"
+            return "🔄 *Session reset!* Type `START` or `MENU` to begin fresh."
+
+        # Conversational Chatbot Mode: Any message not matching a command is handled naturally by Coach Kalu!
+        try:
+            chat_res = self.tutor.chat_reply(None, text)
+            reply_body = chat_res.get("reply", "")
+        except Exception as e:
+            reply_body = (
+                "👋 Hello scholar! I am Coach Kalu, your 24/7 AI exam mentor for JAMB and WAEC. "
+                "Ask me to explain any syllabus concept or formula, or start practicing right away!"
+            )
+
         return (
-            "🤔 I didn't quite catch that. "
-            "Reply with `A`, `B`, `C`, or `D` to answer the question, or type `MENU` to see main options."
+            f"{reply_body}\n\n"
+            f"━━━━━━━━━━━━━━━━━━━━━\n"
+            f"💡 *Ask Coach Kalu anything, or type `DRILL`, `ENG`, `MATH`, `SCORE`, or `MENU`.*"
         )
 
     def _serve_next_question(self, session):

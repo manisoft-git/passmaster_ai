@@ -324,11 +324,35 @@ def test_whatsapp_score_inquiry():
     assert res.status_code == 200
     assert "READINESS SCORE" in res.json["reply"]
 
+def test_whatsapp_conversational_academic():
+    res = client.post("/api/whatsapp/message", json={"phone": test_phone, "message": "Can you explain Newton's third law?"})
+    assert res.status_code == 200
+    reply = res.json["reply"]
+    assert "Newton" in reply or "Action" in reply or "Reaction" in reply
+    assert "Coach Kalu" in reply
+
+def test_whatsapp_identity_inquiry():
+    res = client.post("/api/whatsapp/message", json={"phone": test_phone, "message": "Who are you?"})
+    assert res.status_code == 200
+    assert "Coach Kalu" in res.json["reply"]
+    assert "Socratic" in res.json["reply"]
+
+def test_whatsapp_question_pause():
+    # Start a question
+    client.post("/api/whatsapp/message", json={"phone": test_phone, "message": "MATH"})
+    # Pause it
+    res = client.post("/api/whatsapp/message", json={"phone": test_phone, "message": "QUIT"})
+    assert res.status_code == 200
+    assert "paused" in res.json["reply"].lower()
+
 for t_name, t_fn in [
     ("WhatsApp Bot START / Welcome Menu", test_whatsapp_welcome),
     ("WhatsApp Bot Subject Selection & Question Delivery", test_whatsapp_subject_question),
     ("WhatsApp Bot Socratic Answer Grading", test_whatsapp_answer_grading),
-    ("WhatsApp Bot Instant Score Card Inquiry", test_whatsapp_score_inquiry)
+    ("WhatsApp Bot Instant Score Card Inquiry", test_whatsapp_score_inquiry),
+    ("WhatsApp Bot Conversational Academic Query (Newton Laws)", test_whatsapp_conversational_academic),
+    ("WhatsApp Bot Identity / Persona Inquiry", test_whatsapp_identity_inquiry),
+    ("WhatsApp Bot Question Mode Pause & Quit", test_whatsapp_question_pause)
 ]:
     tests_total += 1
     if run_test(t_name, t_fn): tests_passed += 1

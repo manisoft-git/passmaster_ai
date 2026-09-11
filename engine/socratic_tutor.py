@@ -280,6 +280,20 @@ class SocraticTutor:
                 "correct_option": "B"
             }
 
+        # If student asked an open academic question or greeting during this CBT question
+        gen_res = self.general_academic_reply(user_message)
+        if gen_res.get("topic") != "Academic Coaching":
+            return {
+                "reply": (
+                    f"{gen_res['reply']}\n\n"
+                    f"━━━━━━━━━━━━━━━━━━━━━\n"
+                    f"📝 *Active CBT Question ({question.get('subject', 'JAMB')}):*\n"
+                    f"\"{question['question']}\"\n\n"
+                    f"👉 *Reply with A, B, C, or D to answer, or type NEXT to skip.*"
+                ),
+                "revealed": False
+            }
+
         # Dynamic Socratic dialogue fallback
         return {
             "reply": (
@@ -310,6 +324,54 @@ class SocraticTutor:
         ai_text, model_used = self._call_gemini(f"Student Question: {user_message}", context_system=system_prompt)
         if ai_text:
             return {"reply": ai_text, "source": "gemini_live", "model": model_used, "topic": "General Academic"}
+
+        # Identity & Bot Persona
+        if any(w in msg_lower for w in ["who are you", "who is coach kalu", "what is passmaster", "tell me about yourself", "what can you do", "introduce yourself"]):
+            return {
+                "reply": (
+                    "👋 **I am Coach Kalu**, your 24/7 Socratic AI mentor for JAMB and WAEC!\n\n"
+                    "Here is how I help you score 280+:\n"
+                    "• **Socratic Coaching:** I guide you step-by-step through tough questions instead of just giving away the answers.\n"
+                    "• **Trap Buster:** I reveal examiner distractors across English, Math, Physics, Chemistry, Biology, Economics, Government, and Literature.\n"
+                    "• **Leaky Bucket Diagnostics:** I detect topics where you're leaking marks and give targeted drills.\n"
+                    "• **Masterclasses & Formulas:** Ask me to explain any law, formula, or syllabus concept anytime!\n\n"
+                    "What would you like to master today, scholar?"
+                ),
+                "topic": "Identity"
+            }
+
+        # Warm Greetings & Social Interaction
+        if any(w in msg_lower for w in ["good morning", "good afternoon", "good evening", "how are you", "how far", "whats up", "what's up", "hey coach"]):
+            return {
+                "reply": (
+                    "Hello scholar! 🎯 Coach Kalu is right here with you and pumped to get you ready for JAMB 2026/2027.\n\n"
+                    "Every question you practice and every concept you master today brings you closer to your dream admission.\n\n"
+                    "How can I coach you right now? Ask me any syllabus topic, request a formula breakdown, or type `DRILL` to practice!"
+                ),
+                "topic": "Greeting"
+            }
+
+        # Gratitude & Affirmation
+        if any(w in msg_lower for w in ["thank you", "thanks coach", "i appreciate", "you are good", "you are awesome", "well done", "nice one"]):
+            return {
+                "reply": (
+                    "You're very welcome! 🌟 Keep that hunger for knowledge alive. Hard work plus strategic diagnosis equals 280+ in JAMB.\n\n"
+                    "What concept or subject shall we conquer next?"
+                ),
+                "topic": "Gratitude"
+            }
+
+        # Exam Anxiety & Motivation
+        if any(w in msg_lower for w in ["afraid", "scared", "nervous", "anxiety", "fail jamb", "hard exam", "too difficult", "can i pass"]):
+            return {
+                "reply": (
+                    "Take a deep breath, champion. 💪 It is completely normal to feel nervous, but remember this:\n\n"
+                    "JAMB is not an IQ test—it is a game of pattern recognition and speed. Candidates don't fail because they aren't smart; they fail because they practice without fixing their leaky topics.\n\n"
+                    "With consistent 20-minute daily drills and our Socratic guidance, you WILL cross 280+.\n\n"
+                    "Let's take it one question at a time. Ready to drill?"
+                ),
+                "topic": "Motivation"
+            }
 
         # English Grammar & Lexis
         if any(w in msg_lower for w in ["proximity", "neither", "either", "not only"]):
@@ -349,7 +411,84 @@ class SocraticTutor:
                 "topic": "English Grammar"
             }
 
+        if any(w in msg_lower for w in ["metaphor", "simile", "personification", "hyperbole", "oxymoron", "euphemism", "paradox", "figure of speech"]):
+            return {
+                "reply": (
+                    "🧠 **Coach Kalu on Key Figures of Speech:**\n\n"
+                    "• **Simile:** Comparison using 'like' or 'as' (*He was as brave as a lion*).\n"
+                    "• **Metaphor:** Direct equation asserting one thing IS another (*He is a pillar of strength*).\n"
+                    "• **Personification:** Giving human traits to inanimate concepts (*The sea raged with fury*).\n"
+                    "• **Hyperbole:** Deliberate exaggeration (*I've cried an ocean of tears*).\n"
+                    "• **Oxymoron:** Pairing opposite words (*deafening silence, open secret*).\n"
+                    "• **Paradox:** A statement seeming absurd yet true (*The child is father of the man*)."
+                ),
+                "topic": "Figures of Speech"
+            }
+
+        if any(w in msg_lower for w in ["stress", "syllable", "vowel sound", "diphthong", "oral english", "phonetics"]):
+            return {
+                "reply": (
+                    "🧠 **Coach Kalu on JAMB Stress & Oral English:**\n\n"
+                    "• **Noun vs Verb Stress:**\n"
+                    "  - 2-syllable NOUNS stressed on **1st syllable**: **CON**duct, **IM**port, **PRO**ject, **RE**cord.\n"
+                    "  - 2-syllable VERBS stressed on **2nd syllable**: con**DUCT**, im**PORT**, pro**JECT**, re**CORD**.\n"
+                    "• **Suffix Stress Rules:**\n"
+                    "  - Words ending in *-tion, -sion, -ic, -ical* are stressed on **penultimate (2nd to last)**: e-xam-i-**NA**-tion, dra-**MA**-tic.\n"
+                    "  - Words ending in *-ate, -ise, -ify, -ity* are stressed on **antepenultimate (3rd from last)**: par-**TI**-ci-pate, elec-**TRI**-ci-ty."
+                ),
+                "topic": "Oral English & Stress"
+            }
+
         # Physics
+        if any(w in msg_lower for w in ["newton", "first law", "second law", "third law", "inertia", "action and reaction", "f=ma", "laws of motion"]):
+            return {
+                "reply": (
+                    "🧠 **Coach Kalu on Newton's Laws of Motion:**\n\n"
+                    "• **1st Law (Law of Inertia):** A body remains at rest or uniform velocity in a straight line unless acted on by an external net force.\n"
+                    "• **2nd Law (F = ma):** Net force equals the time rate of change of linear momentum (F = Δp/Δt = m(v - u)/t = ma).\n"
+                    "• **3rd Law (Action & Reaction):** For every action, there is an EQUAL and OPPOSITE reaction (F_AB = -F_BA).\n\n"
+                    "⚠️ **JAMB Trap:** Action and reaction forces NEVER cancel out because they act on TWO DIFFERENT bodies!"
+                ),
+                "topic": "Mechanics"
+            }
+
+        if any(w in msg_lower for w in ["work done", "kinetic energy", "potential energy", "conservation of energy", "mechanical energy", "joule"]):
+            return {
+                "reply": (
+                    "🧠 **Coach Kalu on Work, Energy & Power:**\n\n"
+                    "• **Work (W):** W = F × d × cos θ (in Joules). If force is perpendicular to displacement (θ = 90°), Work = 0!\n"
+                    "• **Kinetic Energy (K.E):** ½mv² (Double the velocity => K.E quadruples!).\n"
+                    "• **Potential Energy (P.E):** mgh.\n"
+                    "• **Conservation of Energy:** K.E + P.E = Constant in a closed, frictionless system.\n"
+                    "• **Power (P):** Rate of work: P = W / t = F × v (in Watts)."
+                ),
+                "topic": "Work and Energy"
+            }
+
+        if any(w in msg_lower for w in ["ohm", "resistor", "resistance", "parallel", "series circuit", "v=ir", "voltage", "current"]):
+            return {
+                "reply": (
+                    "🧠 **Coach Kalu on Ohm's Law & Circuit Calculations:**\n\n"
+                    "• **Ohm's Law:** **V = I × R** (Potential difference = Current × Resistance).\n"
+                    "• **Series Resistors:** R_eq = R₁ + R₂ + R₃ (Current is identical; Voltages add up).\n"
+                    "• **Parallel Resistors:** 1/R_eq = 1/R₁ + 1/R₂. For two resistors: **R_eq = (R₁ × R₂) / (R₁ + R₂)** (Voltage is identical; Currents add up).\n"
+                    "• **Electric Power:** P = IV = I²R = V² / R."
+                ),
+                "topic": "Current Electricity"
+            }
+
+        if any(w in msg_lower for w in ["snell", "refraction", "reflection", "critical angle", "total internal reflection", "wave speed", "v = f"]):
+            return {
+                "reply": (
+                    "🧠 **Coach Kalu on Waves & Optics:**\n\n"
+                    "• **Wave Equation:** **v = f × λ** (Speed = Frequency × Wavelength).\n"
+                    "• **Snell's Law:** n₁ sin θ₁ = n₂ sin θ₂ => Refractive index n = c / v = Real depth / Apparent depth.\n"
+                    "• **Total Internal Reflection (TIR):** Occurs only when light moves from optically DENSE to RARE medium at angle of incidence > critical angle (sin C = 1/n).\n"
+                    "• **Sound Waves:** Longitudinal mechanical waves (require a material medium; cannot travel in a vacuum!)."
+                ),
+                "topic": "Waves and Optics"
+            }
+
         if any(w in msg_lower for w in ["kelvin", "charles", "gas law", "boyle", "pressure law"]):
             return {
                 "reply": (
@@ -431,7 +570,116 @@ class SocraticTutor:
                 "topic": "Matrices"
             }
 
+        if any(w in msg_lower for w in ["logarithm", "indices", "index", "log rule", "laws of indices"]):
+            return {
+                "reply": (
+                    "🧠 **Coach Kalu on Laws of Indices & Logarithms:**\n\n"
+                    "• **Laws of Indices:**\n"
+                    "  1. xᵃ × xᵇ = xᵃ⁺ᵇ | 2. xᵃ / xᵇ = xᵃ⁻ᵇ | 3. (xᵃ)ᵇ = xᵃᵇ\n"
+                    "  4. x⁰ = 1 | 5. x⁻ᵃ = 1 / xᵃ | 6. x^(1/n) = ⁿ√x\n\n"
+                    "• **Laws of Logarithms:**\n"
+                    "  1. log(AB) = log A + log B\n"
+                    "  2. log(A/B) = log A - log B\n"
+                    "  3. log(Aⁿ) = n log A\n"
+                    "  4. Change of Base: log_b(A) = (log_c A) / (log_c b)."
+                ),
+                "topic": "Logarithms and Indices"
+            }
+
+        if any(w in msg_lower for w in ["arithmetic progression", "geometric progression", "ap and gp", "sum to infinity", "progression"]):
+            return {
+                "reply": (
+                    "🧠 **Coach Kalu on AP & GP Formulas:**\n\n"
+                    "• **Arithmetic Progression (AP):**\n"
+                    "  - n-th term: **Tₙ = a + (n - 1)d**\n"
+                    "  - Sum: **Sₙ = (n/2)[2a + (n - 1)d] = (n/2)[a + L]**\n\n"
+                    "• **Geometric Progression (GP):**\n"
+                    "  - n-th term: **Tₙ = a × rⁿ⁻¹**\n"
+                    "  - Sum: **Sₙ = a(1 - rⁿ) / (1 - r)**\n"
+                    "  - **Sum to Infinity (S_∞):** **S_∞ = a / (1 - r)** (converges only when -1 < r < 1)."
+                ),
+                "topic": "Sequences and Series"
+            }
+
+        if any(w in msg_lower for w in ["trigonometry", "soh cah toa", "pythagoras", "sine rule", "cosine rule"]):
+            return {
+                "reply": (
+                    "🧠 **Coach Kalu on Trigonometry & Triangles:**\n\n"
+                    "• **Right-angled Triangles (SOH CAH TOA):**\n"
+                    "  - sin θ = Opp/Hyp | cos θ = Adj/Hyp | tan θ = Opp/Adj\n"
+                    "  - Pythagoras Theorem: Hyp² = Opp² + Adj²\n"
+                    "• **Non-right Triangles:**\n"
+                    "  - **Sine Rule:** a / sin A = b / sin B = c / sin C\n"
+                    "  - **Cosine Rule:** a² = b² + c² - 2bc cos A\n"
+                    "• **Key Values:** sin 30° = ½, cos 60° = ½, sin 45° = 1/√2, tan 45° = 1."
+                ),
+                "topic": "Trigonometry"
+            }
+
+        if any(w in msg_lower for w in ["probability", "mutually exclusive", "independent event", "standard deviation"]):
+            return {
+                "reply": (
+                    "🧠 **Coach Kalu on Probability & Statistics:**\n\n"
+                    "• **Probability Rule:** P(E) = (Favorable outcomes) / (Total possible outcomes) | 0 ≤ P(E) ≤ 1\n"
+                    "• **Mutually Exclusive Events:** P(A or B) = P(A) + P(B)\n"
+                    "• **Independent Events:** P(A and B) = P(A) × P(B)\n"
+                    "• **Statistics:** Mean x̄ = Σx / N | Standard Deviation σ = √(Σ(x - x̄)² / N)."
+                ),
+                "topic": "Probability and Statistics"
+            }
+
         # Chemistry
+        if any(w in msg_lower for w in ["periodic table", "atomic radius", "ionization energy", "electronegativity", "electron affinity"]):
+            return {
+                "reply": (
+                    "🧠 **Coach Kalu on Periodic Trends:**\n\n"
+                    "• **Across a Period (Left to Right):**\n"
+                    "  - Nuclear charge increases => **Atomic Radius DECREASES**.\n"
+                    "  - **Electronegativity, Ionization Energy, & Electron Affinity INCREASE**.\n"
+                    "• **Down a Group (Top to Bottom):**\n"
+                    "  - Extra shells added => **Atomic Radius INCREASES**.\n"
+                    "  - **Electronegativity & Ionization Energy DECREASE**.\n"
+                    "⚠️ **JAMB Secret:** Fluorine (F) is the MOST electronegative element; Francium (Fr) / Cesium (Cs) are most electropositive."
+                ),
+                "topic": "Periodic Chemistry"
+            }
+
+        if any(w in msg_lower for w in ["acid", "base", "ph scale", "neutralization", "buffer", "strong acid", "alkali"]):
+            return {
+                "reply": (
+                    "🧠 **Coach Kalu on Acids, Bases & pH Calculations:**\n\n"
+                    "• **pH Formula:** **pH = -log₁₀[H⁺]** | **pOH = -log₁₀[OH⁻]** | **pH + pOH = 14** (at 25°C).\n"
+                    "• **Strong Acids:** HCl, HNO₃, H₂SO₄ (dissociate completely).\n"
+                    "• **Weak Acids:** CH₃COOH (ethanoic acid), H₂CO₃, H₃PO₄.\n"
+                    "• **JAMB Shortcut:** If [H⁺] = 1 × 10⁻³ mol/dm³, pH = 3. If [OH⁻] = 1 × 10⁻⁴, pOH = 4 => pH = 14 - 4 = **10**!"
+                ),
+                "topic": "Acids and Bases"
+            }
+
+        if any(w in msg_lower for w in ["alkane", "alkene", "alkyne", "hydrocarbon", "functional group", "iupac", "isomer"]):
+            return {
+                "reply": (
+                    "🧠 **Coach Kalu on Hydrocarbons & Functional Groups:**\n\n"
+                    "• **Alkanes (CₙH₂ₙ₊₂):** Saturated, undergo substitution (e.g. halogenation under sunlight).\n"
+                    "• **Alkenes (CₙH₂ₙ):** Unsaturated (C=C), undergo addition, decolorize reddish-brown bromine water.\n"
+                    "• **Alkynes (CₙH₂ₙ₋₂):** Triple bond (C≡C). Terminal alkynes give precipitates with ammoniacal AgNO₃.\n"
+                    "• **Key Functional Groups:** Alkanols (-OH), Alkanals (-CHO), Alkanones (>C=O), Alkanoic acids (-COOH), Esters (-COO-)."
+                ),
+                "topic": "Organic Chemistry"
+            }
+
+        if any(w in msg_lower for w in ["redox", "oxidation number", "oil rig", "reducing agent", "oxidizing agent", "faraday", "electrolysis"]):
+            return {
+                "reply": (
+                    "🧠 **Coach Kalu on Redox & Electrochemistry:**\n\n"
+                    "• **OIL RIG:** **O**xidation **I**s **L**oss of electrons (increase in oxidation number); **R**eduction **I**s **G**ain (decrease in oxidation number).\n"
+                    "• **Oxidizing Agent:** Electron acceptor (is itself reduced).\n"
+                    "• **Reducing Agent:** Electron donor (is itself oxidized).\n"
+                    "• **Faraday's 1st Law:** **m = ZIt = (M × I × t) / (n × F)** (F = 96,500 C/mol)."
+                ),
+                "topic": "Redox and Electrochemistry"
+            }
+
         if any(w in msg_lower for w in ["stoichiometry", "mole", "avogadro", "molar mass"]):
             return {
                 "reply": (
@@ -458,6 +706,41 @@ class SocraticTutor:
             }
 
         # Biology
+        if any(w in msg_lower for w in ["photosynthesis", "chloroplast", "chlorophyll", "aerobic", "anaerobic", "glycolysis", "atp", "respiration"]):
+            return {
+                "reply": (
+                    "🧠 **Coach Kalu on Photosynthesis vs Cellular Respiration:**\n\n"
+                    "• **Photosynthesis:** 6CO₂ + 6H₂O + light -> C₆H₁₂O₆ + 6O₂.\n"
+                    "  - **Light Phase (Granum/Thylakoid):** Photolysis of water generates ATP, NADPH, and O₂ gas.\n"
+                    "  - **Dark Phase / Calvin Cycle (Stroma):** Fixes CO₂ into glucose.\n"
+                    "• **Cellular Respiration:** C₆H₁₂O₆ + 6O₂ -> 6CO₂ + 6H₂O + 38 ATP.\n"
+                    "  - Glycolysis in **Cytoplasm** (anaerobic); Krebs Cycle in **Mitochondria** (aerobic)."
+                ),
+                "topic": "Bioenergetics"
+            }
+
+        if any(w in msg_lower for w in ["mitosis", "meiosis", "chromosome", "diploid", "haploid", "crossing over", "cell division"]):
+            return {
+                "reply": (
+                    "🧠 **Coach Kalu on Mitosis vs Meiosis:**\n\n"
+                    "• **Mitosis:** 1 division => **2 identical diploid (2n)** daughter cells. For somatic growth and repair.\n"
+                    "• **Meiosis:** 2 divisions => **4 genetically varied haploid (n)** gametes. For sexual reproduction.\n"
+                    "• **Crossing Over:** Occurs in **Prophase I (Pachytene)** between non-sister chromatids, driving genetic variation."
+                ),
+                "topic": "Cell Division"
+            }
+
+        if any(w in msg_lower for w in ["circulatory", "heart", "artery", "arteries", "vein", "veins", "xylem", "phloem"]):
+            return {
+                "reply": (
+                    "🧠 **Coach Kalu on Animal & Plant Transport Systems:**\n\n"
+                    "• **Arteries:** Thick muscular walls, narrow lumen, high pressure, carry blood AWAY from heart (Pulmonary artery carries deoxygenated blood).\n"
+                    "• **Veins:** Thin walls, wide lumen, have **VALVES** to prevent backflow, carry blood TOWARD heart (Pulmonary vein carries oxygenated blood).\n"
+                    "• **Plants:** **Xylem** transports water/minerals upward; **Phloem** translocates sugars/amino acids bidirectionally."
+                ),
+                "topic": "Transport Systems"
+            }
+
         if any(w in msg_lower for w in ["osmosis", "plasmolysis", "turgid", "flaccid", "crenation"]):
             return {
                 "reply": (
@@ -482,6 +765,19 @@ class SocraticTutor:
             }
 
         # Economics
+        if any(w in msg_lower for w in ["demand and supply", "law of demand", "shift in demand", "equilibrium price", "price ceiling", "price floor"]):
+            return {
+                "reply": (
+                    "🧠 **Coach Kalu on Demand & Supply Mechanics:**\n\n"
+                    "• **Law of Demand:** Price and quantity demanded move in OPPOSITE directions.\n"
+                    "• **Change in Quantity Demanded (Movement):** Caused ONLY by commodity's own price change.\n"
+                    "• **Change in Demand (Shift):** Caused by income, tastes, population, or substitutes/complements.\n"
+                    "• **Price Ceiling:** Set BELOW equilibrium => creates **Shortage / Scarcity**.\n"
+                    "• **Price Floor:** Set ABOVE equilibrium (e.g. minimum wage) => creates **Surplus**."
+                ),
+                "topic": "Price Theory"
+            }
+
         if any(w in msg_lower for w in ["elasticity", "ped", "inelastic", "unitary"]):
             return {
                 "reply": (
@@ -507,6 +803,17 @@ class SocraticTutor:
             }
 
         # Government
+        if any(w in msg_lower for w in ["rule of law", "separation of powers", "checks and balances", "dicey", "montesquieu"]):
+            return {
+                "reply": (
+                    "🧠 **Coach Kalu on Rule of Law & Separation of Powers:**\n\n"
+                    "• **Rule of Law (A.V. Dicey):** Supremacy of law, equality before the law, and protection of fundamental human rights.\n"
+                    "• **Separation of Powers (Montesquieu):** Distinct division into **Legislature** (makes law), **Executive** (enforces law), and **Judiciary** (interprets law).\n"
+                    "• **Checks and Balances:** Prevents tyranny by giving each arm constitutional powers to check abuses in the other two."
+                ),
+                "topic": "Constitutional Law"
+            }
+
         if any(w in msg_lower for w in ["constitution", "1963", "1979", "1999", "lugard", "indirect rule", "clifford"]):
             return {
                 "reply": (
