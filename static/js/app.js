@@ -1257,17 +1257,26 @@ function renderLessonCards(lessons) {
       ? `<span class="status-badge" style="background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3);">🔒 Paid Pass</span>`
       : `<span class="status-badge status-confirmed">✨ Free Preview</span>`;
 
+    const watchedSet = (typeof getWatchedVideosSet === "function") ? getWatchedVideosSet() : new Set();
+    const isWatched = watchedSet.has(les.id) || watchedSet.has(`${les.subject}_${les.topic}`);
+    const watchedBadge = isWatched
+      ? `<span class="status-badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); font-size: 0.7rem;">✅ Video Mastered</span>`
+      : '';
+
     card.innerHTML = `
       <div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.35rem;">
           <span class="subject-badge">${les.subject}</span>
-          ${lockBadge}
+          <div style="display: flex; gap: 0.35rem; align-items: center;">
+            ${watchedBadge}
+            ${lockBadge}
+          </div>
         </div>
         <h4 style="font-size: 1.05rem; font-weight: 700; color: #ffffff; margin-bottom: 0.35rem;">${les.title}</h4>
         <div style="font-size: 0.78rem; color: var(--accent-cyan); font-weight: 600; margin-bottom: 0.5rem;">Topic: ${les.topic}</div>
         <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.6rem;">
-          <span style="font-size: 0.72rem; color: #38bdf8; background: rgba(56, 189, 248, 0.12); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 600; border: 1px solid rgba(56, 189, 248, 0.25);">🎬 Video Masterclass (${les.video_duration || '25 mins'})</span>
-          <span style="font-size: 0.72rem; color: #fbbf24; background: rgba(251, 191, 36, 0.12); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 600;">⚡ 2 Worked Qs</span>
+          <span style="font-size: 0.72rem; color: #38bdf8; background: rgba(56, 189, 248, 0.12); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 600; border: 1px solid rgba(56, 189, 248, 0.25);">🎬 3 Video Modules (${les.video_duration || '25 mins'})</span>
+          <span style="font-size: 0.72rem; color: #fbbf24; background: rgba(251, 191, 36, 0.12); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 600;">⚡ Retention Drill</span>
         </div>
         <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem;">${les.summary}</p>
       </div>
@@ -2541,14 +2550,109 @@ function renderTopicVisual(subject, topic) {
 }
 
 
-// ----------------- VIDEO LECTURE THEATER SIMULATION & REAL YOUTUBE EMBED -----------------
+// ----------------- VIDEO LECTURE THEATER: MULTI-MODULES, SYNCED NOTES & RETENTION DRILL -----------------
 let simulatedVideoPlaying = false;
 let simulatedVideoTimer = null;
 let simulatedVideoSeconds = 0;
-let simulatedVideoDuration = 1000; // 16:40 in seconds
+let simulatedVideoDuration = 1000; // in seconds
 let simulatedVideoSpeed = 1.0;
 let currentVideoPlaybackMode = "real";
 let currentVideoMeta = null;
+let currentVideoModuleIndex = 0;
+
+function getWatchedVideosSet() {
+  try {
+    const raw = localStorage.getItem("passmaster_watched_videos");
+    return raw ? new Set(JSON.parse(raw)) : new Set();
+  } catch (e) {
+    return new Set();
+  }
+}
+
+function saveWatchedVideosSet(set) {
+  try {
+    localStorage.setItem("passmaster_watched_videos", JSON.stringify(Array.from(set)));
+  } catch (e) {}
+}
+
+function toggleVideoMastered() {
+  if (!activeLessonData) return;
+  const key = activeLessonData.id || `${activeLessonData.subject}_${activeLessonData.topic}`;
+  const watched = getWatchedVideosSet();
+  const badge = document.getElementById("lessonVideoMasteredBadge");
+  const btn = document.getElementById("btnToggleMastered");
+
+  if (watched.has(key)) {
+    watched.delete(key);
+    saveWatchedVideosSet(watched);
+    if (badge) badge.style.display = "none";
+    if (btn) btn.textContent = "✅ Mark Mastered";
+    alert(`Topic video marked as uncompleted.`);
+  } else {
+    watched.add(key);
+    saveWatchedVideosSet(watched);
+    if (badge) badge.style.display = "inline-flex";
+    if (btn) btn.textContent = "✨ Mastered";
+    alert(`🎉 TOPIC VIDEO MASTERED!\n\nCoach Kalu says: "Excellent dedication! You have mastered the core foundations of ${activeLessonData.topic}. Now practice 5 questions to lock in your score!"`);
+    fetch("/api/lessons/video-progress", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ lesson_id: key, completed: true, module_index: currentVideoModuleIndex })
+    }).catch(() => {});
+  }
+  if (loadedLessons && loadedLessons.length) {
+    renderLessonCards(loadedLessons);
+  }
+}
+
+function toggleVideoFloatingPlayer() {
+  const container = document.getElementById("mainVideoPlayerContainer");
+  const btn = document.getElementById("btnTogglePip");
+  if (!container) return;
+
+  const isPip = container.classList.toggle("floating-pip");
+  if (btn) {
+    btn.textContent = isPip ? "🔽 Dock" : "📌 Float";
+    btn.classList.toggle("active", isPip);
+  }
+}
+
+function toggleRetentionBox(show) {
+  const box = document.getElementById("lessonVideoRetentionBox");
+  if (!box) return;
+  if (typeof show === "boolean") {
+    box.style.display = show ? "block" : "none";
+  } else {
+    box.style.display = box.style.display === "none" ? "block" : "none";
+  }
+}
+
+function seekToVideoTimestamp(timeStrOrSecs) {
+  let secs = 0;
+  if (typeof timeStrOrSecs === "number") {
+    secs = timeStrOrSecs;
+  } else if (typeof timeStrOrSecs === "string") {
+    const parts = timeStrOrSecs.split(":");
+    secs = (parseInt(parts[0]) || 0) * 60 + (parseInt(parts[1]) || 0);
+  }
+
+  if (currentVideoPlaybackMode === "real") {
+    const iframe = document.getElementById("lessonRealVideoIframe");
+    const activeMod = (currentVideoMeta && currentVideoMeta.modules && currentVideoMeta.modules[currentVideoModuleIndex]) ? currentVideoMeta.modules[currentVideoModuleIndex] : currentVideoMeta;
+    const ytid = (activeMod && activeMod.youtube_id) ? activeMod.youtube_id : (currentVideoMeta ? currentVideoMeta.youtube_id : "_xWp-zN85_Y");
+    if (iframe) {
+      iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(ytid)}?start=${secs}&autoplay=1&enablejsapi=1&rel=0`;
+    }
+  } else {
+    simulatedVideoSeconds = secs;
+    updateVideoProgressDisplay();
+    if (simulatedVideoPlaying) {
+      startLectureSpeech();
+    } else {
+      toggleSimulatedVideoPlayback();
+    }
+  }
+}
 
 function setVideoPlaybackMode(mode) {
   currentVideoPlaybackMode = mode;
@@ -2578,11 +2682,18 @@ function setVideoPlaybackMode(mode) {
   }
 }
 
-function renderTopicVideo(videoMeta, topicTitle) {
-  currentVideoMeta = videoMeta;
-  simulatedVideoPlaying = false;
-  clearInterval(simulatedVideoTimer);
-  simulatedVideoSeconds = 0;
+function switchVideoModule(modIdx) {
+  if (!currentVideoMeta) return;
+  const modules = currentVideoMeta.modules || [];
+  if (!modules[modIdx]) return;
+  currentVideoModuleIndex = modIdx;
+  const mod = modules[modIdx];
+
+  // Update tabs
+  [0, 1, 2].forEach(i => {
+    const b = document.getElementById(`btnMod${i}`);
+    if (b) b.classList.toggle("active", i === modIdx);
+  });
 
   const badge = document.getElementById("lessonVideoBadge");
   const durBadge = document.getElementById("lessonVideoDurationBadge");
@@ -2591,74 +2702,46 @@ function renderTopicVideo(videoMeta, topicTitle) {
   const progress = document.getElementById("lessonVideoProgress");
   const playBtn = document.getElementById("lessonVideoPlayBtn");
   const status = document.getElementById("lessonVideoStatus");
-  const waveform = document.getElementById("lessonVideoWaveform");
-  const chaptersList = document.getElementById("lessonVideoChaptersList");
   const iframe = document.getElementById("lessonRealVideoIframe");
   const detailTitle = document.getElementById("lessonVideoDetailTitle");
   const detailLecturer = document.getElementById("lessonVideoDetailLecturer");
   const detailSummary = document.getElementById("lessonVideoDetailSummary");
   const externalLink = document.getElementById("lessonVideoExternalLink");
   const takeawaysList = document.getElementById("lessonVideoTakeawaysList");
+  const chaptersList = document.getElementById("lessonVideoChaptersList");
 
-  const durationStr = (videoMeta && videoMeta.duration) ? videoMeta.duration : "24:30";
+  const durationStr = mod.duration || "24:00";
   const parts = durationStr.split(":");
-  simulatedVideoDuration = (parseInt(parts[0]) || 24) * 60 + (parseInt(parts[1]) || 30);
+  simulatedVideoDuration = (parseInt(parts[0]) || 24) * 60 + (parseInt(parts[1]) || 0);
 
-  const titleStr = (videoMeta && videoMeta.title) ? videoMeta.title : `JAMB Masterclass: ${topicTitle}`;
-  const lecturerStr = (videoMeta && videoMeta.lecturer) ? videoMeta.lecturer : "Coach Kalu & Socratic Video Fellow";
-  const youtubeId = (videoMeta && videoMeta.youtube_id) ? videoMeta.youtube_id : "_xWp-zN85_Y";
-
-  if (badge) badge.textContent = `🎬 ${topicTitle}`;
-  if (durBadge) durBadge.textContent = `HD Video (${durationStr})`;
-  if (lecturer) lecturer.textContent = `👨‍🏫 ${lecturerStr}`;
+  if (badge) badge.textContent = `🎬 ${mod.title}`;
+  if (durBadge) durBadge.textContent = `${mod.badge || "HD Lecture"} (${durationStr})`;
+  if (lecturer) lecturer.textContent = `👨‍🏫 ${mod.lecturer || "Coach Kalu & Socratic Fellow"}`;
   if (timer) timer.textContent = `00:00 / ${durationStr}`;
   if (progress) progress.style.width = "0%";
   if (playBtn) playBtn.textContent = "▶";
-  if (status) status.textContent = "Ready to Stream (High-Def)";
-  if (waveform) waveform.style.display = "none";
+  if (status) status.textContent = "Ready to Stream";
 
-  // Setup YouTube embed
   if (iframe) {
-    iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(youtubeId)}?enablejsapi=1&rel=0`;
+    iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(mod.youtube_id || "_xWp-zN85_Y")}?enablejsapi=1&rel=0`;
   }
+  if (detailTitle) detailTitle.textContent = mod.title;
+  if (detailLecturer) detailLecturer.textContent = `Instructor: ${mod.lecturer || "Coach Kalu & Socratic Video Fellow"}`;
+  if (detailSummary) detailSummary.textContent = mod.summary || "";
+  if (externalLink) externalLink.href = `https://www.youtube.com/watch?v=${encodeURIComponent(mod.youtube_id || "_xWp-zN85_Y")}`;
 
-  // Setup details card
-  if (detailTitle) detailTitle.textContent = titleStr;
-  if (detailLecturer) detailLecturer.textContent = `Instructor: ${lecturerStr}`;
-  if (detailSummary) {
-    detailSummary.textContent = (videoMeta && videoMeta.summary) ? videoMeta.summary : 
-      `In-depth visual lecture covering core syllabus axioms, authentic past JAMB examination questions, and examiner trap elimination.`;
-  }
-  if (externalLink) {
-    externalLink.href = `https://www.youtube.com/watch?v=${encodeURIComponent(youtubeId)}`;
-  }
-
-  // Setup takeaways list
-  if (takeawaysList) {
+  if (takeawaysList && mod.key_takeaways) {
     takeawaysList.innerHTML = "";
-    const takeaways = (videoMeta && videoMeta.key_takeaways) ? videoMeta.key_takeaways : [
-      "Master core foundational principles without rote memorization.",
-      "Identify subtle distractor traps designed to catch unwary candidates.",
-      "Apply speed heuristics to solve complex questions in under 45 seconds."
-    ];
-    takeaways.forEach(t => {
+    mod.key_takeaways.forEach(t => {
       const li = document.createElement("li");
       li.textContent = t;
       takeawaysList.appendChild(li);
     });
   }
 
-  // Setup interactive chapter bookmarks
-  if (chaptersList) {
+  if (chaptersList && mod.chapters) {
     chaptersList.innerHTML = "";
-    const chapters = (videoMeta && videoMeta.chapters) ? videoMeta.chapters : [
-      { time: "00:00", title: "Zero-to-One Conceptual Foundations" },
-      { time: "06:15", title: "Core Laws, Equations & Definitions" },
-      { time: "14:20", title: "Authentic JAMB Past Questions Solved" },
-      { time: "20:50", title: "Fatal Cognitive Traps & Speed Hacks" }
-    ];
-
-    chapters.forEach((ch, idx) => {
+    mod.chapters.forEach((ch, idx) => {
       const pill = document.createElement("div");
       pill.className = `video-chapter-pill ${idx === 0 ? "active" : ""}`;
       pill.dataset.time = ch.time;
@@ -2673,6 +2756,230 @@ function renderTopicVideo(videoMeta, topicTitle) {
       chaptersList.appendChild(pill);
     });
   }
+}
+
+function renderVideoSyncedNotes(notes) {
+  const container = document.getElementById("lessonVideoSyncedNotesList");
+  if (!container) return;
+  container.innerHTML = "";
+
+  if (!notes || !notes.length) {
+    container.innerHTML = `<div style="font-size: 0.8rem; color: #94a3b8;">Syllabus notes synchronizing...</div>`;
+    return;
+  }
+
+  notes.forEach(n => {
+    const card = document.createElement("div");
+    card.className = "synced-note-card";
+    card.innerHTML = `
+      <div class="synced-note-header">
+        <span class="synced-note-title">${escapeHtml(n.title)}</span>
+        <span class="synced-note-time">▶ ${escapeHtml(n.time)}</span>
+      </div>
+      <div class="synced-note-content">${escapeHtml(n.content)}</div>
+    `;
+    card.onclick = () => seekToVideoTimestamp(n.time);
+    container.appendChild(card);
+  });
+}
+
+function renderVideoRetentionQuiz(quizList) {
+  const container = document.getElementById("lessonVideoRetentionContainer");
+  const scoreBadge = document.getElementById("retentionScoreBadge");
+  if (!container) return;
+  container.innerHTML = "";
+
+  if (!quizList || !quizList.length) {
+    container.innerHTML = `<div style="font-size: 0.8rem; color: #94a3b8;">Retention quiz questions loading...</div>`;
+    return;
+  }
+
+  let answeredCorrect = 0;
+  let totalQs = quizList.length;
+  if (scoreBadge) scoreBadge.textContent = `0 / ${totalQs} Correct`;
+
+  quizList.forEach((q, qIdx) => {
+    const card = document.createElement("div");
+    card.className = "retention-q-card";
+
+    const optsHtml = (q.options || []).map((opt, oIdx) => `
+      <button class="retention-option-btn" data-qid="${q.id}" data-oidx="${oIdx}">
+        ${escapeHtml(opt)}
+      </button>
+    `).join("");
+
+    card.innerHTML = `
+      <div style="font-size: 0.82rem; font-weight: 700; color: #ffffff; margin-bottom: 0.35rem;">
+        <span style="color: #fbbf24;">Question ${qIdx + 1}:</span> ${escapeHtml(q.question)}
+      </div>
+      <div class="retention-options-list" id="retOptions_${q.id}">
+        ${optsHtml}
+      </div>
+      <div class="retention-feedback" id="retFeedback_${q.id}" style="display: none; font-size: 0.76rem; padding: 0.4rem 0.6rem; border-radius: 4px; margin-top: 0.4rem;"></div>
+    `;
+
+    const optButtons = card.querySelectorAll(".retention-option-btn");
+    optButtons.forEach(btn => {
+      btn.onclick = () => {
+        const selectedIdx = parseInt(btn.dataset.oidx);
+        const fbElem = card.querySelector(`#retFeedback_${q.id}`);
+        optButtons.forEach(b => {
+          b.disabled = true;
+          b.style.pointerEvents = "none";
+        });
+
+        if (selectedIdx === q.correct_index) {
+          btn.classList.add("correct");
+          answeredCorrect++;
+          if (scoreBadge) scoreBadge.textContent = `${answeredCorrect} / ${totalQs} Correct`;
+          if (fbElem) {
+            fbElem.style.display = "block";
+            fbElem.style.background = "rgba(16, 185, 129, 0.15)";
+            fbElem.style.color = "#34d399";
+            fbElem.style.border = "1px solid rgba(16, 185, 129, 0.3)";
+            fbElem.innerHTML = `🎯 <strong>Correct!</strong> ${escapeHtml(q.explanation)}`;
+          }
+        } else {
+          btn.classList.add("incorrect");
+          const correctBtn = card.querySelector(`[data-oidx="${q.correct_index}"]`);
+          if (correctBtn) correctBtn.classList.add("correct");
+          if (fbElem) {
+            fbElem.style.display = "block";
+            fbElem.style.background = "rgba(239, 68, 68, 0.15)";
+            fbElem.style.color = "#f87171";
+            fbElem.style.border = "1px solid rgba(239, 68, 68, 0.3)";
+            fbElem.innerHTML = `⚠️ <strong>Trap caught:</strong> ${escapeHtml(q.explanation)} <br><span style="color: var(--accent-cyan); cursor: pointer; text-decoration: underline;" onclick="seekToVideoTimestamp('${q.review_time || "00:00"}')">▶ Click here to review this in the video (${q.review_time || "00:00"})</span>`;
+          }
+        }
+      };
+    });
+
+    container.appendChild(card);
+  });
+}
+
+function renderTopicVideo(videoMeta, topicTitle) {
+  currentVideoMeta = videoMeta;
+  currentVideoModuleIndex = 0;
+  simulatedVideoPlaying = false;
+  clearInterval(simulatedVideoTimer);
+  simulatedVideoSeconds = 0;
+
+  // Reset floating PiP state
+  const mainCont = document.getElementById("mainVideoPlayerContainer");
+  const pipBtn = document.getElementById("btnTogglePip");
+  if (mainCont) mainCont.classList.remove("floating-pip");
+  if (pipBtn) {
+    pipBtn.textContent = "📌 Float";
+    pipBtn.classList.remove("active");
+  }
+
+  // Close retention box initially
+  toggleRetentionBox(false);
+
+  // Check mastered status
+  const key = (activeLessonData && activeLessonData.id) ? activeLessonData.id : `${activeLessonData.subject}_${activeLessonData.topic}`;
+  const watched = getWatchedVideosSet();
+  const masteredBadge = document.getElementById("lessonVideoMasteredBadge");
+  const masterBtn = document.getElementById("btnToggleMastered");
+  if (masteredBadge) masteredBadge.style.display = watched.has(key) ? "inline-flex" : "none";
+  if (masterBtn) masterBtn.textContent = watched.has(key) ? "✨ Mastered" : "✅ Mark Mastered";
+
+  // Render modules or default
+  if (videoMeta && videoMeta.modules && videoMeta.modules.length > 0) {
+    switchVideoModule(0);
+  } else {
+    const badge = document.getElementById("lessonVideoBadge");
+    const durBadge = document.getElementById("lessonVideoDurationBadge");
+    const lecturer = document.getElementById("lessonVideoLecturer");
+    const timer = document.getElementById("lessonVideoTimerDisplay");
+    const progress = document.getElementById("lessonVideoProgress");
+    const playBtn = document.getElementById("lessonVideoPlayBtn");
+    const status = document.getElementById("lessonVideoStatus");
+    const waveform = document.getElementById("lessonVideoWaveform");
+    const chaptersList = document.getElementById("lessonVideoChaptersList");
+    const iframe = document.getElementById("lessonRealVideoIframe");
+    const detailTitle = document.getElementById("lessonVideoDetailTitle");
+    const detailLecturer = document.getElementById("lessonVideoDetailLecturer");
+    const detailSummary = document.getElementById("lessonVideoDetailSummary");
+    const externalLink = document.getElementById("lessonVideoExternalLink");
+    const takeawaysList = document.getElementById("lessonVideoTakeawaysList");
+
+    const durationStr = (videoMeta && videoMeta.duration) ? videoMeta.duration : "24:30";
+    const parts = durationStr.split(":");
+    simulatedVideoDuration = (parseInt(parts[0]) || 24) * 60 + (parseInt(parts[1]) || 30);
+
+    const titleStr = (videoMeta && videoMeta.title) ? videoMeta.title : `JAMB Masterclass: ${topicTitle}`;
+    const lecturerStr = (videoMeta && videoMeta.lecturer) ? videoMeta.lecturer : "Coach Kalu & Socratic Video Fellow";
+    const youtubeId = (videoMeta && videoMeta.youtube_id) ? videoMeta.youtube_id : "_xWp-zN85_Y";
+
+    if (badge) badge.textContent = `🎬 ${topicTitle}`;
+    if (durBadge) durBadge.textContent = `HD Video (${durationStr})`;
+    if (lecturer) lecturer.textContent = `👨‍🏫 ${lecturerStr}`;
+    if (timer) timer.textContent = `00:00 / ${durationStr}`;
+    if (progress) progress.style.width = "0%";
+    if (playBtn) playBtn.textContent = "▶";
+    if (status) status.textContent = "Ready to Stream (High-Def)";
+    if (waveform) waveform.style.display = "none";
+
+    if (iframe) {
+      iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(youtubeId)}?enablejsapi=1&rel=0`;
+    }
+    if (detailTitle) detailTitle.textContent = titleStr;
+    if (detailLecturer) detailLecturer.textContent = `Instructor: ${lecturerStr}`;
+    if (detailSummary) {
+      detailSummary.textContent = (videoMeta && videoMeta.summary) ? videoMeta.summary : 
+        `In-depth visual lecture covering core syllabus axioms, authentic past JAMB examination questions, and examiner trap elimination.`;
+    }
+    if (externalLink) {
+      externalLink.href = `https://www.youtube.com/watch?v=${encodeURIComponent(youtubeId)}`;
+    }
+
+    if (takeawaysList) {
+      takeawaysList.innerHTML = "";
+      const takeaways = (videoMeta && videoMeta.key_takeaways) ? videoMeta.key_takeaways : [
+        "Master core foundational principles without rote memorization.",
+        "Identify subtle distractor traps designed to catch unwary candidates.",
+        "Apply speed heuristics to solve complex questions in under 45 seconds."
+      ];
+      takeaways.forEach(t => {
+        const li = document.createElement("li");
+        li.textContent = t;
+        takeawaysList.appendChild(li);
+      });
+    }
+
+    if (chaptersList) {
+      chaptersList.innerHTML = "";
+      const chapters = (videoMeta && videoMeta.chapters) ? videoMeta.chapters : [
+        { time: "00:00", title: "Zero-to-One Conceptual Foundations" },
+        { time: "06:15", title: "Core Laws, Equations & Definitions" },
+        { time: "14:20", title: "Authentic JAMB Past Questions Solved" },
+        { time: "20:50", title: "Fatal Cognitive Traps & Speed Hacks" }
+      ];
+
+      chapters.forEach((ch, idx) => {
+        const pill = document.createElement("div");
+        pill.className = `video-chapter-pill ${idx === 0 ? "active" : ""}`;
+        pill.dataset.time = ch.time;
+        pill.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="color: var(--accent-cyan); font-weight: 700;">#${idx + 1}</span>
+            <span>${ch.title}</span>
+          </div>
+          <span style="font-family: monospace; font-size: 0.75rem; color: #94a3b8;">${ch.time}</span>
+        `;
+        pill.onclick = () => seekToChapter(ch.time, pill);
+        chaptersList.appendChild(pill);
+      });
+    }
+  }
+
+  // Render Synchronized Notes
+  renderVideoSyncedNotes((videoMeta && videoMeta.synced_notes) ? videoMeta.synced_notes : []);
+
+  // Render In-Video Retention Pop-Quiz
+  renderVideoRetentionQuiz((videoMeta && videoMeta.retention_quiz) ? videoMeta.retention_quiz : []);
 
   setVideoPlaybackMode("real");
 }

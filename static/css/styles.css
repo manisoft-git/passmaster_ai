@@ -1317,6 +1317,148 @@ body {
   font-weight: 700;
 }
 
+/* Video Module Tabs */
+.video-module-tabs {
+  display: flex;
+  background: #040810;
+  border-bottom: 1px solid var(--border-subtle);
+  overflow-x: auto;
+  gap: 0.35rem;
+  padding: 0.5rem 0.75rem;
+}
+.video-module-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.8rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+.video-module-btn .mod-num {
+  font-weight: 800;
+  font-size: 0.7rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+.video-module-btn:hover {
+  background: rgba(56, 189, 248, 0.1);
+  color: #ffffff;
+}
+.video-module-btn.active {
+  background: rgba(56, 189, 248, 0.18);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  font-weight: 700;
+}
+.video-module-btn.active .mod-num {
+  background: var(--accent-cyan);
+  color: #030712;
+}
+
+/* Synchronized Note Cards */
+.synced-note-card {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.8rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.synced-note-card:hover {
+  border-color: var(--accent-cyan);
+  background: rgba(15, 23, 42, 0.95);
+  transform: translateY(-1px);
+}
+.synced-note-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.3rem;
+}
+.synced-note-time {
+  font-family: monospace;
+  font-size: 0.72rem;
+  color: var(--accent-cyan);
+  background: rgba(56, 189, 248, 0.12);
+  padding: 0.1rem 0.45rem;
+  border-radius: 3px;
+  font-weight: 700;
+}
+.synced-note-title {
+  font-weight: 700;
+  color: #ffffff;
+  font-size: 0.8rem;
+}
+.synced-note-content {
+  color: #cbd5e1;
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+/* In-Video Retention Pop-Quiz */
+.retention-q-card {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+}
+.retention-option-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: #e2e8f0;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.78rem;
+  margin-top: 0.35rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.retention-option-btn:hover {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: var(--accent-cyan);
+}
+.retention-option-btn.correct {
+  background: rgba(16, 185, 129, 0.25) !important;
+  border-color: #10b981 !important;
+  color: #34d399 !important;
+  font-weight: 700;
+}
+.retention-option-btn.incorrect {
+  background: rgba(239, 68, 68, 0.25) !important;
+  border-color: #ef4444 !important;
+  color: #f87171 !important;
+}
+
+/* Floating Mini-Player (Picture-in-Picture Mode) */
+.video-player-container.floating-pip {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 400px;
+  max-width: 92vw;
+  z-index: 9999;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.85), 0 0 0 2px rgba(56, 189, 248, 0.5);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  animation: floatIn 0.25s ease-out;
+}
+@keyframes floatIn {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
 /* Visual Diagram Card */
 .lesson-diagram-card {
   background: #080d1a;

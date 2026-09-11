@@ -1247,16 +1247,35 @@ Reply with a number:
           </div>
 
           <!-- Video Lecture Theater Box -->
-          <div class="video-player-container">
+          <div class="video-player-container" id="mainVideoPlayerContainer">
+            <!-- Multi-Module Video Track Selector -->
+            <div class="video-module-tabs" id="videoModuleTabs">
+              <button class="video-module-btn active" id="btnMod0" onclick="switchVideoModule(0)">
+                <span class="mod-num">M1</span>
+                <span class="mod-text">Core Theory & Axioms</span>
+              </button>
+              <button class="video-module-btn" id="btnMod1" onclick="switchVideoModule(1)">
+                <span class="mod-num">M2</span>
+                <span class="mod-text">Authentic Past Qs Solved</span>
+              </button>
+              <button class="video-module-btn" id="btnMod2" onclick="switchVideoModule(2)">
+                <span class="mod-num">M3</span>
+                <span class="mod-text">Traps & 45s Speed Hacks</span>
+              </button>
+            </div>
+
             <!-- Video Screen Header & Mode Toggle -->
             <div style="padding: 0.75rem 1rem; background: #070b14; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
               <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
                 <span style="font-size: 0.78rem; font-weight: 800; color: #38bdf8; text-transform: uppercase;" id="lessonVideoBadge">🎬 JAMB Topic Video Masterclass</span>
                 <span class="status-badge status-confirmed" id="lessonVideoDurationBadge">HD Video Lecture</span>
+                <span id="lessonVideoMasteredBadge" class="status-badge" style="display: none; background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4);">✅ Mastered</span>
               </div>
-              <div style="display: flex; gap: 0.35rem; align-items: center;">
-                <button class="video-mode-btn active" id="btnModeRealVideo" onclick="setVideoPlaybackMode('real')">📺 Video Lecture (HD)</button>
-                <button class="video-mode-btn" id="btnModeSimulated" onclick="setVideoPlaybackMode('simulated')">🎙️ AI Audio Walkthrough</button>
+              <div style="display: flex; gap: 0.35rem; align-items: center; flex-wrap: wrap;">
+                <button class="video-mode-btn active" id="btnModeRealVideo" onclick="setVideoPlaybackMode('real')">📺 Video (HD)</button>
+                <button class="video-mode-btn" id="btnModeSimulated" onclick="setVideoPlaybackMode('simulated')">🎙️ AI Audio</button>
+                <button class="video-mode-btn" id="btnTogglePip" onclick="toggleVideoFloatingPlayer()" title="Picture-in-Picture floating mini-player">📌 Float</button>
+                <button class="video-mode-btn" id="btnToggleMastered" onclick="toggleVideoMastered()" title="Mark lesson video as mastered">✅ Mark Mastered</button>
               </div>
             </div>
 
@@ -1304,13 +1323,42 @@ Reply with a number:
               </div>
             </div>
 
+            <!-- In-Video Retention Pop-Quiz Card (Collapsible) -->
+            <div id="lessonVideoRetentionBox" style="display: none; padding: 1rem; background: #0c1424; border-top: 1px solid rgba(56, 189, 248, 0.3); border-bottom: 1px solid var(--border-subtle);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.4rem;">
+                  <span style="font-size: 0.82rem; font-weight: 800; color: #fbbf24; text-transform: uppercase;">⚡ In-Video Retention Check (3 Questions)</span>
+                  <span id="retentionScoreBadge" style="font-size: 0.72rem; color: #a7f3d0; background: rgba(16, 185, 129, 0.15); padding: 0.1rem 0.4rem; border-radius: 4px;">0 / 3 Correct</span>
+                </div>
+                <button class="btn-pill" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="toggleRetentionBox(false)">✕ Close Check</button>
+              </div>
+              <div id="lessonVideoRetentionContainer" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
             <!-- Chapter Bookmarks -->
             <div class="video-chapters-container">
-              <div style="font-size: 0.75rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; margin-bottom: 0.5rem;">
-                🔖 Interactive Chapter Bookmarks (Click to jump):
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.4rem;">
+                <div style="font-size: 0.75rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase;">
+                  🔖 Interactive Chapter Bookmarks (Click to jump):
+                </div>
+                <button class="btn-pill" style="font-size: 0.72rem; padding: 0.2rem 0.55rem; color: #fbbf24; border-color: rgba(251, 191, 36, 0.4); background: rgba(251, 191, 36, 0.1);" onclick="toggleRetentionBox(true)">
+                  ⚡ Test Video Retention
+                </button>
               </div>
               <div id="lessonVideoChaptersList">
                 <!-- Dynamically populated chapter pills -->
+              </div>
+            </div>
+
+            <!-- Synchronized Timestamped Notes Panel -->
+            <div id="lessonVideoSyncedNotesCard" style="padding: 0.85rem 1rem; background: #070c16; border-top: 1px solid var(--border-subtle);">
+              <div style="font-size: 0.76rem; font-weight: 800; color: #38bdf8; text-transform: uppercase; margin-bottom: 0.5rem;">
+                📝 Synchronized Lecture Notes & Timestamped Cheat Points:
+              </div>
+              <div id="lessonVideoSyncedNotesList" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.5rem;">
+                <!-- Dynamically populated synced notes -->
               </div>
             </div>
 
