@@ -55,7 +55,7 @@ def _start_fleet_keep_alive():
         while True:
             for u in fleet_urls:
                 try:
-                    req = urllib.request.Request(u, headers={"User-Agent": "ManiSoft-PassMaster-KeepAlive/2.0"})
+                    req = urllib.request.Request(u, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 ManiSoft-PassMaster-KeepAlive/2.0"})
                     with urllib.request.urlopen(req, timeout=15) as r:
                         r.read(100)
                 except Exception:
