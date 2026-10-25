@@ -288,10 +288,45 @@ def parent_report():
     return jsonify({"status": "success", "report": report})
 
 # ----------------- QUESTIONS & SYLLABUS API -----------------
+TOPIC_DRILL_FALLBACKS = {
+    # Use of English
+    "Parts of Speech Foundations": "Lexis & Structure",
+    "Clause & Sentence Foundations": "Concord & Grammar",
+    # Mathematics
+    "Arithmetic & Algebraic Foundations": "Algebra",
+    "Coordinate & Function Foundations": "Algebra",
+    # Physics
+    "Units, Dimensions & Vectors": "Mechanics",
+    "Kinetic Theory & Heat Fundamentals": "Thermal Physics & Waves",
+    # Chemistry
+    "Atomic & Bonding Foundations": "Physical & General Chemistry",
+    "Chemical Equations & Stoichiometric Foundations": "Physical & General Chemistry",
+    # Biology
+    "Biological Molecules & Cell Foundations": "Cellular Biology & Life Processes",
+    "Chromosomes & Cell Division Foundations": "Genetics & Evolution",
+    # Economics
+    "Foundational Economic Reasoning": "Basic Economic Principles & Methodology",
+    "Economic Graphing & Elasticity Foundations": "Microeconomics & Price Mechanism",
+    # Government
+    "Political Concepts & The State Foundations": "Elements of Government & Political Theory",
+    "Pre-Colonial Heritage Foundations": "Colonial Administration in Nigeria & West Africa",
+    # Literature in English
+    "Literary Genres & Fundamentals": "Literary Appreciation & Devices",
+    "Figurative Devices & Tropes Foundations": "Literary Appreciation & Devices",
+}
 @app.route('/api/questions', methods=['GET'])
 def get_questions():
     subject = request.args.get('subject')
     topic = request.args.get('topic')
+    # Reconstruct topic if client query contained unencoded ampersand (e.g. ?topic=Clause & Sentence Foundations)
+    if topic:
+        for k in request.args:
+            if k not in ['subject', 'topic', 'limit', 'random', 'mode', 'subjects', 'questions_per_subject', '_t']:
+                cand = f"{topic}&{k}".strip()
+                if cand in TOPIC_DRILL_FALLBACKS or any(cand.lower() == t.get('name', '').lower() for s in diagnostics.syllabus.values() for t in s.get('topics', [])):
+                    topic = cand
+                    break
+
     limit = request.args.get('limit', type=int)
     is_random = request.args.get('random', '').lower() in ['true', '1', 'yes']
     mode = request.args.get('mode', 'drill')  # 'drill', 'topic', 'full_jamb'
@@ -385,6 +420,12 @@ def get_questions():
                 matched_questions.append(q)
                 continue
         
+        if len(matched_questions) < 5 and topic in TOPIC_DRILL_FALLBACKS:
+            fallback_target = TOPIC_DRILL_FALLBACKS[topic]
+            matched_questions = [
+                q for q in questions if q.get('topic', '').lower() == fallback_target.lower()
+            ]
+
         questions = matched_questions if matched_questions else [
             q for q in questions if q.get('topic', '').lower() == topic.lower()
         ]

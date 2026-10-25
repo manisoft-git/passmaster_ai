@@ -1,0 +1,629 @@
+import json
+import os
+
+SYLLABUS = {
+    "Use of English": {
+        "weight_in_jamb": 60,
+        "topics": [
+            {
+                "name": "Concord & Grammar",
+                "weight_pct": 20,
+                "subtopics": [
+                    "Rule of Proximity",
+                    "Subject-Verb Agreement",
+                    "Tenses & Conditionals",
+                    "Subjunctive Mood",
+                    "Correlative Conjunctions & Inversion"
+                ],
+                "description": "Exhaustive mastery of standard English grammatical agreement, mood, tense shifts, and sentence concord tested in JAMB."
+            },
+            {
+                "name": "Lexis & Structure",
+                "weight_pct": 25,
+                "subtopics": [
+                    "Redundancy & Phrasal Idioms",
+                    "Fixed Prepositional Collocations",
+                    "Synonyms & Antonyms in Context",
+                    "Prepositions & Phrasal Verbs",
+                    "Spelling & Homophones"
+                ],
+                "description": "Vocabulary in context, nuanced antonyms/synonyms, idiomatic verb constructions, and prepositional accuracy."
+            },
+            {
+                "name": "Oral Forms & Phonology",
+                "weight_pct": 15,
+                "subtopics": [
+                    "Vowel Contrasts / Silent Letters",
+                    "Consonant Clusters & Voicing",
+                    "Word Stress Patterns (Primary & Secondary)",
+                    "Rhyme Schemes & Intonation",
+                    "Emphatic Stress in Dialogue"
+                ],
+                "description": "Recognition of pure vowels, diphthongs, consonant articulation, silent letters, and primary syllabic stress placement."
+            },
+            {
+                "name": "Comprehension & Prescribed Text",
+                "weight_pct": 20,
+                "subtopics": [
+                    "The Life Changer (Themes & Plot)",
+                    "Tone, Mood & Atmosphere",
+                    "Direct & Indirect Deductions",
+                    "Figures of Speech in Context",
+                    "Summary & Critical Evaluation"
+                ],
+                "description": "Textual analysis, central idea extraction, rhetorical questions, and deep thematic breakdown of the official JAMB novel."
+            },
+            {
+                "name": "Parts of Speech Foundations",
+                "weight_pct": 10,
+                "subtopics": [
+                    "Nouns & Pronoun-Antecedent Agreement",
+                    "Transitive, Intransitive & Auxiliary Verbs",
+                    "Adjectives & Adverbs (Comparative/Superlative)",
+                    "Prepositions vs Conjunctions vs Interjections",
+                    "Functional Word Shifts in Syntax"
+                ],
+                "description": "Zero-to-one syntactical breakdown of English parts of speech, word classes, and functional grammatical shifts."
+            },
+            {
+                "name": "Clause & Sentence Foundations",
+                "weight_pct": 10,
+                "subtopics": [
+                    "Independent vs Dependent Clauses",
+                    "Noun Clauses & Functions (Subject/Object)",
+                    "Adjectival & Adverbial Clauses with Modifiers",
+                    "Simple, Compound, Complex & Compound-Complex Sentences",
+                    "Dangling Modifiers & Comma Splices"
+                ],
+                "description": "Structural analysis of clauses, sentence anatomy, punctuation rules, and common syntactical faults."
+            }
+        ]
+    },
+    "Mathematics": {
+        "weight_in_jamb": 40,
+        "topics": [
+            {
+                "name": "Algebra",
+                "weight_pct": 20,
+                "subtopics": [
+                    "Logarithms & Indices Axioms",
+                    "Quadratic Equations & Inequalities",
+                    "Matrices & 2x2/3x3 Determinants",
+                    "Polynomials & Remainder Theorem",
+                    "Arithmetic & Geometric Progressions (AP/GP)",
+                    "Direct, Inverse & Joint Variation"
+                ],
+                "description": "Comprehensive algebraic manipulations, sequence series, roots of equations, matrices, and variation equations."
+            },
+            {
+                "name": "Calculus",
+                "weight_pct": 20,
+                "subtopics": [
+                    "Differentiation (Chain, Product & Quotient Rules)",
+                    "Integration by Substitution & Standard Integrals",
+                    "Maxima, Minima & Turning Points",
+                    "Rate of Change & Kinematics",
+                    "Definite Integrals & Area Under Curves"
+                ],
+                "description": "Limits, derivatives, curve sketching, tangent slopes, optimization problems, and fundamental integration."
+            },
+            {
+                "name": "Geometry & Trigonometry",
+                "weight_pct": 20,
+                "subtopics": [
+                    "Circle Theorems (Angles at Center & Alternate Segment)",
+                    "Trigonometric Identities, Sine & Cosine Rules",
+                    "Coordinate Geometry (Gradients, Midpoints & Circles)",
+                    "Bearings, Angles of Elevation & Depression",
+                    "Mensuration of 2D & 3D Solids"
+                ],
+                "description": "Euclidean circle theorems, spatial geometry, trigonometry ratios, angular measurements, and navigation bearings."
+            },
+            {
+                "name": "Statistics & Probability",
+                "weight_pct": 20,
+                "subtopics": [
+                    "Independent, Mutually Exclusive & Dependent Events",
+                    "Standard Deviation & Variance of Grouped Data",
+                    "Permutations & Combinations (nPr & nCr)",
+                    "Frequency Distributions, Histograms & Ogives",
+                    "Measures of Central Tendency (Mean, Median, Mode)"
+                ],
+                "description": "Data analysis, probability distributions, counting principles, spread measures, and cumulative frequency."
+            },
+            {
+                "name": "Arithmetic & Algebraic Foundations",
+                "weight_pct": 10,
+                "subtopics": [
+                    "Number Bases & Radix Conversions (Bases 2 to 10)",
+                    "Modular Arithmetic & Congruence",
+                    "Fractions, Decimals, Approximations & Percentages",
+                    "Surds Simplification & Rationalization of Denominators",
+                    "Set Theory & Venn Diagrams (2 and 3 Sets)"
+                ],
+                "description": "Foundational numerical computation, surds, base conversions, binary operations, and set theory."
+            },
+            {
+                "name": "Coordinate & Function Foundations",
+                "weight_pct": 10,
+                "subtopics": [
+                    "Cartesian Coordinate System & Distance Formula",
+                    "Slope, Parallel & Perpendicular Line Equations",
+                    "Relations, Mappings & Types of Functions",
+                    "Domain, Codomain, Range & Inverse Functions",
+                    "Linear Graphs & Intercept Analysis"
+                ],
+                "description": "Foundational analytic geometry, linear graphing, function notations, composites, and inverse mappings."
+            }
+        ]
+    },
+    "Physics": {
+        "weight_in_jamb": 40,
+        "topics": [
+            {
+                "name": "Mechanics",
+                "weight_pct": 20,
+                "subtopics": [
+                    "Gravitational Fields, Kepler Laws & Escape Velocity",
+                    "Projectiles, Trajectory & Circular Motion",
+                    "Work, Energy, Power, Momentum & Friction",
+                    "Equilibrium of Coplanar Forces & Moments",
+                    "Simple Harmonic Motion (Pendulum & Springs)",
+                    "Machines (M.A., V.R. & Efficiency)"
+                ],
+                "description": "Kinematics, dynamics, Newton's laws, energy transformations, planetary gravitation, and fluid mechanics."
+            },
+            {
+                "name": "Thermal Physics & Waves",
+                "weight_pct": 20,
+                "subtopics": [
+                    "Ideal Gas Laws & Absolute Zero",
+                    "Specific Heat Capacity & Latent Heat of Fusion/Vaporization",
+                    "Wave Properties, Reflection, Refraction & Optics",
+                    "Sound Resonance, Doppler Effect & Harmonics in Pipes",
+                    "Optical Instruments (Lenses, Mirrors & Telescopes)"
+                ],
+                "description": "Thermodynamic laws, calorimetry, gas equations, wave interference/diffraction, geometric optics, and acoustics."
+            },
+            {
+                "name": "Electricity & Magnetism",
+                "weight_pct": 20,
+                "subtopics": [
+                    "Ohm's Law, Resistivity & Internal Resistance",
+                    "Capacitor & Resistor Networks (Series & Parallel)",
+                    "Faraday's & Lenz's Laws of Induction & Transformers",
+                    "Alternating Current (RLC Series Circuits & Resonance)",
+                    "Magnetic Forces on Currents (F = BIL & F = Bqv)"
+                ],
+                "description": "Electrostatics, DC circuit analysis, Kirchhoff's laws, electromagnetism, inductance, and AC circuit fundamentals."
+            },
+            {
+                "name": "Modern & Atomic Physics",
+                "weight_pct": 15,
+                "subtopics": [
+                    "Photoelectric Effect, Photons & Work Function",
+                    "Radioactivity, Half-Life Decay & Radiations (Alpha/Beta/Gamma)",
+                    "De Broglie Wavelength & Bohr Atomic Model",
+                    "Nuclear Fission, Fusion & Binding Energy (E = mc^2)",
+                    "X-Rays & Energy Level Quantization"
+                ],
+                "description": "Quantum physics, atomic transitions, dual nature of light/matter, radioactive half-life, and nuclear reactions."
+            },
+            {
+                "name": "Units, Dimensions & Vectors",
+                "weight_pct": 15,
+                "subtopics": [
+                    "Fundamental vs Derived Physical Quantities & SI Units",
+                    "Dimensional Analysis & Equation Homogeneity",
+                    "Scalar vs Vector Quantities",
+                    "Vector Resolution & Parallelogram Law of Vectors",
+                    "Errors, Precision & Vernier / Micrometer Measurements"
+                ],
+                "description": "Zero-to-one foundations of physical measurements, dimensional formulas, and vector mathematics."
+            },
+            {
+                "name": "Kinetic Theory & Heat Fundamentals",
+                "weight_pct": 10,
+                "subtopics": [
+                    "Molecular Kinetic Theory of Solids, Liquids & Gases",
+                    "Thermometric Properties & Calibration of Scales",
+                    "Thermal Linear, Area & Cubic Expansivity",
+                    "Anomalous Expansion of Water & Consequences",
+                    "Conduction, Convection & Black-Body Radiation"
+                ],
+                "description": "Molecular behavior of matter, temperature scale conversions, thermal expansion, and heat transfer modes."
+            }
+        ]
+    },
+    "Chemistry": {
+        "weight_in_jamb": 40,
+        "topics": [
+            {
+                "name": "Physical & General Chemistry",
+                "weight_pct": 20,
+                "subtopics": [
+                    "Mole Concept, Stoichiometry & Molar Volume",
+                    "Chemical Equilibrium, Kc & Le Chatelier's Principle",
+                    "Thermochemistry, Enthalpy Change & Hess's Law",
+                    "Reaction Kinetics, Collision Theory & Catalysis",
+                    "Gas Laws (Boyle, Charles, Graham & Dalton)"
+                ],
+                "description": "Stoichiometric calculations, rates of reactions, chemical equilibrium shifts, and thermodynamic energy changes."
+            },
+            {
+                "name": "Inorganic Chemistry",
+                "weight_pct": 20,
+                "subtopics": [
+                    "Periodic Trends (Atomic Radius, Ionization, Electronegativity)",
+                    "Extraction of Metals (Iron in Blast Furnace, Aluminium in Hall-Heroult)",
+                    "Acids, Bases, pH Scale & Qualitative Salt Analysis",
+                    "Halogens, Oxygen & Nitrogen Family Compounds",
+                    "Transition Metals, Complex Ions & Catalytic Roles"
+                ],
+                "description": "Periodic table behavior, metallurgy of Fe/Al, qualitative ion tests, acid-base neutralizations, and group chemistry."
+            },
+            {
+                "name": "Organic Chemistry",
+                "weight_pct": 20,
+                "subtopics": [
+                    "Hydrocarbons (Alkanes, Alkenes, Alkynes & Benzene)",
+                    "Alkanols, Alkanoic Acids, Esters & Saponification",
+                    "Structural, Positional & Geometric Isomerism",
+                    "Polymers, Macromolecules, Proteins & Carbohydrates",
+                    "Fats, Oils & Soap Preparation"
+                ],
+                "description": "Nomenclature of organic functional groups, reaction mechanisms, isomerism, synthetic polymers, and biomolecules."
+            },
+            {
+                "name": "Environmental & Industrial Chemistry",
+                "weight_pct": 15,
+                "subtopics": [
+                    "Electrolysis & Faraday's 1st and 2nd Laws",
+                    "Temporary & Permanent Water Hardness & Softening",
+                    "Industrial Processes (Haber Ammonia & Contact Sulfuric Acid)",
+                    "Atmospheric Pollution, Greenhouse Effect & Acid Rain",
+                    "Corrosion of Metals & Cathodic Protection"
+                ],
+                "description": "Industrial synthesis of heavy chemicals, electrochemistry, water purification, pollution control, and corrosion."
+            },
+            {
+                "name": "Atomic & Bonding Foundations",
+                "weight_pct": 15,
+                "subtopics": [
+                    "Subatomic Particles, Isotopy & Relative Atomic Mass",
+                    "Electronic Configuration (Aufbau, Hund & Pauli Rules)",
+                    "Electrovalent (Ionic) & Covalent Bonding",
+                    "Dative (Coordinate) & Metallic Bonding",
+                    "Intermolecular Forces (Van der Waals & Hydrogen Bonds)"
+                ],
+                "description": "Atomic structure, electronic orbital filling, octet rule, chemical bonding mechanisms, and molecular shapes."
+            },
+            {
+                "name": "Chemical Equations & Stoichiometric Foundations",
+                "weight_pct": 10,
+                "subtopics": [
+                    "Balancing Chemical Equations by Inspection",
+                    "Empirical vs Molecular Formula Calculations",
+                    "Percentage Composition by Mass",
+                    "Standard Solutions & Molarity (mol/dm3)",
+                    "Limiting Reactants & Percentage Yield"
+                ],
+                "description": "Foundational equation writing, balancing chemical transformations, empirical formula derivation, and molar concentrations."
+            }
+        ]
+    },
+    "Biology": {
+        "weight_in_jamb": 40,
+        "topics": [
+            {
+                "name": "Cellular Biology & Life Processes",
+                "weight_pct": 20,
+                "subtopics": [
+                    "Cell Organelles, Ultrastructure & Microscopy",
+                    "Enzyme Specificity, Cofactors & Denaturation",
+                    "Mitosis vs Meiosis Stages & Biological Significance",
+                    "Active Transport, Osmosis, Diffusion & Plasmolysis",
+                    "Plant & Animal Tissue Specialization"
+                ],
+                "description": "Cell biology, membrane transport mechanisms, enzyme kinetics, and cell cycle division."
+            },
+            {
+                "name": "Human Physiology & Systems",
+                "weight_pct": 20,
+                "subtopics": [
+                    "Cardiovascular Circulation, Double Pump & Blood Groups",
+                    "Digestive System, Enzymes & Intestinal Absorption",
+                    "Excretory System, Nephron Ultrafiltration & Osmoregulation",
+                    "Nervous System, Reflex Arc & Endocrine Hormones",
+                    "Skeletal Support, Joints & Muscular Contraction"
+                ],
+                "description": "Anatomy and physiology of major mammalian body systems, homeostasis, hormonal coordination, and movement."
+            },
+            {
+                "name": "Genetics & Evolution",
+                "weight_pct": 20,
+                "subtopics": [
+                    "Mendelian Monohybrid & Dihybrid Crosses (Punnett)",
+                    "Sex Linkage (Hemophilia & Color Blindness) & ABO Inheritance",
+                    "DNA Double Helix, Replication & Protein Synthesis",
+                    "Darwinian Natural Selection vs Lamarckian Evolution",
+                    "Continuous vs Discontinuous Variation & Mutations"
+                ],
+                "description": "Heredity, cross ratios, pedigree analysis, molecular genetics, evolutionary evidence, and population adaptations."
+            },
+            {
+                "name": "Ecology & Environment",
+                "weight_pct": 15,
+                "subtopics": [
+                    "Trophic Levels, Energy Pyramids & Food Webs",
+                    "Major Biomes of Nigeria & West Africa",
+                    "Nutrient Cycles (Carbon, Nitrogen & Water)",
+                    "Ecological Succession (Primary/Secondary) & Xerophytic Adaptations",
+                    "Pollution, Conservation & Population Density Sampling"
+                ],
+                "description": "Ecosystem dynamics, energy flow, biogeochemical cycling, habitat adaptations, and environmental conservation."
+            },
+            {
+                "name": "Biological Molecules & Cell Foundations",
+                "weight_pct": 15,
+                "subtopics": [
+                    "Carbohydrates (Mono, Di & Polysaccharides) & Food Tests",
+                    "Lipids, Fatty Acids & Glycerol Roles",
+                    "Proteins, Amino Acids & Peptide Bonds",
+                    "Cell Theory & Differences Between Plant and Animal Cells",
+                    "Prokaryotic vs Eukaryotic Cellular Architecture"
+                ],
+                "description": "Zero-to-one biochemical foundations, essential macromolecules, organic nutrients, and basic cell models."
+            },
+            {
+                "name": "Chromosomes & Cell Division Foundations",
+                "weight_pct": 10,
+                "subtopics": [
+                    "Structure of Chromosomes, Chromatids & Centromere",
+                    "Genes, Alleles, Loci & Homologous Pairs",
+                    "Interphase & Chromosome Duplication",
+                    "Cytokinesis in Plant vs Animal Cells",
+                    "Significance of Gametogenesis (Spermatogenesis & Oogenesis)"
+                ],
+                "description": "Cytological foundations of chromosomes, gametogenesis, chromosome behavior, and ploidy levels."
+            }
+        ]
+    },
+    "Economics": {
+        "weight_in_jamb": 40,
+        "topics": [
+            {
+                "name": "Basic Economic Principles & Methodology",
+                "weight_pct": 20,
+                "subtopics": [
+                    "Scarcity, Choice, Opportunity Cost & PPC Boundary",
+                    "Economic Systems (Free Market, Command & Mixed)",
+                    "Factors of Production & Factor Rewards (Rent, Wage, Interest, Profit)",
+                    "Division of Labor & Specialization Advantages",
+                    "Production Possibility Curve Shifts"
+                ],
+                "description": "Core foundational economic axioms, scarcity models, opportunity costs, production frontiers, and resource allocation."
+            },
+            {
+                "name": "Microeconomics & Price Mechanism",
+                "weight_pct": 20,
+                "subtopics": [
+                    "Law of Demand & Supply Equilibrium Determination",
+                    "Price, Income & Cross Elasticity Calculations",
+                    "Price Controls (Maximum Price Ceiling & Minimum Price Floor)",
+                    "Theory of Production (Short-Run & Law of Diminishing Returns)",
+                    "Market Structures (Perfect Competition, Monopoly, Oligopoly)"
+                ],
+                "description": "Price determination, elasticity formulas, market equilibrium interventions, cost curves, and firm profit maximization."
+            },
+            {
+                "name": "Macroeconomics & National Income",
+                "weight_pct": 20,
+                "subtopics": [
+                    "National Income Concepts (GDP, GNP, NNI, Disposable Income)",
+                    "Methods of Measuring National Income & Double Counting",
+                    "Circular Flow of Income & The Investment Multiplier",
+                    "Inflation (Demand-Pull & Cost-Push) & Deflation Remedies",
+                    "Fiscal Policy, Government Expenditure & Deficit Financing"
+                ],
+                "description": "National income accounting, multiplier analysis, macroeconomic equilibrium, inflation dynamics, and fiscal policies."
+            },
+            {
+                "name": "Money, Banking & Public Finance",
+                "weight_pct": 15,
+                "subtopics": [
+                    "Functions & Characteristics of Money & Liquidity",
+                    "Central Bank & Monetary Policy Tools (CRR, OMO, MPR)",
+                    "Commercial Banks & Credit Creation Multiplier",
+                    "Taxation Systems (Progressive, Proportional & Regressive)",
+                    "Public Debt, External Loans & Government Budget"
+                ],
+                "description": "Monetary mechanisms, banking credit creation, central bank instruments, tax principles, and public finance management."
+            },
+            {
+                "name": "Foundational Economic Reasoning",
+                "weight_pct": 15,
+                "subtopics": [
+                    "Economics as a Social Science & Scientific Methodology",
+                    "Scale of Preference Formulation & Priority Ranking",
+                    "Wants vs Needs Distinction in Developing Economies",
+                    "Basic Economic Questions (What, How, For Whom to Produce)",
+                    "Microeconomics vs Macroeconomics Scope"
+                ],
+                "description": "Zero-to-one foundations of economic methodology, scale of preference, resource constraints, and economic choices."
+            },
+            {
+                "name": "Economic Graphing & Elasticity Foundations",
+                "weight_pct": 10,
+                "subtopics": [
+                    "Constructing Demand & Supply Schedules & Graphs",
+                    "Shifts vs Movements Along Demand & Supply Curves",
+                    "Midpoint Formula for Elasticity of Demand",
+                    "Interpreting Perfectly Inelastic, Unitary & Elastic Curves",
+                    "Consumer Surplus & Producer Surplus Concepts"
+                ],
+                "description": "Graphical literacy in economics, coordinate plotting of economic schedules, and elasticity coefficient derivation."
+            }
+        ]
+    },
+    "Government": {
+        "weight_in_jamb": 40,
+        "topics": [
+            {
+                "name": "Elements of Government & Political Theory",
+                "weight_pct": 20,
+                "subtopics": [
+                    "Sovereignty, Legitimacy, Authority & Rule of Law",
+                    "Separation of Powers & Checks and Balances",
+                    "Forms of Government (Unitary, Federal, Presidential, Parliamentary)",
+                    "Citizenship Acquisition, Fundamental Rights & Duties",
+                    "Political Parties, Pressure Groups & Electoral Systems"
+                ],
+                "description": "Fundamental political doctrines, constitutionalism, state power, civil liberties, and democratic governance structures."
+            },
+            {
+                "name": "Colonial Administration in Nigeria & West Africa",
+                "weight_pct": 20,
+                "subtopics": [
+                    "Royal Niger Company & British Imperial Conquest",
+                    "British Indirect Rule in Northern, Western & Eastern Nigeria",
+                    "French Colonial Policy of Assimilation vs Association",
+                    "Nationalist Movements (NNDP, NYM, NCNC, AG & NPC)",
+                    "Constitutional Conferences Leading to Independence"
+                ],
+                "description": "Colonial subjugation, British vs French administrative models, warrant chief controversies, and nationalist decolonization."
+            },
+            {
+                "name": "Nigerian Constitutional Development",
+                "weight_pct": 20,
+                "subtopics": [
+                    "Pre-Independence Constitutions (Clifford 1922, Richards 1946)",
+                    "Macpherson 1951 & Lyttelton 1954 Federal Constitutions",
+                    "1960 Independence & 1963 Republican Constitutions",
+                    "1979 Executive Presidential Constitution & Second Republic",
+                    "1999 Constitution of the Fourth Republic & Amendments"
+                ],
+                "description": "Evolution of Nigerian constitutional frameworks from 1922 to 1999, regionalism, federation birth, and executive models."
+            },
+            {
+                "name": "Federalism, Military Rule & Foreign Policy",
+                "weight_pct": 15,
+                "subtopics": [
+                    "Revenue Allocation Principles & Derivation Formulae",
+                    "Military Regimes in Nigeria (1966-1999) & Decrees / Ouster Clauses",
+                    "Nigerian Foreign Policy Axioms (Afrocentricism & Non-Alignment)",
+                    "Regional Integration: ECOWAS, African Union & United Nations",
+                    "State Creation, Minority Politics & Federal Character"
+                ],
+                "description": "Nigerian fiscal federalism, causes and impact of military coups, foreign diplomatic tenets, and international bodies."
+            },
+            {
+                "name": "Political Concepts & The State Foundations",
+                "weight_pct": 15,
+                "subtopics": [
+                    "Definitions of State, Nation, Nation-State & Society",
+                    "Characteristics of the State (Territory, Population, Government, Sovereignty)",
+                    "Political Socialization & Political Culture",
+                    "Public Opinion, Mass Media & Civil Service Bureaucracy",
+                    "Power vs Authority vs Influence Distinctions"
+                ],
+                "description": "Zero-to-one conceptual foundations of political science, the state organism, civic institutions, and bureaucratic power."
+            },
+            {
+                "name": "Pre-Colonial Heritage Foundations",
+                "weight_pct": 10,
+                "subtopics": [
+                    "Hausa-Fulani Emirate System (Emir, Hakimi, Alkali Legal System)",
+                    "Yoruba Pre-Colonial Administration (Alaafin, Oyomesi, Ogboni Checks)",
+                    "Igbo Pre-Colonial Segmentary Democracy (Village Assembly, Age Grades)",
+                    "Comparison of Centralized vs Decentralized Pre-Colonial Systems",
+                    "Traditional Rulers & Historical Political Authority"
+                ],
+                "description": "Traditional political systems of pre-colonial Nigeria, indigenous constitutionalism, checks and balances, and village democracy."
+            }
+        ]
+    },
+    "Literature in English": {
+        "weight_in_jamb": 40,
+        "topics": [
+            {
+                "name": "Literary Appreciation & Devices",
+                "weight_pct": 20,
+                "subtopics": [
+                    "Figures of Speech (Metaphor, Simile, Personification, Oxymoron)",
+                    "Irony (Dramatic, Situational, Verbal & Sarcasm)",
+                    "Literary Diction, Tone, Mood, Motif & Atmosphere",
+                    "Figures of Association (Metonymy, Synecdoche, Apostrophe)",
+                    "Sound Devices (Alliteration, Assonance, Consonance, Onomatopoeia)"
+                ],
+                "description": "Rhetorical figures, figurative language, stylistic analysis, sensory imagery, and literary devices in poetry and prose."
+            },
+            {
+                "name": "Drama & Theatrical Techniques",
+                "weight_pct": 20,
+                "subtopics": [
+                    "Classical Tragedy Conventions (Catharsis, Hamartia, Hubris)",
+                    "Dramatic Devices (Soliloquy, Aside, Monologue, Dramatic Irony)",
+                    "Dramatic Genres (Tragedy, Comedy, Tragicomedy, Melodrama, Farce)",
+                    "Wole Soyinka (The Lion and the Jewel - Themes & Staging)",
+                    "Femi Osofisan (Women of Owu - Greek Myth & African Adaptation)"
+                ],
+                "description": "Dramatic structures, tragic heroism, dialogue techniques, stagecraft conventions, and prescribed African/non-African drama."
+            },
+            {
+                "name": "Poetry & Versification",
+                "weight_pct": 20,
+                "subtopics": [
+                    "Poetic Forms (Sonnet: Shakespearean vs Petrarchan, Elegy, Ode, Ballad, Epic)",
+                    "Metrical Forms, Scansion & Iambic Pentameter",
+                    "Stanzaic Patterns, Rhyme Schemes, Blank Verse & Free Verse",
+                    "Prescribed African Poetry (Themes, Diction & Imagery)",
+                    "Prescribed Non-African Poetry (Stylistic Analysis & Themes)"
+                ],
+                "description": "Poetic meter, rhythmic cadence, versification structures, stanzaic anatomy, and prescribed poetic literature analysis."
+            },
+            {
+                "name": "Prose & Fictional Techniques",
+                "weight_pct": 15,
+                "subtopics": [
+                    "Narrative Point of View (First Person, Third Omniscient & Limited)",
+                    "Plot Architecture, In Media Res, Flashbacks & Foreshadowing",
+                    "Chinua Achebe (Things Fall Apart - Characterization & Culture)",
+                    "Buchi Emecheta (The Joys of Motherhood - Gender & Colonialism)",
+                    "Non-African Prose Masterworks (Theme & Social Critique)"
+                ],
+                "description": "Narrative pacing, characterization archetypes, thematic exposition, setting realism, and prescribed African/non-African novels."
+            },
+            {
+                "name": "Literary Genres & Fundamentals",
+                "weight_pct": 15,
+                "subtopics": [
+                    "Distinctions Between Prose, Drama & Poetry",
+                    "Fiction vs Non-Fiction (Biography, Autobiography, Memoirs)",
+                    "Elements of Fiction (Plot, Theme, Setting, Character, Style)",
+                    "Conflict Types (Man vs Man, Self, Nature, Society)",
+                    "Protagonist vs Antagonist vs Foil Characters"
+                ],
+                "description": "Zero-to-one foundations of literature as an art, taxonomy of genres, fictional mechanics, and character motivation."
+            },
+            {
+                "name": "Figurative Devices & Tropes Foundations",
+                "weight_pct": 10,
+                "subtopics": [
+                    "Direct vs Indirect Comparisons (Simile vs Metaphor)",
+                    "Attribution of Human Qualities (Personification & Anthropomorphism)",
+                    "Exaggeration & Understatement (Hyperbole vs Litotes)",
+                    "Opposites & Contradictions (Paradox vs Oxymoron vs Antithesis)",
+                    "Puns, Double Entendre & Wordplay in Literature"
+                ],
+                "description": "Detailed tropes breakdown, identifying figures of speech without confusion, and deciphering figurative expressions in exams."
+            }
+        ]
+    }
+}
+
+target_path = os.path.join(os.path.dirname(__file__), "..", "data", "syllabus.json")
+with open(target_path, "w", encoding="utf-8") as f:
+    json.dump(SYLLABUS, f, indent=2, ensure_ascii=False)
+
+print(f"Successfully updated {target_path} with all 8 subjects and 48 topics!")

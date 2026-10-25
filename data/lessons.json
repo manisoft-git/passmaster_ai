@@ -497,7 +497,8 @@
           "term": "Mandative Subjunctive",
           "definition": "A mood used in that-clauses expressing commands, recommendations, or decrees requiring the base verb form without tense or third-person singular inflection."
         }
-      ]
+      ],
+      "subject": "Use of English"
     },
     {
       "id": "eng_lesson_2",
@@ -990,7 +991,8 @@
           "term": "Idiomatic Expression",
           "definition": "A formulaic phrase whose figurative meaning cannot be deduced from the literal definitions of its constituent words."
         }
-      ]
+      ],
+      "subject": "Use of English"
     },
     {
       "id": "eng_lesson_3",
@@ -1474,7 +1476,8 @@
           "term": "Silent Letter",
           "definition": "A letter that appears in the written spelling of a word but is completely omitted during pronunciation in Standard British English."
         }
-      ]
+      ],
+      "subject": "Use of English"
     },
     {
       "id": "eng_lesson_4",
@@ -1954,7 +1957,8 @@
           "term": "Thematic Motif",
           "definition": "A recurring distinctive element, image, or idea in a literary work that reinforces the overarching moral or intellectual theme."
         }
-      ]
+      ],
+      "subject": "Use of English"
     },
     {
       "id": "eng_found_1",
@@ -2013,7 +2017,7 @@
         "Concord & Grammar",
         "Lexis & Structure"
       ],
-      "cbt_drill_topic": "Parts of Speech Foundations",
+      "cbt_drill_topic": "Lexis & Structure",
       "prerequisites": [],
       "video_meta": {
         "youtube_id": "UejW-WQpujs",
@@ -2428,7 +2432,8 @@
           "term": "Correlative Conjunction",
           "definition": "Conjunctions that operate in matched pairs to link grammatically equal elements (e.g., 'neither... nor', 'both... and')."
         }
-      ]
+      ],
+      "subject": "Use of English"
     },
     {
       "id": "eng_found_2",
@@ -2485,7 +2490,7 @@
         "Concord & Grammar",
         "Comprehension & Prescribed Text"
       ],
-      "cbt_drill_topic": "Clause & Sentence Foundations",
+      "cbt_drill_topic": "Concord & Grammar",
       "prerequisites": [],
       "video_meta": {
         "youtube_id": "sAo6LbCUAQo",
@@ -2900,7 +2905,8 @@
           "term": "Dangling Modifier",
           "definition": "A modifier or participial phrase that lacks a clear grammatical anchor in the sentence, resulting in an illogical meaning."
         }
-      ]
+      ],
+      "subject": "Use of English"
     }
   ],
   "Mathematics": [
@@ -3386,7 +3392,8 @@
           "term": "Modulus Inequality",
           "definition": "An inequality involving absolute values, where |x| < k is equivalent to -k < x < k."
         }
-      ]
+      ],
+      "subject": "Mathematics"
     },
     {
       "id": "mth_lesson_2",
@@ -3871,7 +3878,8 @@
           "term": "Chain Rule",
           "definition": "A formula for computing the derivative of a composite function: dy/dx = (dy/du) · (du/dx)."
         }
-      ]
+      ],
+      "subject": "Mathematics"
     },
     {
       "id": "mth_lesson_3",
@@ -4350,7 +4358,8 @@
           "term": "Alternate Segment Theorem",
           "definition": "The theorem stating that the angle between a tangent and a chord through the point of contact equals the angle in the alternate segment."
         }
-      ]
+      ],
+      "subject": "Mathematics"
     },
     {
       "id": "mth_lesson_4",
@@ -4825,7 +4834,8 @@
           "term": "Cumulative Frequency",
           "definition": "The running total of frequencies through the classes of a frequency distribution, plotted to form an ogive."
         }
-      ]
+      ],
+      "subject": "Mathematics"
     },
     {
       "id": "mth_found_1",
@@ -4883,7 +4893,7 @@
         "Algebra",
         "Calculus"
       ],
-      "cbt_drill_topic": "Arithmetic & Algebraic Foundations",
+      "cbt_drill_topic": "Algebra",
       "prerequisites": [],
       "video_meta": {
         "youtube_id": "Z5myJ8dg_rM",
@@ -5298,7 +5308,8 @@
           "term": "Modular Arithmetic",
           "definition": "A system of arithmetic for integers where numbers 'wrap around' upon reaching a certain fixed modulus value."
         }
-      ]
+      ],
+      "subject": "Mathematics"
     },
     {
       "id": "mth_found_2",
@@ -5355,7 +5366,7 @@
         "Geometry & Trigonometry",
         "Calculus"
       ],
-      "cbt_drill_topic": "Coordinate & Function Foundations",
+      "cbt_drill_topic": "Algebra",
       "prerequisites": [],
       "video_meta": {
         "youtube_id": "IL3UCuXrUzE",
@@ -5770,7 +5781,8 @@
           "term": "Locus",
           "definition": "A set of all points whose location satisfies or is determined by one or more specified geometric conditions."
         }
-      ]
+      ],
+      "subject": "Mathematics"
     }
   ],
   "Physics": [
@@ -6254,7 +6266,8 @@
           "term": "Inertia",
           "definition": "The intrinsic property of a body to resist changes in its state of rest or uniform motion, measured quantitatively by its mass."
         }
-      ]
+      ],
+      "subject": "Physics"
     },
     {
       "id": "phy_lesson_2",
@@ -6740,7 +6753,8 @@
           "term": "Longitudinal Wave",
           "definition": "A wave in which the particles of the medium oscillate parallel to the direction of wave energy propagation (e.g., sound waves)."
         }
-      ]
+      ],
+      "subject": "Physics"
     },
     {
       "id": "phy_lesson_3",
@@ -7221,7 +7235,8 @@
           "term": "Lenz's Law",
           "definition": "The principle stating that an induced electric current always flows in such a direction that its magnetic field opposes the change in magnetic flux that produced it."
         }
-      ]
+      ],
+      "subject": "Physics"
     },
     {
       "id": "phy_lesson_4",
@@ -7702,7 +7717,8 @@
           "term": "Mass Defect",
           "definition": "The difference between the mass of an intact nucleus and the sum of the individual masses of its constituent unbound protons and neutrons."
         }
-      ]
+      ],
+      "subject": "Physics"
     },
     {
       "id": "phy_found_1",
@@ -7759,7 +7775,7 @@
         "Mechanics",
         "Electricity & Magnetism"
       ],
-      "cbt_drill_topic": "Units, Dimensions & Vectors",
+      "cbt_drill_topic": "Mechanics",
       "prerequisites": [],
       "video_meta": {
         "youtube_id": "w3BhzYI6zXU",
@@ -8174,7 +8190,8 @@
           "term": "Homogeneity of Dimensions",
           "definition": "The physical requirement that both sides of an equality and all additive terms must share identical dimensional formulas."
         }
-      ]
+      ],
+      "subject": "Physics"
     },
     {
       "id": "phy_found_2",
@@ -8230,7 +8247,7 @@
         "Thermal Physics & Waves",
         "Modern & Atomic Physics"
       ],
-      "cbt_drill_topic": "Kinetic Theory & Heat Fundamentals",
+      "cbt_drill_topic": "Thermal Physics & Waves",
       "prerequisites": [],
       "video_meta": {
         "youtube_id": "WOEvvHbc240",
@@ -8645,7 +8662,8 @@
           "term": "Root-Mean-Square Speed (v_rms)",
           "definition": "The square root of the average of the squares of the speeds of particles in a gas: v_rms = √(3RT/M)."
         }
-      ]
+      ],
+      "subject": "Physics"
     }
   ],
   "Chemistry": [
@@ -9139,7 +9157,8 @@
           "term": "Dynamic Equilibrium",
           "definition": "A state in a reversible reaction where the rates of forward and backward reactions are exactly equal, keeping concentrations constant."
         }
-      ]
+      ],
+      "subject": "Chemistry"
     },
     {
       "id": "che_lesson_2",
@@ -9624,7 +9643,8 @@
           "term": "Amphoteric Oxide",
           "definition": "A metal oxide (e.g., Al2O3, ZnO, PbO) that exhibits both acidic and basic properties by reacting with both strong acids and strong bases to form salts."
         }
-      ]
+      ],
+      "subject": "Chemistry"
     },
     {
       "id": "che_lesson_3",
@@ -10114,7 +10134,8 @@
           "term": "Saponification",
           "definition": "The alkaline hydrolysis of fats or vegetable oils (esters) with concentrated sodium hydroxide to produce soap and glycerol."
         }
-      ]
+      ],
+      "subject": "Chemistry"
     },
     {
       "id": "che_lesson_4",
@@ -10595,7 +10616,8 @@
           "term": "Contact Process",
           "definition": "The industrial manufacturing method for producing concentrated tetraoxosulphate(VI) acid (H2SO4) using vanadium(V) oxide (V2O5) catalyst."
         }
-      ]
+      ],
+      "subject": "Chemistry"
     },
     {
       "id": "chm_found_1",
@@ -10654,7 +10676,7 @@
         "Inorganic Chemistry",
         "Organic Chemistry"
       ],
-      "cbt_drill_topic": "Atomic & Bonding Foundations",
+      "cbt_drill_topic": "Physical & General Chemistry",
       "prerequisites": [],
       "video_meta": {
         "youtube_id": "FSyAehMdpyI",
@@ -11069,7 +11091,8 @@
           "term": "Hydrogen Bonding",
           "definition": "A strong dipole-dipole intermolecular attraction between a hydrogen atom covalently bonded to a highly electronegative atom (N, O, F) and a lone pair on another electronegative atom."
         }
-      ]
+      ],
+      "subject": "Chemistry"
     },
     {
       "id": "chm_found_2",
@@ -11126,7 +11149,7 @@
         "Physical & General Chemistry",
         "Environmental & Industrial Chemistry"
       ],
-      "cbt_drill_topic": "Chemical Equations & Stoichiometric Foundations",
+      "cbt_drill_topic": "Physical & General Chemistry",
       "prerequisites": [],
       "video_meta": {
         "youtube_id": "2Juem0lcifE",
@@ -11541,7 +11564,8 @@
           "term": "Theoretical Yield",
           "definition": "The maximum quantity of product that could be produced from given quantities of reactants calculated from stoichiometric coefficients."
         }
-      ]
+      ],
+      "subject": "Chemistry"
     }
   ],
   "Biology": [
@@ -12024,7 +12048,8 @@
           "term": "Turgor Pressure",
           "definition": "The hydrostatic pressure exerted by the cell sap vacuole against the rigid cellulose cell wall in plant cells when hydrated."
         }
-      ]
+      ],
+      "subject": "Biology"
     },
     {
       "id": "bio_lesson_2",
@@ -12512,7 +12537,8 @@
           "term": "Antidiuretic Hormone (ADH)",
           "definition": "A peptide hormone synthesized by hypothalamus and stored in posterior pituitary that stimulates water retention by kidney collecting ducts."
         }
-      ]
+      ],
+      "subject": "Biology"
     },
     {
       "id": "bio_lesson_3",
@@ -13000,7 +13026,8 @@
           "term": "Natural Selection",
           "definition": "The evolutionary mechanism whereby organisms better adapted to their environment tend to survive and produce more viable offspring."
         }
-      ]
+      ],
+      "subject": "Biology"
     },
     {
       "id": "bio_lesson_4",
@@ -13481,7 +13508,8 @@
           "term": "Ecological Succession",
           "definition": "The predictable, orderly process of gradual community change and species replacement in an ecosystem over time until a climax community is reached."
         }
-      ]
+      ],
+      "subject": "Biology"
     },
     {
       "id": "bio_found_1",
@@ -13537,7 +13565,7 @@
         "Cellular Biology & Life Processes",
         "Human Physiology & Systems"
       ],
-      "cbt_drill_topic": "Biological Molecules & Cell Foundations",
+      "cbt_drill_topic": "Cellular Biology & Life Processes",
       "prerequisites": [],
       "video_meta": {
         "youtube_id": "g78utcLQrJ4",
@@ -13952,7 +13980,8 @@
           "term": "Competitive Inhibitor",
           "definition": "A molecule structurally resembling the substrate that competes directly for binding at the enzyme's active site."
         }
-      ]
+      ],
+      "subject": "Biology"
     },
     {
       "id": "bio_found_2",
@@ -14008,7 +14037,7 @@
         "Genetics & Evolution",
         "Cellular Biology & Life Processes"
       ],
-      "cbt_drill_topic": "Chromosomes & Cell Division Foundations",
+      "cbt_drill_topic": "Genetics & Evolution",
       "prerequisites": [],
       "video_meta": {
         "youtube_id": "zrKdz93WlVk",
@@ -14423,7 +14452,8 @@
           "term": "Centromere",
           "definition": "The specialized DNA sequence and protein structure that links a pair of sister chromatids and serves as the attachment site for spindle fibers during mitosis and meiosis."
         }
-      ]
+      ],
+      "subject": "Biology"
     }
   ],
   "Economics": [
@@ -14906,7 +14936,8 @@
           "term": "Economic Scarcity",
           "definition": "The universal condition in which available resources are inherently insufficient to satisfy all human wants and material desires."
         }
-      ]
+      ],
+      "subject": "Economics"
     },
     {
       "id": "eco_lesson_2",
@@ -15391,7 +15422,8 @@
           "term": "Giffen Good",
           "definition": "An inferior good for which quantity demanded increases when price rises because the negative income effect overwhelms the substitution effect."
         }
-      ]
+      ],
+      "subject": "Economics"
     },
     {
       "id": "eco_lesson_3",
@@ -15872,7 +15904,8 @@
           "term": "Double Counting",
           "definition": "The statistical error of counting the value of intermediate goods multiple times at successive stages of production rather than value added."
         }
-      ]
+      ],
+      "subject": "Economics"
     },
     {
       "id": "eco_lesson_4",
@@ -16353,7 +16386,8 @@
           "term": "Tax Incidence",
           "definition": "The division of the economic burden of a tax between buyers and sellers, determined primarily by relative price elasticities."
         }
-      ]
+      ],
+      "subject": "Economics"
     },
     {
       "id": "eco_found_1",
@@ -16409,7 +16443,7 @@
         "Basic Economic Principles & Methodology",
         "Microeconomics & Price Mechanism"
       ],
-      "cbt_drill_topic": "Foundational Economic Reasoning",
+      "cbt_drill_topic": "Basic Economic Principles & Methodology",
       "prerequisites": [],
       "video_meta": {
         "youtube_id": "B43YEW2FvDs",
@@ -16824,7 +16858,8 @@
           "term": "Free Good",
           "definition": "A good that is superabundant in nature, requires no resources to produce, and carries an opportunity cost of zero (e.g. ambient air)."
         }
-      ]
+      ],
+      "subject": "Economics"
     },
     {
       "id": "eco_found_2",
@@ -16881,7 +16916,7 @@
         "Microeconomics & Price Mechanism",
         "Macroeconomics & National Income"
       ],
-      "cbt_drill_topic": "Economic Graphing & Elasticity Foundations",
+      "cbt_drill_topic": "Microeconomics & Price Mechanism",
       "prerequisites": [],
       "video_meta": {
         "youtube_id": "g9aDizJpd_s",
@@ -17296,7 +17331,8 @@
           "term": "Tax Deadweight Loss",
           "definition": "The net loss of economic efficiency and total surplus when the equilibrium outcome is distorted by taxation or price controls."
         }
-      ]
+      ],
+      "subject": "Economics"
     }
   ],
   "Government": [
@@ -17779,7 +17815,8 @@
           "term": "Collective Responsibility",
           "definition": "A convention in parliamentary systems where all cabinet ministers must publicly support all cabinet decisions or resign."
         }
-      ]
+      ],
+      "subject": "Government"
     },
     {
       "id": "gov_lesson_2",
@@ -18260,7 +18297,8 @@
           "term": "Aba Women's Riot (1929)",
           "definition": "An anti-colonial revolt led by rural Igbo women against British taxation and corrupt warrant chiefs."
         }
-      ]
+      ],
+      "subject": "Government"
     },
     {
       "id": "gov_lesson_3",
@@ -18745,7 +18783,8 @@
           "term": "1963 Republican Constitution",
           "definition": "The post-independence constitution that severed Nigeria's constitutional ties to the British Monarchy, replacing the Governor-General with a Nigerian President."
         }
-      ]
+      ],
+      "subject": "Government"
     },
     {
       "id": "gov_lesson_4",
@@ -19226,7 +19265,8 @@
           "term": "Concurrent Legislative List",
           "definition": "The constitutional schedule of policy areas (e.g., tertiary education, agriculture, health) where both Federal and State governments possess legislative power."
         }
-      ]
+      ],
+      "subject": "Government"
     },
     {
       "id": "gov_found_1",
@@ -19283,7 +19323,7 @@
         "Elements of Government & Political Theory",
         "Nigerian Constitutional Development"
       ],
-      "cbt_drill_topic": "Political Concepts & The State Foundations",
+      "cbt_drill_topic": "Elements of Government & Political Theory",
       "prerequisites": [],
       "video_meta": {
         "youtube_id": "0bf3CwYCxXw",
@@ -19698,7 +19738,8 @@
           "term": "Political Socialization",
           "definition": "The developmental process by which individuals acquire political beliefs, values, and behavioral norms throughout life."
         }
-      ]
+      ],
+      "subject": "Government"
     },
     {
       "id": "gov_found_2",
@@ -19755,7 +19796,7 @@
         "Colonial Administration in Nigeria & West Africa",
         "Nigerian Constitutional Development"
       ],
-      "cbt_drill_topic": "Pre-Colonial Heritage Foundations",
+      "cbt_drill_topic": "Colonial Administration in Nigeria & West Africa",
       "prerequisites": [],
       "video_meta": {
         "youtube_id": "jvnU0v6hcUo",
@@ -20170,7 +20211,8 @@
           "term": "Age Grade",
           "definition": "An association of peer group members born within a specific time period who performed civic, executive, and military defense duties in pre-colonial village democracies."
         }
-      ]
+      ],
+      "subject": "Government"
     }
   ],
   "Literature in English": [
@@ -20658,7 +20700,8 @@
           "term": "Oxymoron",
           "definition": "A rhetorical device that juxtaposes two contradictory words directly adjacent to one another (e.g., 'deafening silence', 'cruel kindness')."
         }
-      ]
+      ],
+      "subject": "Literature in English"
     },
     {
       "id": "lit_lesson_2",
@@ -21143,7 +21186,8 @@
           "term": "Anagnorisis",
           "definition": "The critical moment of recognition or discovery in a drama where the protagonist uncovers the true reality of their situation or identity."
         }
-      ]
+      ],
+      "subject": "Literature in English"
     },
     {
       "id": "lit_lesson_3",
@@ -21628,7 +21672,8 @@
           "term": "Ballad Stanza",
           "definition": "A traditional four-line stanza (quatrain) with alternating four-stress and three-stress lines rhyming abcb or abab, typically telling a folksy story."
         }
-      ]
+      ],
+      "subject": "Literature in English"
     },
     {
       "id": "lit_lesson_4",
@@ -22109,7 +22154,8 @@
           "term": "Structural Irony",
           "definition": "The use of a structural feature or narrative device throughout an entire literary text that establishes a persistent discrepancy between appearance and reality."
         }
-      ]
+      ],
+      "subject": "Literature in English"
     },
     {
       "id": "lit_found_1",
@@ -22167,7 +22213,7 @@
         "Drama & Theatrical Techniques",
         "Poetry & Versification"
       ],
-      "cbt_drill_topic": "Literary Genres & Fundamentals",
+      "cbt_drill_topic": "Literary Appreciation & Devices",
       "prerequisites": [],
       "video_meta": {
         "youtube_id": "MSYw502dJNY",
@@ -22582,7 +22628,8 @@
           "term": "Epistolary Novel",
           "definition": "A novel written primarily or entirely in the form of a series of letters, diary entries, or correspondence exchanged between characters."
         }
-      ]
+      ],
+      "subject": "Literature in English"
     },
     {
       "id": "lit_found_2",
@@ -22639,7 +22686,7 @@
         "Literary Appreciation & Devices",
         "Poetry & Versification"
       ],
-      "cbt_drill_topic": "Figurative Devices & Tropes Foundations",
+      "cbt_drill_topic": "Literary Appreciation & Devices",
       "prerequisites": [],
       "video_meta": {
         "youtube_id": "MSYw502dJNY",
@@ -23054,7 +23101,8 @@
           "term": "Pun (Paronomasia)",
           "definition": "A humorous play on words exploiting multiple meanings of a term or words that sound similar but possess different meanings."
         }
-      ]
+      ],
+      "subject": "Literature in English"
     }
   ]
 }
