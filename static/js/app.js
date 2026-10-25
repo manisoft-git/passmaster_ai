@@ -899,7 +899,6 @@ function renderCbtTopicBar(subject) {
   if (!container) return;
 
   container.innerHTML = "";
-  updateLessonsMasteryBanner(lessons.length);
 
   const pool = (subject && subject !== "all")
     ? allQuestions.filter(q => q.subject.toLowerCase() === subject.toLowerCase())
@@ -1425,7 +1424,7 @@ function renderLessonCards(lessons) {
   const container = document.getElementById("lessonsCardsContainer");
   if (!container) return;
   container.innerHTML = "";
-  updateLessonsMasteryBanner(lessons.length);
+  updateLessonsMasteryBanner(lessons ? lessons.length : 48);
 
   lessons.forEach((les) => {
     const card = document.createElement("div");
@@ -1732,7 +1731,6 @@ async function loadMistakeVault() {
     }
 
     container.innerHTML = "";
-  updateLessonsMasteryBanner(lessons.length);
     data.vault.forEach(m => {
       const card = document.createElement("div");
       card.className = "vault-card";
@@ -1954,7 +1952,6 @@ function renderSyllabus(syllabus) {
   const container = document.getElementById("syllabusGrid");
   if (!container) return;
   container.innerHTML = "";
-  updateLessonsMasteryBanner(lessons.length);
 
   Object.entries(syllabus).forEach(([subject, details]) => {
     const card = document.createElement("div");
@@ -2287,7 +2284,6 @@ function renderCbtSubjectTabs() {
   const currentSubj = currentQ ? currentQ.subject : subjects[0];
 
   container.innerHTML = "";
-  updateLessonsMasteryBanner(lessons.length);
   subjects.forEach(subj => {
     const totalCount = filteredQuestions.filter(q => q.subject === subj).length;
     const answeredCount = filteredQuestions.filter(q => q.subject === subj && sessionHistory[q.id]).length;
@@ -2985,7 +2981,6 @@ function renderVideoSyncedNotes(notes) {
   const container = document.getElementById("lessonVideoSyncedNotesList");
   if (!container) return;
   container.innerHTML = "";
-  updateLessonsMasteryBanner(lessons.length);
 
   if (!notes || !notes.length) {
     container.innerHTML = `<div style="font-size: 0.8rem; color: #94a3b8;">Syllabus notes synchronizing...</div>`;
@@ -3012,7 +3007,6 @@ function renderVideoRetentionQuiz(quizList) {
   const scoreBadge = document.getElementById("retentionScoreBadge");
   if (!container) return;
   container.innerHTML = "";
-  updateLessonsMasteryBanner(lessons.length);
 
   if (!quizList || !quizList.length) {
     container.innerHTML = `<div style="font-size: 0.8rem; color: #94a3b8;">Retention quiz questions loading...</div>`;
@@ -3381,7 +3375,6 @@ async function loadInModalTopicQuiz() {
     }
 
     container.innerHTML = "";
-  updateLessonsMasteryBanner(lessons.length);
     qList.forEach((q, idx) => {
       const card = document.createElement("div");
       card.style.cssText = "background: rgba(15, 23, 42, 0.85); border: 1px solid var(--border-subtle); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 0.75rem;";
@@ -3496,7 +3489,6 @@ function renderLessonKeyTerms(keyTerms) {
   if (!container) return;
 
   container.innerHTML = "";
-  updateLessonsMasteryBanner(lessons.length);
   if (!keyTerms || keyTerms.length === 0) {
     if (box) box.style.display = "none";
     return;
@@ -3520,7 +3512,6 @@ function renderWorkedExamples(examples) {
   if (!container) return;
 
   container.innerHTML = "";
-  updateLessonsMasteryBanner(lessons.length);
   if (!examples || examples.length === 0) {
     if (box) box.style.display = "none";
     return;
@@ -3639,7 +3630,6 @@ function renderNovelChapters() {
   if (!container || !novelCompanionData || !novelCompanionData.chapters) return;
 
   container.innerHTML = "";
-  updateLessonsMasteryBanner(lessons.length);
   novelCompanionData.chapters.forEach(ch => {
     const card = document.createElement("div");
     card.className = "novel-chapter-card";
@@ -3679,7 +3669,6 @@ function renderNovelCharacters() {
   if (!container || !novelCompanionData || !novelCompanionData.characters) return;
 
   container.innerHTML = "";
-  updateLessonsMasteryBanner(lessons.length);
   novelCompanionData.characters.forEach(c => {
     const card = document.createElement("div");
     card.className = "novel-character-card";
@@ -3713,7 +3702,6 @@ function renderNovelThemes() {
   if (!container || !novelCompanionData || !novelCompanionData.major_themes) return;
 
   container.innerHTML = "";
-  updateLessonsMasteryBanner(lessons.length);
   novelCompanionData.major_themes.forEach(t => {
     const card = document.createElement("div");
     card.style.cssText = "background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.15rem; display: flex; flex-direction: column; gap: 0.5rem;";
@@ -3735,7 +3723,6 @@ function renderNovelQuestions() {
   if (!container || !novelCompanionData || !novelCompanionData.questions) return;
 
   container.innerHTML = "";
-  updateLessonsMasteryBanner(lessons.length);
   novelCompanionData.questions.forEach((q, idx) => {
     const card = document.createElement("div");
     card.style.cssText = "background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.15rem; margin-bottom: 1rem;";
