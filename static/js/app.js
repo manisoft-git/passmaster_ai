@@ -899,6 +899,7 @@ function renderCbtTopicBar(subject) {
   if (!container) return;
 
   container.innerHTML = "";
+  updateLessonsMasteryBanner(lessons.length);
 
   const pool = (subject && subject !== "all")
     ? allQuestions.filter(q => q.subject.toLowerCase() === subject.toLowerCase())
@@ -1383,10 +1384,48 @@ async function loadTopicLessons() {
   }
 }
 
+
+async function viewLessonVideoDirect(subject, topic, isLocked) {
+  await viewLesson(subject, topic, isLocked);
+  if (!isLocked) {
+    switchLessonModalTab('visual');
+  }
+}
+
+function updateLessonsMasteryBanner(totalCount) {
+  const banner = document.getElementById("lessonsMasteryBanner");
+  if (!banner) return;
+  const watchedSet = (typeof getWatchedVideosSet === "function") ? getWatchedVideosSet() : new Set();
+  const count = watchedSet.size;
+  const total = totalCount || 48;
+  const pct = Math.min(100, Math.round((count / total) * 100));
+  banner.innerHTML = `
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span style="font-size: 1.25rem;">🎬</span>
+        <div>
+          <div style="font-weight: 800; font-size: 0.92rem; color: #38bdf8;">JAMB Video Masterclass Fleet</div>
+          <div style="font-size: 0.74rem; color: #94a3b8;">48 Core Topics • 144 Specialized High-Yield Video Modules</div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.6rem;">
+        <span class="status-badge status-confirmed" style="font-size: 0.75rem;">100% HD Real Lectures</span>
+        <div style="font-size: 0.84rem; font-weight: 700; color: #a7f3d0; background: rgba(16, 185, 129, 0.15); padding: 0.25rem 0.6rem; border-radius: 6px; border: 1px solid rgba(16, 185, 129, 0.3);">
+          ${count} / ${total} Mastered (${pct}%)
+        </div>
+      </div>
+    </div>
+    <div style="width: 100%; height: 7px; background: rgba(15, 23, 42, 0.8); border-radius: 999px; overflow: hidden; border: 1px solid rgba(56, 189, 248, 0.25);">
+      <div style="width: ${pct}%; height: 100%; background: linear-gradient(90deg, #38bdf8, #10b981); transition: width 0.4s ease;"></div>
+    </div>
+  `;
+}
+
 function renderLessonCards(lessons) {
   const container = document.getElementById("lessonsCardsContainer");
   if (!container) return;
   container.innerHTML = "";
+  updateLessonsMasteryBanner(lessons.length);
 
   lessons.forEach((les) => {
     const card = document.createElement("div");
@@ -1424,9 +1463,12 @@ function renderLessonCards(lessons) {
         </div>
         <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem;">${les.summary}</p>
       </div>
-      <div>
-        <button class="btn-pill ${les.is_locked ? '' : 'btn-primary'}" style="width: 100%; justify-content: center;" onclick="viewLesson('${les.subject.replace(/'/g, "\\'")}', '${les.topic.replace(/'/g, "\\'")}', ${les.is_locked})">
-          ${les.is_locked ? '🔒 Unlock Masterclass' : '📖 Study & Watch Lecture'}
+      <div style="display: flex; gap: 0.45rem; width: 100%;">
+        <button class="btn-pill ${les.is_locked ? '' : 'btn-primary'}" style="flex: 1; justify-content: center; font-size: 0.78rem; padding: 0.35rem 0.5rem;" onclick="viewLesson('${les.subject.replace(/'/g, "\\'")}', '${les.topic.replace(/'/g, "\\'")}', ${les.is_locked})">
+          ${les.is_locked ? '🔒 Unlock' : '📖 Notes'}
+        </button>
+        <button class="btn-pill" style="flex: 1.25; justify-content: center; font-size: 0.78rem; padding: 0.35rem 0.5rem; background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(59, 130, 246, 0.2)); border: 1px solid rgba(56, 189, 248, 0.45); color: #38bdf8;" onclick="viewLessonVideoDirect('${les.subject.replace(/'/g, "\\'")}', '${les.topic.replace(/'/g, "\\'")}', ${les.is_locked})">
+          <span>🎬</span> Watch Video
         </button>
       </div>
     `;
@@ -1690,6 +1732,7 @@ async function loadMistakeVault() {
     }
 
     container.innerHTML = "";
+  updateLessonsMasteryBanner(lessons.length);
     data.vault.forEach(m => {
       const card = document.createElement("div");
       card.className = "vault-card";
@@ -1911,6 +1954,7 @@ function renderSyllabus(syllabus) {
   const container = document.getElementById("syllabusGrid");
   if (!container) return;
   container.innerHTML = "";
+  updateLessonsMasteryBanner(lessons.length);
 
   Object.entries(syllabus).forEach(([subject, details]) => {
     const card = document.createElement("div");
@@ -2243,6 +2287,7 @@ function renderCbtSubjectTabs() {
   const currentSubj = currentQ ? currentQ.subject : subjects[0];
 
   container.innerHTML = "";
+  updateLessonsMasteryBanner(lessons.length);
   subjects.forEach(subj => {
     const totalCount = filteredQuestions.filter(q => q.subject === subj).length;
     const answeredCount = filteredQuestions.filter(q => q.subject === subj && sessionHistory[q.id]).length;
@@ -2817,7 +2862,7 @@ function seekToVideoTimestamp(timeStrOrSecs) {
   if (currentVideoPlaybackMode === "real") {
     const iframe = document.getElementById("lessonRealVideoIframe");
     const activeMod = (currentVideoMeta && currentVideoMeta.modules && currentVideoMeta.modules[currentVideoModuleIndex]) ? currentVideoMeta.modules[currentVideoModuleIndex] : currentVideoMeta;
-    const ytid = (activeMod && activeMod.youtube_id) ? activeMod.youtube_id : (currentVideoMeta ? currentVideoMeta.youtube_id : "_xWp-zN85_Y");
+    const ytid = (activeMod && activeMod.youtube_id) ? activeMod.youtube_id : (currentVideoMeta ? currentVideoMeta.youtube_id : "kKKM8Y-u7ds");
     if (iframe) {
       iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(ytid)}?start=${secs}&autoplay=1&enablejsapi=1&rel=0`;
     }
@@ -2901,12 +2946,12 @@ function switchVideoModule(modIdx) {
   if (status) status.textContent = "Ready to Stream";
 
   if (iframe) {
-    iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(mod.youtube_id || "_xWp-zN85_Y")}?enablejsapi=1&rel=0`;
+    iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(mod.youtube_id || "kKKM8Y-u7ds")}?enablejsapi=1&rel=0`;
   }
   if (detailTitle) detailTitle.textContent = mod.title;
   if (detailLecturer) detailLecturer.textContent = `Instructor: ${mod.lecturer || "Coach Kalu & Socratic Video Fellow"}`;
   if (detailSummary) detailSummary.textContent = mod.summary || "";
-  if (externalLink) externalLink.href = `https://www.youtube.com/watch?v=${encodeURIComponent(mod.youtube_id || "_xWp-zN85_Y")}`;
+  if (externalLink) externalLink.href = `https://www.youtube.com/watch?v=${encodeURIComponent(mod.youtube_id || "kKKM8Y-u7ds")}`;
 
   if (takeawaysList && mod.key_takeaways) {
     takeawaysList.innerHTML = "";
@@ -2940,6 +2985,7 @@ function renderVideoSyncedNotes(notes) {
   const container = document.getElementById("lessonVideoSyncedNotesList");
   if (!container) return;
   container.innerHTML = "";
+  updateLessonsMasteryBanner(lessons.length);
 
   if (!notes || !notes.length) {
     container.innerHTML = `<div style="font-size: 0.8rem; color: #94a3b8;">Syllabus notes synchronizing...</div>`;
@@ -2966,6 +3012,7 @@ function renderVideoRetentionQuiz(quizList) {
   const scoreBadge = document.getElementById("retentionScoreBadge");
   if (!container) return;
   container.innerHTML = "";
+  updateLessonsMasteryBanner(lessons.length);
 
   if (!quizList || !quizList.length) {
     container.innerHTML = `<div style="font-size: 0.8rem; color: #94a3b8;">Retention quiz questions loading...</div>`;
@@ -3089,7 +3136,7 @@ function renderTopicVideo(videoMeta, topicTitle) {
 
     const titleStr = (videoMeta && videoMeta.title) ? videoMeta.title : `JAMB Masterclass: ${topicTitle}`;
     const lecturerStr = (videoMeta && videoMeta.lecturer) ? videoMeta.lecturer : "Coach Kalu & Socratic Video Fellow";
-    const youtubeId = (videoMeta && videoMeta.youtube_id) ? videoMeta.youtube_id : "_xWp-zN85_Y";
+    const youtubeId = (videoMeta && videoMeta.youtube_id) ? videoMeta.youtube_id : "kKKM8Y-u7ds";
 
     if (badge) badge.textContent = `🎬 ${topicTitle}`;
     if (durBadge) durBadge.textContent = `HD Video (${durationStr})`;
@@ -3260,7 +3307,8 @@ function seekToChapter(timeStr, pillElem) {
 
   if (currentVideoPlaybackMode === "real") {
     const iframe = document.getElementById("lessonRealVideoIframe");
-    const ytid = (currentVideoMeta && currentVideoMeta.youtube_id) ? currentVideoMeta.youtube_id : "_xWp-zN85_Y";
+    const activeMod = (currentVideoMeta && currentVideoMeta.modules && currentVideoMeta.modules[currentVideoModuleIndex]) ? currentVideoMeta.modules[currentVideoModuleIndex] : currentVideoMeta;
+    const ytid = (activeMod && activeMod.youtube_id) ? activeMod.youtube_id : (currentVideoMeta ? currentVideoMeta.youtube_id : "kKKM8Y-u7ds");
     if (iframe) {
       iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(ytid)}?start=${secs}&autoplay=1&enablejsapi=1&rel=0`;
     }
@@ -3333,6 +3381,7 @@ async function loadInModalTopicQuiz() {
     }
 
     container.innerHTML = "";
+  updateLessonsMasteryBanner(lessons.length);
     qList.forEach((q, idx) => {
       const card = document.createElement("div");
       card.style.cssText = "background: rgba(15, 23, 42, 0.85); border: 1px solid var(--border-subtle); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 0.75rem;";
@@ -3447,6 +3496,7 @@ function renderLessonKeyTerms(keyTerms) {
   if (!container) return;
 
   container.innerHTML = "";
+  updateLessonsMasteryBanner(lessons.length);
   if (!keyTerms || keyTerms.length === 0) {
     if (box) box.style.display = "none";
     return;
@@ -3470,6 +3520,7 @@ function renderWorkedExamples(examples) {
   if (!container) return;
 
   container.innerHTML = "";
+  updateLessonsMasteryBanner(lessons.length);
   if (!examples || examples.length === 0) {
     if (box) box.style.display = "none";
     return;
@@ -3588,6 +3639,7 @@ function renderNovelChapters() {
   if (!container || !novelCompanionData || !novelCompanionData.chapters) return;
 
   container.innerHTML = "";
+  updateLessonsMasteryBanner(lessons.length);
   novelCompanionData.chapters.forEach(ch => {
     const card = document.createElement("div");
     card.className = "novel-chapter-card";
@@ -3627,6 +3679,7 @@ function renderNovelCharacters() {
   if (!container || !novelCompanionData || !novelCompanionData.characters) return;
 
   container.innerHTML = "";
+  updateLessonsMasteryBanner(lessons.length);
   novelCompanionData.characters.forEach(c => {
     const card = document.createElement("div");
     card.className = "novel-character-card";
@@ -3660,6 +3713,7 @@ function renderNovelThemes() {
   if (!container || !novelCompanionData || !novelCompanionData.major_themes) return;
 
   container.innerHTML = "";
+  updateLessonsMasteryBanner(lessons.length);
   novelCompanionData.major_themes.forEach(t => {
     const card = document.createElement("div");
     card.style.cssText = "background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.15rem; display: flex; flex-direction: column; gap: 0.5rem;";
@@ -3681,6 +3735,7 @@ function renderNovelQuestions() {
   if (!container || !novelCompanionData || !novelCompanionData.questions) return;
 
   container.innerHTML = "";
+  updateLessonsMasteryBanner(lessons.length);
   novelCompanionData.questions.forEach((q, idx) => {
     const card = document.createElement("div");
     card.style.cssText = "background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.15rem; margin-bottom: 1rem;";

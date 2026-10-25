@@ -12,7 +12,7 @@ class SocraticTutor:
 
     def _load_questions(self):
         try:
-            with open(self.questions_path, "r") as f:
+            with open(self.questions_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 return {q["id"]: q for q in data}
         except Exception as e:

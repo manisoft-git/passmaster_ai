@@ -509,7 +509,33 @@ def get_lessons():
 
 def build_rich_video_masterclass(target_lesson, topic, subject):
     v = target_lesson.get("video_meta") or target_lesson.get("video") or {}
-    base_yt = v.get("youtube_id", "_xWp-zN85_Y")
+    if v.get("modules") and len(v["modules"]) > 0:
+        return v
+
+    tid = target_lesson.get("id")
+    try:
+        from tools.map_all_topics import TOPIC_VIDEO_MAPPINGS
+        mapping = TOPIC_VIDEO_MAPPINGS.get(tid)
+    except Exception:
+        mapping = None
+
+    if mapping:
+        m1_yt, m1_dur, m1_focus, m1_lect = mapping["m1"]
+        m2_yt, m2_dur, m2_focus, m2_lect = mapping["m2"]
+        m3_yt, m3_dur, m3_focus, m3_lect = mapping["m3"]
+        base_yt = m1_yt
+    else:
+        m1_yt = v.get("youtube_id", "kKKM8Y-u7ds")
+        m2_yt = m1_yt
+        m3_yt = m1_yt
+        base_yt = m1_yt
+        m1_dur = v.get("duration", "24:15")
+        m2_dur = "22:40"
+        m3_dur = "18:25"
+        m1_lect = v.get("lecturer", "Coach Kalu & Socratic Video Fellow")
+        m2_lect = "Coach Kalu & JAMB Examination Specialists"
+        m3_lect = "Coach Kalu & 280+ High-Scorer Faculty"
+
     title = target_lesson.get("title", topic)
     golden = target_lesson.get("golden_rule", "")
     overview = target_lesson.get("overview", "")
@@ -547,7 +573,7 @@ def build_rich_video_masterclass(target_lesson, topic, subject):
             "title": f"2. Authentic JAMB Past Questions Solved: {topic}",
             "duration": "22:40",
             "lecturer": "Coach Kalu & JAMB Examination Specialists",
-            "youtube_id": base_yt,
+            "youtube_id": m2_yt,
             "summary": f"Exhaustive walkthrough of authentic JAMB past examination questions on {topic}. Learn step-by-step working and option elimination heuristics.",
             "chapters": [
                 {"time": "00:00", "title": "Question 1: Standard Syllabus Foundation"},
@@ -568,7 +594,7 @@ def build_rich_video_masterclass(target_lesson, topic, subject):
             "title": f"3. Fatal Distractor Traps & 45s Speed Hacks: {topic}",
             "duration": "18:25",
             "lecturer": "Coach Kalu & 280+ High-Scorer Faculty",
-            "youtube_id": base_yt,
+            "youtube_id": m3_yt,
             "summary": f"Unmask the exact psychological traps examiners use to mislead students on {topic}. Master speed shortcuts to complete each question within 45 seconds.",
             "chapters": [
                 {"time": "00:00", "title": "Examiner Trap Analysis: Why 60% of Students Fail This"},

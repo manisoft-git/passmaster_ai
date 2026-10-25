@@ -8,7 +8,7 @@ class DiagnosticEngine:
 
     def _load_json(self, path):
         try:
-            with open(path, "r") as f:
+            with open(path, "r", encoding="utf-8") as f:
                 return json.load(f)
         except Exception as e:
             print(f"Error loading {path}: {e}")
