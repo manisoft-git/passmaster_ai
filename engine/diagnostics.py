@@ -1,8 +1,15 @@
 import json
 import math
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DEFAULT_SYLLABUS = os.path.join(BASE_DIR, "data", "syllabus.json")
+DEFAULT_QUESTIONS = os.path.join(BASE_DIR, "data", "questions.json")
 
 class DiagnosticEngine:
-    def __init__(self, syllabus_path="data/syllabus.json", questions_path="data/questions.json"):
+    def __init__(self, syllabus_path=None, questions_path=None):
+        syllabus_path = syllabus_path or DEFAULT_SYLLABUS
+        questions_path = questions_path or DEFAULT_QUESTIONS
         self.syllabus = self._load_json(syllabus_path)
         self.questions = self._load_json(questions_path)
 

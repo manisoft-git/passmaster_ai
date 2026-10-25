@@ -4,8 +4,12 @@ import re
 import random
 import requests
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DEFAULT_QUESTIONS = os.path.join(BASE_DIR, "data", "questions.json")
+
 class SocraticTutor:
-    def __init__(self, questions_path="data/questions.json"):
+    def __init__(self, questions_path=None):
+        questions_path = questions_path or DEFAULT_QUESTIONS
         self.questions_path = questions_path
         self.questions = self._load_questions()
         self.gemini_api_key = os.getenv("GEMINI_API_KEY", "")
