@@ -70,9 +70,10 @@ _start_fleet_keep_alive()
 # Initialize SQLite database
 db.init_db()
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # Initialize Core Services
-tutor = SocraticTutor(questions_path="data/questions.json")
-diagnostics = DiagnosticEngine(syllabus_path="data/syllabus.json", questions_path="data/questions.json")
+tutor = SocraticTutor(questions_path=os.path.join(BASE_DIR, "data", "questions.json"))
+diagnostics = DiagnosticEngine(syllabus_path=os.path.join(BASE_DIR, "data", "syllabus.json"), questions_path=os.path.join(BASE_DIR, "data", "questions.json"))
 payments = PaymentService()
 whatsapp_bot = WhatsAppBot(tutor=tutor, diagnostics=diagnostics, payments=payments)
 
@@ -954,6 +955,8 @@ def tutor_attempt():
         return jsonify({"error": "Missing question_id or selected_option"}), 400
 
     analysis = tutor.analyze_attempt(question_id, selected_option)
+    if "error" in analysis:
+        return jsonify(analysis), 404
 
     user_id = session.get('user_id')
     if user_id:

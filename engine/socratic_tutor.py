@@ -134,6 +134,25 @@ class SocraticTutor:
         if not question or question_id == "general":
             return self.general_academic_reply(user_message)
 
+        msg_lower = user_message.lower().strip()
+        correct_opt = question["correct_option"].upper()
+        correct_text = question["options"].get(correct_opt, "")
+
+        # Direct answer request or surrender - handle before LLM call so surrender is deterministic & immediate
+        if any(w in msg_lower for w in ["give up", "tell me", "what is the answer", "surrender", "just show", "reveal", "which option is correct"]):
+            return {
+                "reply": (
+                    f"Alright, let's break it down fully so you master it forever!\n\n"
+                    f"The correct option is **Option {correct_opt}: {correct_text}**.\n\n"
+                    f"📌 **Full Master Explanation:**\n{question['pedagogical_concept']}\n\n"
+                    f"⚠️ **Why other choices were traps:**\n" +
+                    "\n".join([f"• Option {k}: {v}" for k, v in question.get("traps", {}).items() if k != correct_opt]) +
+                    f"\n\nNow you know how examiners design this. You will never miss it in JAMB!"
+                ),
+                "revealed": True,
+                "correct_option": correct_opt
+            }
+
         # If Gemini API Key is available, attempt live LLM call with highest model (gemini-2.5-pro)
         system_prompt = (
             "You are 'Coach Kalu', a brilliant, encouraging, sharp Nigerian master tutor specializing in JAMB/WAEC. "
